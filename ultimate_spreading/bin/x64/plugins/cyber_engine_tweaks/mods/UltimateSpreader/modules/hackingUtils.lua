@@ -16,4 +16,12 @@ function hackingUtils.setSpreadRangeSystemCollapse(range)
 	TweakDB:SetFlat("QuickHack.SystemCollapseHackBase_inline6.spreadDistance",range)
 end
 
+-- Contagion QuickHack
+function hackingUtils.setSpreadRangeContagion(range)
+	TweakDB:SetFlat("QuickHack.BaseContagionHack_inline3.spreadDistance",range)
+end
+function hackingUtils.setBonusJumpsContagion(jumps)
+	TweakDB:SetFlat("QuickHack.BaseContagionHack_inline3.bonusJumps",jumps)
+end
+
 return hackingUtils

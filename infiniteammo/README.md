@@ -23,7 +23,6 @@ Everytime you press the keybind, you toggle the infinite ammunition functionalit
 ## Notes:
 1) Tested on patch 1.6
 2) I Made this mod to learn a bit about modding, so expect bugs.
-3) There is currently no indication as to whether the Infinite Ammunition functionality is on or off.
 
 ## Thanks to
 The people over at the [modding discord](https://discord.gg/Epkq79kd96).

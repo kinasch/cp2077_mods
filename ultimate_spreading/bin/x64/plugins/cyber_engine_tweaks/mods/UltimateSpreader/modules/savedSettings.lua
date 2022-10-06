@@ -21,6 +21,16 @@ savedSettings = {
                 saved = -1
             }
         },
+        contagion = {
+            range = {
+                default = -1,
+                saved = -1
+            },
+            bonusJumps = {
+                default = 1,
+                saved = 1
+            }
+        },
     }
 }
 
