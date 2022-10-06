@@ -6,7 +6,7 @@ Adds the ability to toggle a infinite ammo functionality to shoot without reload
 **Warning:** Internally, The mod reloads the weapon after every shot, thus will fill the magazine completely.
 
 ## Install:
-1) Install / Update Cyber Engine Tweaks﻿
+1) Install / Update [Cyber Engine Tweaks](https://www.nexusmods.com/cyberpunk2077/mods/107)
 2) Download and extract the mod from here
 3) Drag the bin folder into your "Cyberpunk 2077" game folder
 
@@ -17,7 +17,7 @@ Everytime you press the keybind, you toggle the infinite ammunition functionalit
 
 
 ## Uninstall:
-1) Delete the "InfiniteAmmo" folder from "Cyberpunk 2077\bin\x64\plugins\cyber_engine_tweaks\mods"
+1) Delete the "InfiniteAmmo" folder from `"Cyberpunk 2077\bin\x64\plugins\cyber_engine_tweaks\mods"`
 
 
 ## Notes:
