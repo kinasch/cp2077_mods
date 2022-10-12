@@ -6,6 +6,10 @@ savedSettings = {
                 default = 1,
                 saved = 1
             },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
             range = {
                 default = -1,
                 saved = -1
@@ -16,19 +20,153 @@ savedSettings = {
                 default = 1,
                 saved = 1
             },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
             range = {
                 default = -1,
                 saved = -1
             }
         },
         contagion = {
-            range = {
+            count = {
                 default = -1,
                 saved = -1
             },
             bonusJumps = {
                 default = 1,
                 saved = 1
+            },
+            range = {
+                default = -1,
+                saved = -1
+            }
+        },
+        overheat = {
+            count = {
+                default = 2,
+                saved = 2
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = 6,
+                saved = 6
+            }
+        },
+        blind = {
+            count = {
+                default = -1,
+                saved = -1
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = -1,
+                saved = -1
+            }
+        },
+        cyberwareMalfunction = {
+            count = {
+                default = -1,
+                saved = -1
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = -1,
+                saved = -1
+            }
+        },
+        locomotionMalfunction = {
+            count = {
+                default = -1,
+                saved = -1
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = -1,
+                saved = -1
+            }
+        },
+        weaponMalfunction = {
+            count = {
+                default = -1,
+                saved = -1
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = -1,
+                saved = -1
+            }
+        },
+        grenade = {
+            count = {
+                default = -1,
+                saved = -1
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = -1,
+                saved = -1
+            }
+        },
+        overload = {
+            count = {
+                default = 2,
+                saved = 2
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = 6,
+                saved = 6
+            }
+        },
+        brainMelt = {
+            count = {
+                default = 2,
+                saved = 2
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = 6,
+                saved = 6
+            }
+        },
+        madness = {
+            count = {
+                default = -1,
+                saved = -1
+            },
+            bonusJumps = {
+                default = 0,
+                saved = 0
+            },
+            range = {
+                default = -1,
+                saved = -1
             }
         },
     }
@@ -38,6 +176,7 @@ local path = "savedSettings.json"
 
 -- Tries to load the settings from the savedSettings.json
 -- returns bool: true if a file was found, false if not
+-- MAYBE: Add taking the games values in case someone already played with the values.
 function savedSettings.tryToLoadSettings()
     local file = io.open(path,"r")
     if(file~=nil) then
