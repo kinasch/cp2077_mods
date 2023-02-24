@@ -1,32 +1,17 @@
 -- Default values are taken from the respective TweakDB defaults
-saveSettings = {
-    settings = {
-        one = {
-            -- Order: Attribute,Amount
-            attributes = nil,
-            -- Order: Perk1,Perk1,Perk2,Perk3,Perk3,Perk3
-            perks = nil,
-            -- Perk without limit thingies
-            traits = nil,
-            points = {
-                perk = 0,
-                attribute = 0,
-            },
-        },
-        two = {
-            -- Order: Attribute,Amount
-            attributes = nil,
-            -- Order: Perk1,Perk1,Perk2,Perk3,Perk3,Perk3
-            perks = nil,
-            -- Perk without limit thingies
-            traits = nil,
-            points = {
-                perk = 0,
-                attribute = 0,
-            },
-        }
-    },
-}
+saveSettings = { settings = {} }
+
+function saveSettings.saveData(number,attributes,perks,traits,currLevel)
+    saveSettings.settings[number] = {
+        -- Order: Attribute,Amount
+        attributes = attributes,
+        -- Order: Perk1,Perk1,Perk2,Perk3,Perk3,Perk3
+        perks = perks,
+        -- Perk without limit thingies
+        traits = traits,
+        buildLevel = currLevel
+    }
+end
 
 local path = "builds.json"
 
