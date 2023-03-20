@@ -1,8 +1,8 @@
 -- Default values are taken from the respective TweakDB defaults
 saveSettings = { settings = {} }
 
-function saveSettings.saveData(number,attributes,perks,traits,currLevel)
-    saveSettings.settings[number] = {
+function saveSettings.saveData(name,attributes,perks,traits,currLevel)
+    saveSettings.settings[name] = {
         -- Order: Attribute,Amount
         attributes = attributes,
         -- Order: Perk1,Perk1,Perk2,Perk3,Perk3,Perk3
@@ -17,7 +17,7 @@ local path = "builds.json"
 
 -- Tries to load the settings from the savedSettings.json
 -- returns bool: true if a file was found, false if not
--- TODO: Rewrite
+-- TODO: Rewrite  <-- lmao
 function saveSettings.tryToLoadSettings()
     local file = io.open(path,"r")
     if(file~=nil) then
