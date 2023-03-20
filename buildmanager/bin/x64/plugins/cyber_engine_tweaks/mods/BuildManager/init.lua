@@ -55,7 +55,7 @@ registerForEvent("onDraw",function ()
 		inputText, selected = ImGui.InputText("Save Name", inputText, 64)
 		newSave = ImGui.Button("Save",(0.5*ImGui.GetWindowWidth()),30)
 		if newSave then
-			if inputText ~= nil and inputText ~= "" and tablelength(saveSettings.settings) <= 10 then
+			if inputText ~= nil and inputText ~= "" and tableLength(saveSettings.settings) <= 10 then
 				buttonClick(inputText)
 				inputText = ""
 			end
@@ -144,18 +144,19 @@ registerForEvent("onDraw",function ()
 	ImGui.EndTabBar()
 	ImGui.End()
 
-	-- ###############################
+	-- #####################################################################################################
 	-- Child Windows
 	for k,attr in pairs(enableInfo) do
 		if attr then
 			ImGui.SetNextWindowPos(x+300, y,ImGuiCond.Appearing)
 			ImGui.SetNextWindowSize(200,200,ImGuiCond.Appearing)
 			shouldDraw = ImGui.Begin(k)
+			ImGui.PushID("infoclose"..k)
 			if ImGui.Button("Close") then
 				enableInfo[k] = false
 			end
-			ImGui.Text("Info for save"..k)
-			ImGui.TextWrapped(tostring(saveSettings.settings[k]))
+			ImGui.Text("Info for save: "..k)
+			ImGui.TextWrapped(stringifySettings(saveSettings.settings[k]))
 			ImGui.End()
 		end
 	end
@@ -168,11 +169,13 @@ registerForEvent("onDraw",function ()
 		ImGui.Text("Are you sure?")
 		local yes = ImGui.Button("Yes",(0.5*ImGui.GetWindowWidth()),30)
 		if yes then
-			-- delete(k) currKeyForDelete
+			deleteSave(currKeyForDelete)
+			deletePopup = false
 		end
 		local no = ImGui.Button("No",(0.5*ImGui.GetWindowWidth()),30)
 		if no then
 			deletePopup = false
+			currKeyForDelete = nil
 		end
 		ImGui.End()
 	end
@@ -212,7 +215,7 @@ end
 
 function checkPlayerBalance() end
 
-function tablelength(T)
+function tableLength(T)
 	local count = 0
 	for _ in pairs(T) do count = count + 1 end
 	return count
@@ -220,4 +223,18 @@ end
 
 function addToInfo(name)
 	enableInfo[name] = true
+end
+
+function deleteSave(name)
+	saveSettings.settings[name] = nil
+	saveSettings.tryToSaveSettings()
+	currKeyForDelete = nil
+end
+
+function stringifySettings(table)
+	local str = ""
+	for k,v in pairs(table.attributes.names) do
+		str = str .. v .. ": " .. tostring(table.attributes.levels[k]) .. "\n"
+	end
+	return str
 end
