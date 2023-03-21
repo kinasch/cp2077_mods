@@ -9,6 +9,7 @@ local x,y
 local inputText = ""
 local currKeyForDelete
 local deletePopup
+local stringInfoBool,infoText = {},{}
 
 registerForEvent("onOverlayOpen", function()
 	playerDevelopmentData = Game.GetScriptableSystemsContainer():Get("PlayerDevelopmentSystem"):GetDevelopmentData(Game.GetPlayer())
@@ -21,7 +22,7 @@ registerForEvent("onOverlayClose", function()
 	playerDevelopmentData = nil
 	openMenu = false
 	enableInfo = {}
-	-- saveSettings.tryToSaveSettings()
+	saveSettings.tryToSaveSettings()
 	currKeyForDelete = nil
 	deletePopup = false
 end)
@@ -73,7 +74,13 @@ registerForEvent("onDraw",function ()
 			ImGui.SameLine()
 			ImGui.PushID("info"..k)
 			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
-				addToInfo(k)
+				if enableInfo[k] then
+					enableInfo[k] = false
+					stringInfoBool[k] = false
+				else
+					enableInfo[k] = true
+					stringInfoBool[k] = true
+				end
 			end
 			ImGui.PopID()
 
@@ -107,7 +114,13 @@ registerForEvent("onDraw",function ()
 					ImGui.SameLine()
 					ImGui.PushID("info"..k)
 					if ImGui.SmallButton(IconGlyphs.InformationOutline) then
-						addToInfo(k)
+						if enableInfo[k] then
+							enableInfo[k] = false
+							stringInfoBool[k] = false
+						else
+							enableInfo[k] = true
+							stringInfoBool[k] = true
+						end
 					end
 					ImGui.PopID()
 
@@ -138,6 +151,7 @@ registerForEvent("onDraw",function ()
 			a.names = tempA
 			util.tabulaRasa(playerDevelopmentData,a)
 		end
+
 		ImGui.EndTabItem()
 	end
 
@@ -156,7 +170,40 @@ registerForEvent("onDraw",function ()
 				enableInfo[k] = false
 			end
 			ImGui.Text("Info for save: "..k)
-			ImGui.TextWrapped(stringifySettings(saveSettings.settings[k]))
+			-- This may have the consequence of displaying only the text of the first open window
+			if stringInfoBool[k] then
+				infoText[k] = stringifySettings(saveSettings.settings[k])
+				stringInfoBool[k] = false
+			end
+
+			ImGui.PushID("level"..k)
+			ImGui.TextWrapped(infoText[k].level)
+			ImGui.PopID()
+
+			ImGui.BeginGroup()
+			ImGui.PushID("attrrr"..k)
+			if ImGui.TreeNode("Attributes") then
+				ImGui.PopID()
+				ImGui.TextWrapped(infoText[k].attr)
+			end
+			ImGui.EndGroup()
+
+			ImGui.BeginGroup()
+			ImGui.PushID("perksss"..k)
+			if ImGui.TreeNode("Perks") then
+				ImGui.PopID()
+				ImGui.TextWrapped(infoText[k].perks)
+			end
+			ImGui.EndGroup()
+
+			ImGui.BeginGroup()
+			ImGui.PushID("traitsss"..k)
+			if ImGui.TreeNode("Traits") then
+				ImGui.PopID()
+				ImGui.TextWrapped(infoText[k].traits)
+			end
+			ImGui.EndGroup()
+
 			ImGui.End()
 		end
 	end
@@ -221,10 +268,6 @@ function tableLength(T)
 	return count
 end
 
-function addToInfo(name)
-	enableInfo[name] = true
-end
-
 function deleteSave(name)
 	saveSettings.settings[name] = nil
 	saveSettings.tryToSaveSettings()
@@ -232,9 +275,38 @@ function deleteSave(name)
 end
 
 function stringifySettings(table)
-	local str = ""
+	local str = {level="",attr="",perks="",traits=""}
+	local coll = {}
+	str.level = "Level: "..tostring(math.ceil(table.buildLevel))
+	local currString = ""
 	for k,v in pairs(table.attributes.names) do
-		str = str .. v .. ": " .. tostring(table.attributes.levels[k]) .. "\n"
+		currString = currString .. tostring(v) .. ": " .. tostring(table.attributes.levels[k]) .. "\n"
 	end
+	str.attr = currString
+	currString = ""
+	for k,v in pairs(table.perks) do
+		local n = tostring(GetLocalizedText(TweakDB:GetRecord("Perks."..v):Loc_name_key()))
+		if coll[n]==nil then
+			coll[n] = 0
+		end
+		coll[n] = coll[n] + 1
+	end
+	for k,v in pairs(coll) do
+		currString = currString .. tostring(k) .. ": " .. tostring(v) .. "\n"
+	end
+	str.perks = currString
+	currString = ""
+	coll = {}
+	for k,v in pairs(table.traits) do
+		local n = tostring(GetLocalizedText(TweakDB:GetRecord("Traits."..v):Loc_name_key()))
+		if coll[n]==nil then
+			coll[n] = 0
+		end
+		coll[n] = coll[n] + 1
+	end
+	for k,v in pairs(coll) do
+		currString = currString .. tostring(k) .. ": " .. tostring(v) .. "\n"
+	end
+	str.traits = currString
 	return str
 end
