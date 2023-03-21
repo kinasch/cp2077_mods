@@ -17,7 +17,7 @@ The little icons next to the saves open windows to show some information and to 
 
 ## Uninstall:
 1) Close the game and delete the "BuildManager" folders from:  
-1.1)  `"Cyberpunk 2077\bin\x64\plugins\cyber_engine_tweaks\mods"` and
+1.1)  `"Cyberpunk 2077\bin\x64\plugins\cyber_engine_tweaks\mods"` and  
 1.2) `"Cyberpunk 2077\r6\scripts"`
 
 ## Notes:
