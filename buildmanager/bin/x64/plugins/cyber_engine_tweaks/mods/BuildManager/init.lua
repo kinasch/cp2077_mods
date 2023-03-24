@@ -1,26 +1,26 @@
 local util = require("modules/util")
 local saveSettings = require("modules/saveSettings")
-local openMenu = false
-local loadbool = false
-local playerDevelopmentData
-local playerLevel
-local enableInfo = {}
-local x,y
+local GameSession = require('GameSession')
+
+local openMenu,loadbool,gameLoaded = false,false,false
+local playerDevelopmentData,playerLevel,x,y,deletePopup,currKeyForDelete
 local inputText = ""
-local currKeyForDelete
-local deletePopup
-local stringInfoBool,infoText = {},{}
+local stringInfoBool,infoText,enableInfo = {},{},{}
 
 registerForEvent("onOverlayOpen", function()
+	openMenu = true
+	if not gameLoaded then return end
+
 	playerDevelopmentData = Game.GetScriptableSystemsContainer():Get("PlayerDevelopmentSystem"):GetDevelopmentData(Game.GetPlayer())
 	playerLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
-	openMenu = true
 	currKeyForDelete = nil
 	deletePopup = false
 end)
 registerForEvent("onOverlayClose", function()
-	playerDevelopmentData = nil
 	openMenu = false
+	if not gameLoaded then return end
+
+	playerDevelopmentData = nil
 	enableInfo = {}
 	saveSettings.tryToSaveSettings()
 	currKeyForDelete = nil
@@ -29,6 +29,17 @@ end)
 
 -- Load the settings upon starting the game
 registerForEvent("onInit", function()
+	gameLoaded = not Game.GetSystemRequestsHandler():IsPreGame()
+
+	GameSession.OnStart(function()
+		print("Start")
+        gameLoaded = true
+    end)
+
+    GameSession.OnEnd(function()
+		print("Start")
+        gameLoaded = false
+    end)
 	saveSettings.tryToLoadSettings()
 end)
 -- Save the settings upon leaving the game
@@ -37,8 +48,8 @@ registerForEvent("onShutdown", function()
 end)
 
 registerForEvent("onDraw",function ()
-	if openMenu ~= true then return end
-
+	if not openMenu or not gameLoaded then return end
+	
 	ImGui.SetNextWindowPos(100, 700, ImGuiCond.FirstUseEver)
 	ImGui.SetNextWindowSize(300, 450,ImGuiCond.Appearing)
 	ImGui.Begin("BuildManager")
@@ -260,8 +271,6 @@ function buttonClick(name)
 	end
 end
 
-function checkPlayerBalance() end
-
 function tableLength(T)
 	local count = 0
 	for _ in pairs(T) do count = count + 1 end
@@ -274,6 +283,7 @@ function deleteSave(name)
 	currKeyForDelete = nil
 end
 
+-- This is not the optimal solution, but enough for now.
 function stringifySettings(table)
 	local str = {level="",attr="",perks="",traits=""}
 	local coll = {}

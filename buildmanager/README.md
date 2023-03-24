@@ -12,8 +12,9 @@ As this type of reset (including the attributes) is not part of the base game, t
 3) Drag the bin and r6 folders into your "Cyberpunk 2077" game folder.
 
 ## Usage:
-Open the Cyber Engine Tweaks Overlay and, in the BuildManager window, create new saves or overwrite old saves, load builds or reset your current build. *For every action, please give the script a few seconds.*  
-The little icons next to the saves open windows to show some information and to delete the save respectively.
+Open the Cyber Engine Tweaks Overlay while loaded in a game save and, in the BuildManager window, create new saves or overwrite old saves, load builds or reset your current build. *For every action, please give the script a few seconds.*  
+The little icons next to the saves open windows to show some information and to delete the save respectively.  
+If you reload all scripts, you have to also reload a save, to get the Manager working again.
 
 ## Uninstall:
 1) Close the game and delete the "BuildManager" folders from:  
@@ -24,9 +25,10 @@ The little icons next to the saves open windows to show some information and to 
 Back-up your saves and maybe take screenshots of your current build.   
 This mod actively resets attributes and perk points and may cause you to not be able to use your items and skills if something goes wrong.
 
-The script uses the localized names for perks and traits, but not for attributes. Might be changed in the future ... maybe.
+The script uses the localized names for perks and traits, but not for attributes (or words like level). Might be changed in the future ... maybe.
 
 ## Thanks to
 The people over at the [modding discord](https://discord.gg/Epkq79kd96).  
 The [CET team](https://github.com/yamashi/CyberEngineTweaks/graphs/contributors) for [Cyber Engine Tweaks](https://github.com/yamashi/CyberEngineTweaks).  
-The people behind the [decompiled code](https://codeberg.org/adamsmasher/cyberpunk).
+The people behind the [decompiled code](https://codeberg.org/adamsmasher/cyberpunk).  
+Especially to [psiberx](https://www.nexusmods.com/users/108159138) for the GameSession.lua from the [cet-kit](https://github.com/psiberx/cp2077-cet-kit).
