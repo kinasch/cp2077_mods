@@ -18,7 +18,7 @@ If you reload all scripts, you have to also reload a save, to get the Manager wo
 
 ## Uninstall:
 1) Close the game and delete the "BuildManager" folders from:  
-1.1)  `"Cyberpunk 2077\bin\x64\plugins\cyber_engine_tweaks\mods"` and
+1.1)  `"Cyberpunk 2077\bin\x64\plugins\cyber_engine_tweaks\mods"` and  
 1.2) `"Cyberpunk 2077\r6\scripts"`
 
 ## Notes:
