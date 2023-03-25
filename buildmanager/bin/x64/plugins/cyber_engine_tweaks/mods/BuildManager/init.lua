@@ -32,12 +32,10 @@ registerForEvent("onInit", function()
 	gameLoaded = not Game.GetSystemRequestsHandler():IsPreGame()
 
 	GameSession.OnStart(function()
-		print("Start")
         gameLoaded = true
     end)
 
     GameSession.OnEnd(function()
-		print("Start")
         gameLoaded = false
     end)
 	saveSettings.tryToLoadSettings()
@@ -254,6 +252,7 @@ function buttonClick(name)
 		)
 		util.perk.buyPerks(playerDevelopmentData, util.perk.StringToEnumValues(saveSettings.settings[name].perks))
 		util.traits.buyTraits(playerDevelopmentData, util.traits.StringToEnumValues(saveSettings.settings[name].traits))
+		print("BuildManager: Loaded.")
 	else
 		local p = util.perk.getPerks(playerDevelopmentData)
 		local t = util.traits.getTraits(playerDevelopmentData)
@@ -268,6 +267,7 @@ function buttonClick(name)
 			playerLevel
 		)
 		saveSettings.tryToSaveSettings()
+		print("BuildManager: Saved. Close Game (normally) or Overlay to initiate file write.")
 	end
 end
 

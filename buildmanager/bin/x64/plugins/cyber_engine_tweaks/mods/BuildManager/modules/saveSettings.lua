@@ -25,7 +25,7 @@ function saveSettings.tryToLoadSettings()
         fileFunctions.load()
         return true
     else
-        print("No saved settings file found.")
+        --print("No saved settings file found.")
         -- fileFunctions.save()
         return false
     end
@@ -37,7 +37,7 @@ function saveSettings.tryToSaveSettings()
         io.close(file)
         fileFunctions.save()
     else
-        print("No saved settings file found. Creating one ...")
+        --print("No saved settings file found. Creating one ...")
         fileFunctions.save()
     end
 end
