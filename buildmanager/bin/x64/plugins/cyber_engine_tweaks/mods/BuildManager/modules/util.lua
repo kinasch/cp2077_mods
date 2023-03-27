@@ -1,4 +1,4 @@
-util = {attributes={},perk={},traits={}}
+util = {attributes={},perk={},traits={},prof={}}
 
 -- ##########################################################################
 -- Attribute Functions
@@ -84,6 +84,30 @@ function util.traits.buyTraits(playerDevelopmentData, traitEnums)
     for i,trait in ipairs(traitEnums) do
         playerDevelopmentData:IncreaseTraitLevel(trait)
     end
+end
+
+-- ##########################################################################
+-- Proficiencies
+
+function util.prof.setProficiencies(playerDevelopmentData,profs)
+    for k,attr in pairs(profs) do
+        local oldLevel = playerDevelopmentData:GetProficiencyLevel(gamedataProficiencyType[attr.name])
+        if attr.level == oldLevel then goto contSetProf end
+
+        playerDevelopmentData:SetLevel(gamedataProficiencyType[attr.name],attr.level,telemetryLevelGainReason.Ignore)
+
+        if attr.level > oldLevel then goto contSetProf end
+        local count = 0
+        for ppK,ppAttr in pairs(attr.pp) do
+            if ppAttr > attr.level and ppAttr <= oldLevel then
+                count = count - 1
+            end
+        end
+        playerDevelopmentData:AddDevelopmentPoints(count,gamedataDevelopmentPointType.Primary)
+
+        ::contSetProf::
+    end
+    --playerDevelopmentData:RefreshProficiencyStats()
 end
 
 -- ##########################################################################

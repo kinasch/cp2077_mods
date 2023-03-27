@@ -2,10 +2,25 @@ local util = require("modules/util")
 local saveSettings = require("modules/saveSettings")
 local GameSession = require('GameSession')
 
-local openMenu,loadbool,gameLoaded = false,false,false
+local openMenu,loadbool,gameLoaded,letProfs = false,false,false,false
 local playerDevelopmentData,playerLevel,x,y,deletePopup,currKeyForDelete
 local inputText = ""
 local stringInfoBool,infoText,enableInfo = {},{},{}
+
+local profs = {
+	{name="Assault",level=0,pp={3,6,9,10,12,15,18}},
+	{name="Athletics",level=0,pp={3,7,8,10,11,16,19}},
+	{name="Brawling",level=0,pp={3,6,9,10,12,15,18}},
+	{name="ColdBlood",level=0,pp={4,5,9,10,11,13,17}},
+	{name="CombatHacking",level=0,pp={2,4,9,11,14,19}},
+	{name="Crafting",level=0,pp={4,6,8,10,14,17}},
+	{name="Demolition",level=0,pp={3,6,9,10,12,15,18}},
+	{name="Engineering",level=0,pp={2,6,8,10,14,17,18}},
+	{name="Gunslinger",level=0,pp={3,6,9,10,12,15,18}},
+	{name="Hacking",level=0,pp={2,6,10,14,16,18}},
+	{name="Kenjutsu",level=0,pp={3,8,9,10,14,16,17}},
+	{name="Stealth",level=0,pp={3,5,7,10,13,17,18}}
+}
 
 registerForEvent("onOverlayOpen", function()
 	openMenu = true
@@ -15,6 +30,10 @@ registerForEvent("onOverlayOpen", function()
 	playerLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
 	currKeyForDelete = nil
 	deletePopup = false
+
+	for k,attr in pairs(profs) do
+		attr.level = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType[attr.name])
+	end
 end)
 registerForEvent("onOverlayClose", function()
 	openMenu = false
@@ -29,6 +48,7 @@ end)
 
 -- Load the settings upon starting the game
 registerForEvent("onInit", function()
+	letProfs = true
 	gameLoaded = not Game.GetSystemRequestsHandler():IsPreGame()
 
 	GameSession.OnStart(function()
@@ -152,13 +172,40 @@ registerForEvent("onDraw",function ()
 	if ImGui.BeginTabItem("Misc") then
 		ImGui.Text("Reset attributes, perks and traits.")
 		loadbool = false
-		local clicked
+		local clicked, toggled
 		clicked = ImGui.Button("Reset everything (free)",(0.95*ImGui.GetWindowWidth()),30)
 		if clicked then
 			local a = util.attributes.getAttributes(playerDevelopmentData)
 			local tempA = util.EnumValuesToString(a.names)
 			a.names = tempA
 			util.tabulaRasa(playerDevelopmentData,a)
+		end
+
+		ImGui.NewLine()
+		ImGui.TextWrapped("Adjust Proficiencies and set them using the button below:")
+
+		ImGui.BeginGroup()
+		for k,attr in pairs(profs) do
+			ImGui.PushItemWidth(0.55*ImGui.GetWindowWidth())
+			attr.level = ImGui.SliderInt(
+				GetLocalizedText(TweakDB:GetRecord("Proficiencies."..attr.name):Loc_name_key()),
+				attr.level,
+				1,
+				playerDevelopmentData:GetProficiencyMaxLevel(gamedataProficiencyType[attr.name]),
+				"%d"
+			)
+		end
+		ImGui.EndGroup()
+		clicked = ImGui.Button("Set Proficiencies",(0.95*ImGui.GetWindowWidth()),30)
+		if clicked and letProfs then
+			letProfs = false
+			util.prof.setProficiencies(playerDevelopmentData,profs)
+
+			for k,attr in pairs(profs) do
+				attr.level = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType[attr.name])
+			end
+			print("BuildManager: Proficiencies set.")
+			letProfs = true
 		end
 
 		ImGui.EndTabItem()
