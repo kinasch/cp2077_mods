@@ -1,5 +1,20 @@
 util = {attributes={},perk={},traits={},prof={}}
 
+local oneProfs = {
+	{name="Assault",level=1,pp={3,6,9,10,12,15,18}},
+	{name="Athletics",level=1,pp={3,7,8,10,11,16,19}},
+	{name="Brawling",level=1,pp={3,6,9,10,12,15,18}},
+	{name="ColdBlood",level=1,pp={4,5,9,10,11,13,17}},
+	{name="CombatHacking",level=1,pp={2,4,9,11,14,19}},
+	{name="Crafting",level=1,pp={4,6,8,10,14,17}},
+	{name="Demolition",level=1,pp={3,6,9,10,12,15,18}},
+	{name="Engineering",level=1,pp={2,6,8,10,14,17,18}},
+	{name="Gunslinger",level=1,pp={3,6,9,10,12,15,18}},
+	{name="Hacking",level=1,pp={2,6,10,14,16,18}},
+	{name="Kenjutsu",level=1,pp={3,8,9,10,14,16,17}},
+	{name="Stealth",level=1,pp={3,5,7,10,13,17,18}}
+}
+
 -- ##########################################################################
 -- Attribute Functions
 function util.attributes.getAttributes(playerDevelopmentData)
@@ -122,9 +137,10 @@ end
 
 function util.tabulaRasa(playerDevelopmentData,attr)
     playerDevelopmentData:RemoveAllPerks(true)
-    -- Reset Attribute
+    -- Reset Proficiencies
+    util.prof.setProficiencies(playerDevelopmentData,oneProfs)
 
-    --playerDevelopmentData:ResetDevelopmentPoints(gamedataDevelopmentPointType.Attribute)
+    -- Reset Attributes
     local points = util.attributes.getRemainingAttrPoints(attr)
     playerDevelopmentData:AddDevelopmentPoints(points,gamedataDevelopmentPointType.Attribute)
     util.attributes.setAttributes(playerDevelopmentData,attr,3)

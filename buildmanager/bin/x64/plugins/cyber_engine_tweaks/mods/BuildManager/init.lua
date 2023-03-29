@@ -1,25 +1,26 @@
 local util = require("modules/util")
 local saveSettings = require("modules/saveSettings")
 local GameSession = require('GameSession')
+local Cron = require('Cron')
 
-local openMenu,loadbool,gameLoaded,letProfs = false,false,false,false
+local openMenu,loadbool,gameLoaded,letProfs,loadingSave = false,false,false,false,false
 local playerDevelopmentData,playerLevel,x,y,deletePopup,currKeyForDelete
 local inputText = ""
 local stringInfoBool,infoText,enableInfo = {},{},{}
 
 local profs = {
-	{name="Assault",level=0,pp={3,6,9,10,12,15,18}},
-	{name="Athletics",level=0,pp={3,7,8,10,11,16,19}},
-	{name="Brawling",level=0,pp={3,6,9,10,12,15,18}},
-	{name="ColdBlood",level=0,pp={4,5,9,10,11,13,17}},
-	{name="CombatHacking",level=0,pp={2,4,9,11,14,19}},
-	{name="Crafting",level=0,pp={4,6,8,10,14,17}},
-	{name="Demolition",level=0,pp={3,6,9,10,12,15,18}},
-	{name="Engineering",level=0,pp={2,6,8,10,14,17,18}},
-	{name="Gunslinger",level=0,pp={3,6,9,10,12,15,18}},
-	{name="Hacking",level=0,pp={2,6,10,14,16,18}},
-	{name="Kenjutsu",level=0,pp={3,8,9,10,14,16,17}},
-	{name="Stealth",level=0,pp={3,5,7,10,13,17,18}}
+	{name="Assault",level=1,pp={3,6,9,10,12,15,18}},
+	{name="Athletics",level=1,pp={3,7,8,10,11,16,19}},
+	{name="Brawling",level=1,pp={3,6,9,10,12,15,18}},
+	{name="ColdBlood",level=1,pp={4,5,9,10,11,13,17}},
+	{name="CombatHacking",level=1,pp={2,4,9,11,14,19}},
+	{name="Crafting",level=1,pp={4,6,8,10,14,17}},
+	{name="Demolition",level=1,pp={3,6,9,10,12,15,18}},
+	{name="Engineering",level=1,pp={2,6,8,10,14,17,18}},
+	{name="Gunslinger",level=1,pp={3,6,9,10,12,15,18}},
+	{name="Hacking",level=1,pp={2,6,10,14,16,18}},
+	{name="Kenjutsu",level=1,pp={3,8,9,10,14,16,17}},
+	{name="Stealth",level=1,pp={3,5,7,10,13,17,18}}
 }
 
 registerForEvent("onOverlayOpen", function()
@@ -31,9 +32,7 @@ registerForEvent("onOverlayOpen", function()
 	currKeyForDelete = nil
 	deletePopup = false
 
-	for k,attr in pairs(profs) do
-		attr.level = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType[attr.name])
-	end
+	setProfsFromGame()
 end)
 registerForEvent("onOverlayClose", function()
 	openMenu = false
@@ -54,7 +53,13 @@ registerForEvent("onInit", function()
 	GameSession.OnStart(function()
         gameLoaded = true
     end)
+	GameSession.OnResume(function()
+        gameLoaded = true
+    end)
 
+	GameSession.OnPause(function()
+        gameLoaded = false
+    end)
     GameSession.OnEnd(function()
         gameLoaded = false
     end)
@@ -63,6 +68,11 @@ end)
 -- Save the settings upon leaving the game
 registerForEvent("onShutdown", function()
 	saveSettings.tryToSaveSettings()
+end)
+
+registerForEvent('onUpdate', function(delta)
+    -- This is required for Cron to function
+    Cron.Update(delta)
 end)
 
 registerForEvent("onDraw",function ()
@@ -132,6 +142,11 @@ registerForEvent("onDraw",function ()
 		local clicked
 		ImGui.BeginGroup()
 		for k,attr in pairs(saveSettings.settings) do
+			if loadingSave then
+				ImGui.TextWrapped("Loading, do not close!")
+				break
+			end
+
 			if saveSettings.settings[k] ~= nil then
 				-- Check for save level
 				if playerLevel >= saveSettings.settings[k].buildLevel then
@@ -179,6 +194,7 @@ registerForEvent("onDraw",function ()
 			local tempA = util.EnumValuesToString(a.names)
 			a.names = tempA
 			util.tabulaRasa(playerDevelopmentData,a)
+			setProfsFromGame()
 		end
 
 		ImGui.NewLine()
@@ -201,9 +217,7 @@ registerForEvent("onDraw",function ()
 			letProfs = false
 			util.prof.setProficiencies(playerDevelopmentData,profs)
 
-			for k,attr in pairs(profs) do
-				attr.level = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType[attr.name])
-			end
+			setProfsFromGame()
 			print("BuildManager: Proficiencies set.")
 			letProfs = true
 		end
@@ -286,6 +300,7 @@ end)
 
 function buttonClick(name)
 	if(loadbool) then
+		loadingSave = true
 		local tempAttr = util.attributes.getAttributes(playerDevelopmentData)
 		util.tabulaRasa(playerDevelopmentData,tempAttr)
 		saveSettings.tryToLoadSettings()
@@ -297,12 +312,20 @@ function buttonClick(name)
 			playerDevelopmentData,
 			currAttr
 		)
-		util.perk.buyPerks(playerDevelopmentData, util.perk.StringToEnumValues(saveSettings.settings[name].perks))
-		util.traits.buyTraits(playerDevelopmentData, util.traits.StringToEnumValues(saveSettings.settings[name].traits))
-		print("BuildManager: Loaded.")
+
+		util.prof.setProficiencies(playerDevelopmentData,saveSettings.settings[name].profs)
+
+		Cron.After(1,function (uname)
+			util.perk.buyPerks(playerDevelopmentData, util.perk.StringToEnumValues(saveSettings.settings[uname.arg].perks))
+			util.traits.buyTraits(playerDevelopmentData, util.traits.StringToEnumValues(saveSettings.settings[uname.arg].traits))
+
+			print("BuildManager: Loaded.")
+			loadingSave = false
+		end,name)
 	else
 		local p = util.perk.getPerks(playerDevelopmentData)
 		local t = util.traits.getTraits(playerDevelopmentData)
+		setProfsFromGame()
 		local a = util.attributes.getAttributes(playerDevelopmentData)
 		local tempA = util.EnumValuesToString(a.names)
 		a.names = tempA
@@ -311,7 +334,8 @@ function buttonClick(name)
 			a,
 			util.EnumValuesToString(p),
 			util.EnumValuesToString(t),
-			playerLevel
+			playerLevel,
+			profs
 		)
 		saveSettings.tryToSaveSettings()
 		print("BuildManager: Saved. Close Game (normally) or Overlay to initiate file write.")
@@ -366,4 +390,10 @@ function stringifySettings(table)
 	end
 	str.traits = currString
 	return str
+end
+
+function setProfsFromGame()
+	for k,attr in pairs(profs) do
+		attr.level = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType[attr.name])
+	end
 end
