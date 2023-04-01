@@ -1,7 +1,7 @@
 # Build Manager
 ## About this mod
 
-With this mod you can save, load and reset your builds (attributes, perks and traits) to play around with various play-styles.
+With this mod you can save, load and reset your builds (attributes, proficiencies, perks and traits) to play around with various play-styles.
 As this type of reset (including the attributes) is not part of the base game, this mod may be considered cheating.
 
 **Please please please back-up your saves and maybe take screenshots of your current build.**
@@ -22,10 +22,14 @@ If you reload all scripts, you have to also reload a save, to get the Manager wo
 1.2) `"Cyberpunk 2077\r6\scripts"`
 
 ## Notes:
-Back-up your saves and maybe take screenshots of your current build.   
-This mod actively resets attributes and perk points and may cause you to not be able to use your items and skills if something goes wrong.
+* Backup your saves and maybe take screenshots of your current build. This mod actively resets attributes and perk points and may cause you to not be able to use your items and skills if something goes wrong (the messages in the console are just for show, they don't actually check whether the build was saved or loaded sucessfully).
+* If you're not seeing the Window in the Overlay, try reloading the save or exiting any menu.
+* **Overwriting and loading a save, as well as resetting have no prompt to confirm!**
+* I think I created a limit on how much saves you can have, which should be 10.
+* Saves are only displayed if the level you made the build on is lower or the same as your current level (might cause problems, if you're level 45,5 and try to access a 45,8 level save, let me know if it does).
 
-The script uses the localized names for perks and traits, but not for attributes (or words like level). Might be changed in the future ... maybe.
+Inventory is neither saved nor updated on build load/reset. This means that you keep your current equipment not only in your inventory, but also equipped. You could load a Quick Hacking build and still have a Sandevistan equipped, for example.
+Use this mod near a ripper doc (or with the [RipperDeck](https://www.nexusmods.com/cyberpunk2077/mods/2850) mod by psiberx) or your stash/wardrobe (or mods to access them in on the go).
 
 ## Thanks to
 The people over at the [modding discord](https://discord.gg/Epkq79kd96).  
