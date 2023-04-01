@@ -36,3 +36,29 @@ public final const func ResetSpentDevPoints(type: gamedataDevelopmentPointType) 
     };
 	this.m_devPoints[dIndex].spent = 0;
 }
+
+@addMethod(PlayerDevelopmentData)
+public final const func GetProficiencyExperience(type: gamedataProficiencyType) -> Int32 {
+    let pIndex: Int32 = this.GetProficiencyIndexByType(type);
+
+	return this.m_proficiencies[pIndex].currentExp;
+}
+
+@addMethod(PlayerDevelopmentData)
+public final const func LockTraitOfProf(profType: gamedataProficiencyType) -> Void {
+    let traitType: gamedataTraitType = RPGManager.GetProficiencyRecord(profType).Trait().Type();
+    let traitIndex: Int32 = this.GetTraitIndex(traitType);
+
+	if traitIndex < 0 {
+    	return;
+    };
+
+	this.m_traits[traitIndex].unlocked = false;
+    this.DeactivateTraitBase(this.m_traits[traitIndex].type);
+}
+
+@addMethod(PlayerDevelopmentData)
+private final const func DeactivateTraitBase(traitType: gamedataTraitType) -> Void {
+    let traitPackage: TweakDBID = RPGManager.GetTraitRecord(traitType).BaseTraitData().DataPackage().GetID();
+    GameInstance.GetGameplayLogicPackageSystem(this.m_owner.GetGame()).RemovePackage(this.m_owner, traitPackage);
+}

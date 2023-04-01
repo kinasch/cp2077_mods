@@ -9,18 +9,18 @@ local inputText = ""
 local stringInfoBool,infoText,enableInfo = {},{},{}
 
 local profs = {
-	{name="Assault",level=1,pp={3,6,9,10,12,15,18}},
-	{name="Athletics",level=1,pp={3,7,8,10,11,16,19}},
-	{name="Brawling",level=1,pp={3,6,9,10,12,15,18}},
-	{name="ColdBlood",level=1,pp={4,5,9,10,11,13,17}},
-	{name="CombatHacking",level=1,pp={2,4,9,11,14,19}},
-	{name="Crafting",level=1,pp={4,6,8,10,14,17}},
-	{name="Demolition",level=1,pp={3,6,9,10,12,15,18}},
-	{name="Engineering",level=1,pp={2,6,8,10,14,17,18}},
-	{name="Gunslinger",level=1,pp={3,6,9,10,12,15,18}},
-	{name="Hacking",level=1,pp={2,6,10,14,16,18}},
-	{name="Kenjutsu",level=1,pp={3,8,9,10,14,16,17}},
-	{name="Stealth",level=1,pp={3,5,7,10,13,17,18}}
+	{name="Assault",level=1,pp={3,6,9,10,12,15,18},xp=0.0},
+	{name="Athletics",level=1,pp={3,7,8,10,11,16,19},xp=0.0},
+	{name="Brawling",level=1,pp={3,6,9,10,12,15,18},xp=0.0},
+	{name="ColdBlood",level=1,pp={4,5,9,10,11,13,17},xp=0.0},
+	{name="CombatHacking",level=1,pp={2,4,9,11,14,19},xp=0.0},
+	{name="Crafting",level=1,pp={4,6,8,10,14,17},xp=0.0},
+	{name="Demolition",level=1,pp={3,6,9,10,12,15,18},xp=0.0},
+	{name="Engineering",level=1,pp={2,6,8,10,14,17,18},xp=0.0},
+	{name="Gunslinger",level=1,pp={3,6,9,10,12,15,18},xp=0.0},
+	{name="Hacking",level=1,pp={2,6,10,14,16,18},xp=0.0},
+	{name="Kenjutsu",level=1,pp={3,8,9,10,14,16,17},xp=0.0},
+	{name="Stealth",level=1,pp={3,5,7,10,13,17,18},xp=0.0}
 }
 
 registerForEvent("onOverlayOpen", function()
@@ -79,7 +79,7 @@ registerForEvent("onDraw",function ()
 	if not openMenu or not gameLoaded then return end
 	
 	ImGui.SetNextWindowPos(100, 700, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSize(300, 450,ImGuiCond.Appearing)
+	ImGui.SetNextWindowSize(300, 500,ImGuiCond.Appearing)
 	ImGui.Begin("BuildManager")
 	x,y = ImGui.GetWindowPos()
 
@@ -183,21 +183,9 @@ registerForEvent("onDraw",function ()
 	end
 
 	-- #####################################################################################################
-	-- Misc
-	if ImGui.BeginTabItem("Misc") then
-		ImGui.Text("Reset attributes, perks and traits.")
+	-- Proficiencies
+	if ImGui.BeginTabItem("Proficiency") then
 		loadbool = false
-		local clicked, toggled
-		clicked = ImGui.Button("Reset everything (free)",(0.95*ImGui.GetWindowWidth()),30)
-		if clicked then
-			local a = util.attributes.getAttributes(playerDevelopmentData)
-			local tempA = util.EnumValuesToString(a.names)
-			a.names = tempA
-			util.tabulaRasa(playerDevelopmentData,a)
-			setProfsFromGame()
-		end
-
-		ImGui.NewLine()
 		ImGui.TextWrapped("Adjust Proficiencies and set them using the button below:")
 
 		ImGui.BeginGroup()
@@ -212,16 +200,33 @@ registerForEvent("onDraw",function ()
 			)
 		end
 		ImGui.EndGroup()
-		clicked = ImGui.Button("Set Proficiencies",(0.95*ImGui.GetWindowWidth()),30)
-		if clicked and letProfs then
+		if ImGui.Button("Set Proficiencies",(0.95*ImGui.GetWindowWidth()),30) and letProfs then
 			letProfs = false
 			util.prof.setProficiencies(playerDevelopmentData,profs)
 
-			setProfsFromGame()
-			print("BuildManager: Proficiencies set.")
-			letProfs = true
+			Cron.After(0.5,function ()
+				setProfsFromGame()
+				letProfs = true
+				print("BuildManager: Proficiencies set.")
+			end,{})
 		end
 
+		ImGui.EndTabItem()
+	end
+
+	-- #####################################################################################################
+	-- Misc
+	if ImGui.BeginTabItem("Misc") then
+		ImGui.Text("Reset attributes, perks and traits.\nWARNING: No confirmation, instant reset!")
+		loadbool = false
+		if ImGui.Button("Reset everything (free)",(0.95*ImGui.GetWindowWidth()),30) then
+			local a = util.attributes.getAttributes(playerDevelopmentData)
+			local tempA = util.EnumValuesToString(a.names)
+			a.names = tempA
+			util.tabulaRasa(playerDevelopmentData,a)
+			setProfsFromGame()
+			print("BuildManager: Reset everything.")
+		end
 		ImGui.EndTabItem()
 	end
 
@@ -229,11 +234,11 @@ registerForEvent("onDraw",function ()
 	ImGui.End()
 
 	-- #####################################################################################################
-	-- Child Windows
+	-- Info Window
 	for k,attr in pairs(enableInfo) do
 		if attr then
 			ImGui.SetNextWindowPos(x+300, y,ImGuiCond.Appearing)
-			ImGui.SetNextWindowSize(200,200,ImGuiCond.Appearing)
+			ImGui.SetNextWindowSize(400,500,ImGuiCond.Appearing)
 			shouldDraw = ImGui.Begin(k)
 			ImGui.PushID("infoclose"..k)
 			if ImGui.Button("Close") then
@@ -242,7 +247,7 @@ registerForEvent("onDraw",function ()
 			ImGui.Text("Info for save: "..k)
 			-- This may have the consequence of displaying only the text of the first open window
 			if stringInfoBool[k] then
-				infoText[k] = stringifySettings(saveSettings.settings[k])
+				infoText[k] = getSettings(saveSettings.settings[k])
 				stringInfoBool[k] = false
 			end
 
@@ -250,26 +255,44 @@ registerForEvent("onDraw",function ()
 			ImGui.TextWrapped(infoText[k].level)
 			ImGui.PopID()
 
+			local treeN
+
 			ImGui.BeginGroup()
 			ImGui.PushID("attrrr"..k)
-			if ImGui.TreeNode("Attributes") then
-				ImGui.PopID()
+			treeN = ImGui.TreeNode("Attributes")
+			ImGui.PopID()
+			if treeN then
 				ImGui.TextWrapped(infoText[k].attr)
 			end
 			ImGui.EndGroup()
 
 			ImGui.BeginGroup()
+			ImGui.PushID("profsss"..k)
+			treeN = ImGui.TreeNode("Proficiencies")
+			ImGui.PopID()
+			if treeN then
+				for ky, value in pairs(infoText[k].profs) do
+					ImGui.TextWrapped(value.str)
+					ImGui.SameLine()
+					ImGui.ProgressBar(value.xp,0.4*ImGui.GetWindowWidth(),20)
+				end
+			end
+			ImGui.EndGroup()
+
+			ImGui.BeginGroup()
 			ImGui.PushID("perksss"..k)
-			if ImGui.TreeNode("Perks") then
-				ImGui.PopID()
+			treeN = ImGui.TreeNode("Perks")
+			ImGui.PopID()
+			if treeN then
 				ImGui.TextWrapped(infoText[k].perks)
 			end
 			ImGui.EndGroup()
 
 			ImGui.BeginGroup()
 			ImGui.PushID("traitsss"..k)
-			if ImGui.TreeNode("Traits") then
-				ImGui.PopID()
+			treeN = ImGui.TreeNode("Traits")
+			ImGui.PopID()
+			if treeN then
 				ImGui.TextWrapped(infoText[k].traits)
 			end
 			ImGui.EndGroup()
@@ -315,7 +338,7 @@ function buttonClick(name)
 
 		util.prof.setProficiencies(playerDevelopmentData,saveSettings.settings[name].profs)
 
-		Cron.After(1,function (uname)
+		Cron.After(2,function (uname)
 			util.perk.buyPerks(playerDevelopmentData, util.perk.StringToEnumValues(saveSettings.settings[uname.arg].perks))
 			util.traits.buyTraits(playerDevelopmentData, util.traits.StringToEnumValues(saveSettings.settings[uname.arg].traits))
 
@@ -355,15 +378,16 @@ function deleteSave(name)
 end
 
 -- This is not the optimal solution, but enough for now.
-function stringifySettings(table)
-	local str = {level="",attr="",perks="",traits=""}
+function getSettings(table)
+	local str = {level="",attr="",perks="",traits="",profs={}}
 	local coll = {}
 	str.level = "Level: "..tostring(math.ceil(table.buildLevel))
 	local currString = ""
 	for k,v in pairs(table.attributes.names) do
-		currString = currString .. tostring(v) .. ": " .. tostring(table.attributes.levels[k]) .. "\n"
+		currString = currString .. tostring(GetLocalizedText(TweakDB:GetRecord("BaseStats."..v):LocalizedName())) .. ": " .. tostring(table.attributes.levels[k]) .. "\n"
 	end
 	str.attr = currString
+
 	currString = ""
 	for k,v in pairs(table.perks) do
 		local n = tostring(GetLocalizedText(TweakDB:GetRecord("Perks."..v):Loc_name_key()))
@@ -376,6 +400,7 @@ function stringifySettings(table)
 		currString = currString .. tostring(k) .. ": " .. tostring(v) .. "\n"
 	end
 	str.perks = currString
+
 	currString = ""
 	coll = {}
 	for k,v in pairs(table.traits) do
@@ -389,11 +414,33 @@ function stringifySettings(table)
 		currString = currString .. tostring(k) .. ": " .. tostring(v) .. "\n"
 	end
 	str.traits = currString
+
+	currString = ""
+	coll = {}
+	for k,v in pairs(table.profs) do
+		currString = ""
+		currString = currString .. tostring(GetLocalizedText(TweakDB:GetRecord("Proficiencies."..v.name):Loc_name_key()))
+		currString = currString .. ": " .. tostring(v.level)
+		--[[ if not playerDevelopmentData:IsProficiencyMaxLvl(gamedataProficiencyType[v.name]) then
+			currString = currString .. " (" .. tostring(v.xp) .. "/"
+			currString = currString .. tostring(v.xp+playerDevelopmentData:GetRemainingExpForLevelUp(gamedataProficiencyType[v.name])) .. ")\n"
+		else currString = currString .. " (-)\n" end ]]
+
+		str.profs[v.name] = {}
+		str.profs[v.name].str = currString
+		if not playerDevelopmentData:IsProficiencyMaxLvl(gamedataProficiencyType[v.name]) then
+		str.profs[v.name].xp = v.xp / (v.xp+playerDevelopmentData:GetRemainingExpForLevelUp(gamedataProficiencyType[v.name]))
+		else
+		str.profs[v.name].xp = 1
+		end
+		
+	end
 	return str
 end
 
 function setProfsFromGame()
 	for k,attr in pairs(profs) do
 		attr.level = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType[attr.name])
+		attr.xp = playerDevelopmentData:GetProficiencyExperience(gamedataProficiencyType[attr.name])
 	end
 end
