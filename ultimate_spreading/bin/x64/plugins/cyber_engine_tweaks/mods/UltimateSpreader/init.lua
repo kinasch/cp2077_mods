@@ -7,6 +7,17 @@ registerForEvent("onInit", function()
 	if loaded then
 		setAllValuesInGame(false)
 	end
+
+	ObserveBefore('SpreadInitEffector','ActionOn;GameObject',function(self, o)
+		for key, value in pairs(savedSettings.settings) do
+			if NameToString(self.objectActionRecord:ActionName()) == value.name then
+				self.sCount = value.count.saved
+				return
+			end
+		end
+	end)
+
+	ObserveAfter('SpreadInitEffector','ActionOn;GameObject',function(self, o) print(self.sCount) end)
 end)
 
 registerForEvent("onOverlayOpen", function()
@@ -30,6 +41,11 @@ registerForEvent("onDraw",function ()
 	ImGui.SetNextWindowSize(400, 400,ImGuiCond.Appearing)
 	ImGui.Begin("Ultimate Spreader")
 
+	if ImGui.SmallButton(IconGlyphs.InformationOutline) then
+		print(savedSettings.settings.suicide.count.saved)
+		print(savedSettings.settings.systemCollapse.count.saved)
+	end
+
 	ImGui.PushItemWidth(0.4*ImGui.GetWindowWidth())
 
 	-- #####################################################################################################
@@ -37,7 +53,7 @@ registerForEvent("onDraw",function ()
 	ImGui.Text("Suicide Spread")
 	savedSettings.settings.suicide.count.saved, toggled = ImGui.SliderInt("Suicide Count", savedSettings.settings.suicide.count.saved, -1, 25, "%d")
 	if toggled then
-		hackingUtils.setSpreadCountSuicide(savedSettings.settings.suicide.count.saved)
+		--hackingUtils.setSpreadCountSuicide(savedSettings.settings.suicide.count.saved)
 	end
 	savedSettings.settings.suicide.bonusJumps.saved, toggled = ImGui.SliderInt("Suicide Bonus Jumps", savedSettings.settings.suicide.bonusJumps.saved, -1, 25, "%d")
 	if toggled then
@@ -53,7 +69,7 @@ registerForEvent("onDraw",function ()
 	ImGui.Text("System Reset")
 	savedSettings.settings.systemCollapse.count.saved, toggled = ImGui.SliderInt("System Reset Count", savedSettings.settings.systemCollapse.count.saved, -1, 25, "%d")
 	if toggled then
-		hackingUtils.setSpreadCountSystemCollapse(savedSettings.settings.systemCollapse.count.saved)
+		--hackingUtils.setSpreadCountSystemCollapse(savedSettings.settings.systemCollapse.count.saved)
 	end
 	savedSettings.settings.systemCollapse.bonusJumps.saved, toggled = ImGui.SliderInt("System Reset Bonus Jumps", savedSettings.settings.systemCollapse.bonusJumps.saved, -1, 25, "%d")
 	if toggled then
@@ -288,10 +304,10 @@ function setAllValuesInGame(default)
 end
 
 function resetSavedValuesToDefault()
-	for i in pairs(savedSettings.settings) do
-		for j in pairs(savedSettings.settings[i]) do
-			savedSettings.settings[i][j].saved = savedSettings.settings[i][j].default
-		end
+	for k,v in pairs(savedSettings.settings) do
+		v.count.saved = v.count.default
+		v.range.saved = v.range.default
+		v.bonusJumps.saved = v.bonusJumps.default
 	end
 	setAllValuesInGame(true)
 	savedSettings.tryToSaveSettings()

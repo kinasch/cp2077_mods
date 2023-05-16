@@ -13,7 +13,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "Suicide"
         },
         systemCollapse = {
             count = {
@@ -27,7 +27,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "SystemCollapse"
         },
         contagion = {
             count = {
@@ -41,7 +41,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "Contagion"
         },
         overheat = {
             count = {
@@ -55,7 +55,7 @@ savedSettings = {
             range = {
                 default = 6,
                 saved = 6
-            }
+            },name = "Overheat"
         },
         blind = {
             count = {
@@ -69,7 +69,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "Blind"
         },
         cyberwareMalfunction = {
             count = {
@@ -83,7 +83,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "CyberwareMalfunction"
         },
         locomotionMalfunction = {
             count = {
@@ -97,7 +97,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "LocomotionMalfunction"
         },
         weaponMalfunction = {
             count = {
@@ -111,7 +111,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "WeaponMalfunction"
         },
         grenade = {
             count = {
@@ -125,7 +125,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "Grenade"
         },
         overload = {
             count = {
@@ -139,7 +139,7 @@ savedSettings = {
             range = {
                 default = 6,
                 saved = 6
-            }
+            },name = "Overload"
         },
         brainMelt = {
             count = {
@@ -153,7 +153,7 @@ savedSettings = {
             range = {
                 default = 6,
                 saved = 6
-            }
+            },name = "BrainMelt"
         },
         madness = {
             count = {
@@ -167,7 +167,7 @@ savedSettings = {
             range = {
                 default = -1,
                 saved = -1
-            }
+            },name = "Madness"
         },
     }
 }
