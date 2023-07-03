@@ -2,6 +2,9 @@
 public let m_sCount: Int32;
 
 @addField(SpreadInitEffector)
+public let m_bJumps: Int32;
+
+@addField(SpreadInitEffector)
 public let m_ran: Float;
 
 @wrapMethod(SpreadInitEffector)
@@ -17,6 +20,13 @@ protected func Initialize(record: TweakDBID, game: GameInstance, parentRecord: T
   this.m_sCount = this.m_effectorRecord.SpreadCount();
   if this.m_sCount < 0 {
     this.m_sCount = Cast<Int32>(statsSystem.GetStatValue(Cast<StatsObjectID>(this.m_player.GetEntityID()), gamedataStatType.QuickHackSpreadNumber));
+  };
+
+  this.m_bJumps = this.m_effectorRecord.BonusJumps();
+
+  this.m_ran = Cast<Float>(this.m_effectorRecord.SpreadDistance());
+  if this.m_ran < 0.00 {
+    this.m_ran = statsSystem.GetStatValue(Cast<StatsObjectID>(this.m_player.GetEntityID()), gamedataStatType.QuickHackSpreadDistance);
   };
 }
 
@@ -36,17 +46,14 @@ protected func ActionOn(owner: ref<GameObject>) -> Void {
     return;
   };
   spreadCount = this.m_sCount;
-  // spreadCount = this.m_effectorRecord.SpreadCount();
-  // if spreadCount < 0 {
-  //   spreadCount = Cast<Int32>(statsSystem.GetStatValue(Cast<StatsObjectID>(this.m_player.GetEntityID()), gamedataStatType.QuickHackSpreadNumber));
-  // };
-  // Changes right here might make the mod work idk.
-  // spreadCount = 10;
-  range = Cast<Float>(this.m_effectorRecord.SpreadDistance());
+  if spreadCount < 0 {
+    spreadCount = Cast<Int32>(statsSystem.GetStatValue(Cast<StatsObjectID>(this.m_player.GetEntityID()), gamedataStatType.QuickHackSpreadNumber));
+  };
+  range = this.m_ran;
   if range < 0.00 {
     range = statsSystem.GetStatValue(Cast<StatsObjectID>(this.m_player.GetEntityID()), gamedataStatType.QuickHackSpreadDistance);
   };
-  spreadCount += this.m_effectorRecord.BonusJumps();
+  spreadCount += this.m_bJumps;
   if spreadCount <= 0 || range <= 0.00 {
     return;
   };
