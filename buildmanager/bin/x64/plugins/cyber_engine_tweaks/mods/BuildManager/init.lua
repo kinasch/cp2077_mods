@@ -3,7 +3,7 @@ local saveSettings = require("modules/saveSettings")
 local GameSession = require('GameSession')
 local Cron = require('Cron')
 
-local openMenu,loadbool,gameLoaded,letProfs,loadingSave = false,false,false,false,false
+local openMenu,gameLoaded,letProfs,loadingSave = false,false,false,false
 local playerDevelopmentData,playerLevel,x,y,deletePopup,currKeyForDelete
 local inputText = ""
 local stringInfoBool,infoText,enableInfo = {},{},{}
@@ -38,9 +38,10 @@ registerForEvent("onOverlayClose", function()
 	openMenu = false
 	if not gameLoaded then return end
 
+	while loadingSave do end
+
 	playerDevelopmentData = nil
 	enableInfo = {}
-	saveSettings.tryToSaveSettings()
 	currKeyForDelete = nil
 	deletePopup = false
 end)
@@ -65,10 +66,6 @@ registerForEvent("onInit", function()
     end)
 	saveSettings.tryToLoadSettings()
 end)
--- Save the settings upon leaving the game
-registerForEvent("onShutdown", function()
-	saveSettings.tryToSaveSettings()
-end)
 
 registerForEvent('onUpdate', function(delta)
     -- This is required for Cron to function
@@ -90,13 +87,12 @@ registerForEvent("onDraw",function ()
 	-- #####################################################################################################
 	-- Save
 	if ImGui.BeginTabItem("Save") then
-		loadbool = false
 		local newSave, selected
 		inputText, selected = ImGui.InputText("Save Name", inputText, 64)
 		newSave = ImGui.Button("Save",(0.5*ImGui.GetWindowWidth()),30)
 		if newSave then
 			if inputText ~= nil and inputText ~= "" and tableLength(saveSettings.settings) <= 10 then
-				buttonClick(inputText)
+				buttonClick(inputText,false)
 				inputText = ""
 			end
 		end
@@ -107,7 +103,7 @@ registerForEvent("onDraw",function ()
 		for k,attr in pairs(saveSettings.settings) do
 			clicked = ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30)
 			if clicked then
-				buttonClick(k)
+				buttonClick(k,false)
 			end
 
 			ImGui.SameLine()
@@ -138,7 +134,6 @@ registerForEvent("onDraw",function ()
 	-- #####################################################################################################
 	-- Load
 	if ImGui.BeginTabItem("Load") then
-		loadbool = true
 		local clicked
 		ImGui.BeginGroup()
 		for k,attr in pairs(saveSettings.settings) do
@@ -152,7 +147,7 @@ registerForEvent("onDraw",function ()
 				if playerLevel >= saveSettings.settings[k].buildLevel then
 					clicked = ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30)
 					if clicked then
-						buttonClick(k)
+						buttonClick(k,true)
 					end
 
 					ImGui.SameLine()
@@ -185,7 +180,6 @@ registerForEvent("onDraw",function ()
 	-- #####################################################################################################
 	-- Proficiencies
 	if ImGui.BeginTabItem("Proficiency") then
-		loadbool = false
 		ImGui.TextWrapped("Adjust Proficiencies and set them using the button below:")
 
 		ImGui.BeginGroup()
@@ -218,13 +212,13 @@ registerForEvent("onDraw",function ()
 	-- Misc
 	if ImGui.BeginTabItem("Misc") then
 		ImGui.Text("Reset attributes, perks and traits.\nWARNING: No confirmation, instant reset!")
-		loadbool = false
 		if ImGui.Button("Reset everything (free)",(0.95*ImGui.GetWindowWidth()),30) then
 			local a = util.attributes.getAttributes(playerDevelopmentData)
 			local tempA = util.EnumValuesToString(a.names)
 			a.names = tempA
 			util.tabulaRasa(playerDevelopmentData,a)
 			setProfsFromGame()
+			saveSettings.tryToLoadSettings()
 			print("BuildManager: Reset everything.")
 		end
 		ImGui.EndTabItem()
@@ -259,18 +253,16 @@ registerForEvent("onDraw",function ()
 
 			ImGui.BeginGroup()
 			ImGui.PushID("attrrr"..k)
-			treeN = ImGui.TreeNode("Attributes")
-			ImGui.PopID()
-			if treeN then
+			if ImGui.TreeNode("Attributes") then
+				ImGui.PopID()
 				ImGui.TextWrapped(infoText[k].attr)
 			end
 			ImGui.EndGroup()
 
 			ImGui.BeginGroup()
 			ImGui.PushID("profsss"..k)
-			treeN = ImGui.TreeNode("Proficiencies")
-			ImGui.PopID()
-			if treeN then
+			if ImGui.TreeNode("Proficiencies") then
+				ImGui.PopID()
 				for ky, value in pairs(infoText[k].profs) do
 					ImGui.TextWrapped(value.str)
 					ImGui.SameLine()
@@ -281,18 +273,16 @@ registerForEvent("onDraw",function ()
 
 			ImGui.BeginGroup()
 			ImGui.PushID("perksss"..k)
-			treeN = ImGui.TreeNode("Perks")
-			ImGui.PopID()
-			if treeN then
+			if ImGui.TreeNode("Perks") then
+				ImGui.PopID()
 				ImGui.TextWrapped(infoText[k].perks)
 			end
 			ImGui.EndGroup()
 
 			ImGui.BeginGroup()
 			ImGui.PushID("traitsss"..k)
-			treeN = ImGui.TreeNode("Traits")
-			ImGui.PopID()
-			if treeN then
+			if ImGui.TreeNode("Traits") then
+				ImGui.PopID()
 				ImGui.TextWrapped(infoText[k].traits)
 			end
 			ImGui.EndGroup()
@@ -321,8 +311,8 @@ registerForEvent("onDraw",function ()
 	end
 end)
 
-function buttonClick(name)
-	if(loadbool) then
+function buttonClick(name,loadbool)
+	if loadbool then
 		loadingSave = true
 		local tempAttr = util.attributes.getAttributes(playerDevelopmentData)
 		util.tabulaRasa(playerDevelopmentData,tempAttr)
@@ -361,7 +351,7 @@ function buttonClick(name)
 			profs
 		)
 		saveSettings.tryToSaveSettings()
-		print("BuildManager: Saved. Close Game (normally) or Overlay to initiate file write.")
+		print("BuildManager: Saved.")
 	end
 end
 
