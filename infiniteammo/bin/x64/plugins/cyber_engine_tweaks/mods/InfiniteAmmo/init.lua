@@ -2,35 +2,14 @@ local infAmmoToggled = false
 local notifTimer = 0
 
 registerForEvent("onInit", function()
-	local refundEvent = SetAmmoCountEvent.new()
-	
-	ObserveBefore('WeaponObject', 'SendAmmoUpdateEvent;GameObjectWeaponObject', function(gameObject, weapon)
+	Observe('WeaponObject', 'SendAmmoUpdateEvent;GameObjectWeaponObject', function(gameObject, weapon)
 		local player = Game.GetPlayer()
-		local activeWeapon = player:GetActiveWeapon()
+		local activeWeapon = GameObject.GetActiveWeapon(player)
 		if activeWeapon:GetItemID() == weapon:GetItemID() and infAmmoToggled == true then
-			refundEvent.ammoTypeID = WeaponObject.GetAmmoType(weapon)
-			refundEvent.count = WeaponObject.GetMagazineCapacity(weapon) 
-		
-			weapon:QueueEvent(refundEvent)
+			triggerInfiniteAmmo()
 		end
 		
 	end)
-end)
-
-registerHotkey("toggleInfiniteAmmo", "Toggle Infinite Ammunition", function()
-	if infAmmoToggled == true then
-		Game.GetInventoryManager().RemoveEquipmentStateFlag(Game.GetInventoryManager(),gameEEquipmentManagerState.InfiniteAmmo)
-		infAmmoToggled = false
-		notifTimer = 200
-	elseif infAmmoToggled == false then
-		-- No idea how to instantly reload / skip the reload anim when equipping an empty weapon or toggling the mod with an empty weapon.
-		Game.GetInventoryManager().AddEquipmentStateFlag(Game.GetInventoryManager(),gameEEquipmentManagerState.InfiniteAmmo)
-		
-		-- Maybe give back the ammo spent on the infinite ammo algorithm? With give item and what not...
-		
-		infAmmoToggled = true
-		notifTimer = 200
-	end
 end)
 
 registerForEvent("onDraw", function()
@@ -40,9 +19,32 @@ registerForEvent("onDraw", function()
 	end
 end)
 
+
+
+registerHotkey("toggleInfiniteAmmo", "Toggle Infinite Ammunition", function()
+	if infAmmoToggled == true then
+		Game.GetInventoryManager().RemoveEquipmentStateFlag(Game.GetInventoryManager(),gameEEquipmentManagerState.InfiniteAmmo)
+		infAmmoToggled = false
+		notifTimer = 200
+	elseif infAmmoToggled == false then
+		Game.GetInventoryManager().AddEquipmentStateFlag(Game.GetInventoryManager(),gameEEquipmentManagerState.InfiniteAmmo)
+		infAmmoToggled = true
+		notifTimer = 200
+	end
+end)
+
+function triggerInfiniteAmmo()
+	local player = Game.GetPlayer()
+	local activeWeapon = GameObject.GetActiveWeapon(player)
+	-- The gist behind this is:
+	-- Reload the weapon in 0 seconds, end the reload
+	GameObject.GetActiveWeapon(player).StartReload(activeWeapon,0)
+	GameObject.GetActiveWeapon(player).StopReload(activeWeapon,gameweaponReloadStatus.Standard)
+end
+
 function drawNotificationWindow()
 	ImGui.SetNextWindowPos(20, 100, ImGuiCond.Always)
-	ImGui.SetNextWindowSize(150, 80)
+	ImGui.SetNextWindowSize(200, 50)
 	if (ImGui.Begin("Infinite Ammo")) then
 		local toggleStatus = infAmmoToggled and "Toggled On" or "Toggled Off"
 		ImGui.Text(tostring(toggleStatus))
