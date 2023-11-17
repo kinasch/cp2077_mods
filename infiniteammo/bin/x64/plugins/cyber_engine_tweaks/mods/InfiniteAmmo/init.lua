@@ -8,8 +8,9 @@ registerForEvent("onInit", function()
 		local player = Game.GetPlayer()
 		local activeWeapon = player:GetActiveWeapon()
 		if activeWeapon:GetItemID() == weapon:GetItemID() and infAmmoToggled == true then
+
 			refundEvent.ammoTypeID = WeaponObject.GetAmmoType(weapon)
-			refundEvent.count = WeaponObject.GetMagazineCapacity(weapon) 
+			refundEvent.count = WeaponObject.GetMagazineCapacity(weapon)
 		
 			weapon:QueueEvent(refundEvent)
 		end
@@ -25,8 +26,6 @@ registerHotkey("toggleInfiniteAmmo", "Toggle Infinite Ammunition", function()
 	elseif infAmmoToggled == false then
 		-- No idea how to instantly reload / skip the reload anim when equipping an empty weapon or toggling the mod with an empty weapon.
 		Game.GetInventoryManager().AddEquipmentStateFlag(Game.GetInventoryManager(),gameEEquipmentManagerState.InfiniteAmmo)
-		
-		-- Maybe give back the ammo spent on the infinite ammo algorithm? With give item and what not...
 		
 		infAmmoToggled = true
 		notifTimer = 200
