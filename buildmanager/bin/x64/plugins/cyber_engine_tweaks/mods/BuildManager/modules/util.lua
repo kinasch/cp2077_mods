@@ -147,15 +147,8 @@ function util.EnumValuesToString(enums)
 end
 
 function util.tabulaRasa(playerDevelopmentData,attr)
-    playerDevelopmentData:RemoveAllPerks(true)
-    -- Reset Proficiencies
-    util.prof.setProficiencies(playerDevelopmentData,oneProfs)
-
-    -- Reset Attributes
-    local points = util.attributes.getRemainingAttrPoints(attr)
-    playerDevelopmentData:AddDevelopmentPoints(points,gamedataDevelopmentPointType.Attribute)
-    util.attributes.setAttributes(playerDevelopmentData,attr,3)
-    playerDevelopmentData:ResetSpentDevPoints(gamedataDevelopmentPointType.Attribute)
+    playerDevelopmentData:ResetNewPerks()
+	playerDevelopmentData:ResetAttributes()
 end
 
 -- Following functions could technically be put into one with a second parameter
@@ -180,6 +173,14 @@ function util.attributes.StringToEnumValues(attrStrings)
         attrEnums[i] = gamedataStatType[attr]
     end
     return attrEnums
+end
+
+
+-- Misc.
+function tableLength(T)
+	local count = 0
+	for _ in pairs(T) do count = count + 1 end
+	return count
 end
 
 return util
