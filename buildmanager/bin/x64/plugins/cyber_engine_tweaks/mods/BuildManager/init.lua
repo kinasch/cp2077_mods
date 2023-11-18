@@ -7,7 +7,10 @@ local openMenu,gameLoaded = false,false
 local playerDevelopmentData,playerLevel
 local resetConfirmation = false
 
-local saveNameText = ""
+-- TODO: Create options for these
+local saveLimit,saveCharacterLimit = 10,64
+
+local saveNameText, deleteNameText = "",""
 
 -- Debug Text in the Test tab
 local debugText = ""
@@ -70,14 +73,77 @@ registerForEvent("onDraw",function ()
 	-- #####################################################################################################
 	-- Save Tab
 	if ImGui.BeginTabItem("Save") then
-		saveNameText = ImGui.InputText("Save Name (max 64)", saveNameText, 64)
+		-- Limit the InputText Size such that the Label can be seen.
+		ImGui.SetNextItemWidth(0.9*ImGui.GetWindowWidth()-ImGui.CalcTextSize("Save Name"))
+		-- Create a new inputText to let the user name the save.
+		saveNameText = ImGui.InputText("Save Name", saveNameText, saveCharacterLimit)
+		-- Create a new save, when the name is neither null nor empty and the maximum amount of allowed saves is not reached.
 		if ImGui.Button("New Save",(0.95*ImGui.GetWindowWidth()),50) then
-			if saveNameText ~= nil and saveNameText ~= "" then
-				saveSettings.saveData(saveNameText,util.createNewSave(saveNameText,playerDevelopmentData));
+			if saveNameText ~= nil and saveNameText ~= "" and util.tableLength(saveSettings.settings) < saveLimit then
+				saveSettings.saveData(saveNameText,util.createNewSave(saveNameText,playerDevelopmentData))
 				saveNameText = ""
+			else
+				ImGui.OpenPopup("Save Limit reached / No name entered")
 			end
 		end
 		ImGui.Separator()
+
+		-- List all saves
+		ImGui.Text("Click on an existing save to overwrite it:")
+		ImGui.BeginGroup()
+		for k,attr in pairs(saveSettings.settings) do
+			if ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30) then
+				saveSettings.saveData(k,util.createNewSave(k,playerDevelopmentData))
+			end
+
+			ImGui.SameLine()
+			ImGui.PushID("info"..k)
+			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
+				-- TODO
+			end
+			ImGui.PopID()
+
+			ImGui.SameLine()
+			ImGui.PushID("del"..k)
+			if ImGui.SmallButton(IconGlyphs.DeleteOutline) then
+				deleteNameText = k
+				ImGui.OpenPopup("Delete Save (Save Tab)")
+			end
+
+			-------------------------------
+			-- Delete Save Popup (Save Tab)
+			if ImGui.BeginPopupModal("Delete Save (Save Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
+				ImGui.Text("Are you sure you want to delete this save?\n"..deleteNameText)
+				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", saveCharacterLimit)),25) then
+					saveSettings.deleteSave(deleteNameText)
+					deleteNameText = ""
+					ImGui.CloseCurrentPopup()
+				end
+				if ImGui.Button("No",ImGui.CalcTextSize(string.rep("A", saveCharacterLimit)),25) then
+					deleteNameText = ""
+					ImGui.CloseCurrentPopup()
+				end
+				ImGui.EndPopup()
+			end
+			-- Delete Save Popup (Save Tab)
+			-------------------------------
+
+			ImGui.PopID()
+			
+		end
+
+		ImGui.EndGroup()
+
+		-- ##########
+		-- Save Limit reached / No name entered Popup
+		if ImGui.BeginPopupModal("Save Limit reached / No name entered", true, ImGuiWindowFlags.AlwaysAutoResize) then
+			ImGui.Text("No name entered or save limit ("..saveLimit..") reached.")
+			if ImGui.Button("Understood",ImGui.CalcTextSize("No name entered or save limit ("..saveLimit..") reached."),25) then
+				ImGui.CloseCurrentPopup() 
+			end
+			ImGui.EndPopup()
+		end
+
 		ImGui.EndTabItem()
 	end
 
@@ -122,6 +188,13 @@ registerForEvent("onDraw",function ()
 		if ImGui.Button("Save settings to file",(0.95*ImGui.GetWindowWidth()),50) then
 			debugText = tostring(saveSettings.tryToSaveSettings())
 		end
+		ImGui.EndTabItem()
+	end
+
+	-- #####################################################################################################
+	-- Options Tab
+	if ImGui.BeginTabItem("Test") then
+		-- TODO: Add options
 		ImGui.EndTabItem()
 	end
 

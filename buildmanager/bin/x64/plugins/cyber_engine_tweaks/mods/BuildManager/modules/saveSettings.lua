@@ -10,6 +10,15 @@ function saveSettings.saveData(name,attributes,perks,currLevel,proficiencies)
         buildLevel = currLevel,
         profs = proficiencies
     }
+
+    -- WARNING
+    -- File operations are very resource hungry!
+    saveSettings.tryToSaveSettings()
+end
+
+function saveSettings.deleteSave(name)
+    saveSettings.settings[name] = nil
+	saveSettings.tryToSaveSettings()
 end
 
 local path = "builds.json"
