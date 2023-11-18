@@ -1,14 +1,12 @@
 -- Default values are taken from the respective TweakDB defaults
 saveSettings = { settings = {} }
 
-function saveSettings.saveData(name,attributes,perks,traits,currLevel,proficiencies)
+function saveSettings.saveData(name,attributes,perks,currLevel,proficiencies)
     saveSettings.settings[name] = {
         -- Order: Attribute,Amount
         attributes = attributes,
         -- Order: Perk1,Perk1,Perk2,Perk3,Perk3,Perk3
         perks = perks,
-        -- Perk without limit thingies
-        traits = traits,
         buildLevel = currLevel,
         profs = proficiencies
     }
@@ -33,13 +31,10 @@ function saveSettings.tryToLoadSettings()
 end
 
 function saveSettings.tryToSaveSettings()
-    local file = io.open(path,"r")
-    if(file~=nil) then
-        io.close(file)
-        fileFunctions.save()
+    if pcall(fileFunctions.save) then
+        return true
     else
-        --print("No saved settings file found. Creating one ...")
-        fileFunctions.save()
+        return false
     end
 end
 
