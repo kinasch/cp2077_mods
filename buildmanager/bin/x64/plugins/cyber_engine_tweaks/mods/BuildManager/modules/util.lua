@@ -22,8 +22,10 @@ end
 -- ##########################################################################
 function util.setBuild(playerDevelopmentData, save)
     -- save = {attributes:{},perks:{}}
+    util.tabulaRasa(playerDevelopmentData)
+
     util.attributes.buyAttributes(playerDevelopmentData, save.attributes)
-    -- util.perk.buyPerks(playerDevelopmentData, save.perks)
+    util.perk.buyPerks(playerDevelopmentData, save.perks)
 end
 
 
@@ -81,7 +83,8 @@ function util.perk.buyPerks(playerDevelopmentData, perks)
     -- local perks = { {name,level},{name,level},... }
     for l,p in ipairs(perks) do
         for i = 1,p.level,1 do
-            playerDevelopmentData:BuyNewPerk(gamedataNewPerkType[p.name])
+            playerDevelopmentData:UnlockNewPerk(gamedataNewPerkType[p.name])
+            playerDevelopmentData:BuyNewPerk(gamedataNewPerkType[p.name],false)
         end
     end
 end
@@ -93,7 +96,7 @@ end
 -- Reset every part of the development data.
 -- Currently only attributes and perks
 -- TODO: Proficiencies (new)
-function util.tabulaRasa(playerDevelopmentData,attr)
+function util.tabulaRasa(playerDevelopmentData)
     playerDevelopmentData:ResetNewPerks()
 	playerDevelopmentData:ResetAttributes()
 end

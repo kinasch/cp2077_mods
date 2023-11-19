@@ -13,18 +13,18 @@ function saveSettings.saveData(name,attributes,perks,currLevel,proficiencies)
 
     -- WARNING
     -- File operations are very resource hungry!
-    spdlog.info("Saving,sS.saveData: "..tostring(saveSettings.tryToSaveSettings()))
+    --spdlog.info("Saving,sS.saveData: "..tostring(saveSettings.tryToSaveSettings()))
 end
 
 function saveSettings.saveOptions(saveLimit,saveCharacterLimit)
     saveSettings.options = {saveLimit=saveLimit,saveCharacterLimit=saveCharacterLimit}
     saveSettings.tryToSaveSettings()
-    spdlog.info("Saving,sS.saveOptions: "..tostring(saveSettings.tryToSaveSettings()))
+    --spdlog.info("Saving,sS.saveOptions: "..tostring(saveSettings.tryToSaveSettings()))
 end
 
 function saveSettings.deleteSave(name)
     saveSettings.settings[name] = nil
-	spdlog.info("Saving,sS.deleteSave: "..tostring(saveSettings.tryToSaveSettings()))
+	--spdlog.info("Saving,sS.deleteSave: "..tostring(saveSettings.tryToSaveSettings()))
 end
 
 local path = "builds.json"

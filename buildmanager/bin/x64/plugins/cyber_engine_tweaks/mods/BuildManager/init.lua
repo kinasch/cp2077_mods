@@ -55,8 +55,8 @@ registerForEvent("onInit", function()
         gameLoaded = false
     end)
 
-	-- TODO: Load saves and options
-	spdlog.info("Loading,Init: "..tostring(saveSettings.tryToLoadSettings()))
+	-- Load saves and options
+	-- spdlog.info("Loading,Init: "..tostring(saveSettings.tryToLoadSettings()))
 	saveLimit,saveCharacterLimit = saveSettings.options.saveLimit,saveSettings.options.saveCharacterLimit
 end)
 
@@ -198,7 +198,6 @@ registerForEvent("onDraw",function ()
 			-------------------------------
 
 			ImGui.PopID()
-			
 		end
 
 		ImGui.EndGroup()
