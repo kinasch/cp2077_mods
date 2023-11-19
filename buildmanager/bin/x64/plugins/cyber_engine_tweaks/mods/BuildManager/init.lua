@@ -30,28 +30,34 @@ registerForEvent("onOverlayClose", function()
 	-- Garbage collection.
 	playerDevelopmentData = nil
 	playerLevel = 0
+
+	saveSettings.saveOptions(saveLimit,saveCharacterLimit)
 end)
 
 -- Load the settings upon starting the game
 registerForEvent("onInit", function()
 	-- gameLoaded should only be true, if the game is loaded and not paused.
-	-- Maybe allow doing this while in the menus like inventory and such.
-
+	-- TODO: 
+	--[[ 	Maybe allow doing this while in the menus like inventory and such.
+			OR bind this menu to a hotkey ?
+			OR create a new button in the character screen and open the menu upon pressing it ]]
 	gameLoaded = not Game.GetSystemRequestsHandler():IsPreGame()
-
 	GameSession.OnStart(function()
         gameLoaded = true
     end)
 	GameSession.OnResume(function()
         gameLoaded = true
     end)
-
 	GameSession.OnPause(function()
         gameLoaded = false
     end)
     GameSession.OnEnd(function()
         gameLoaded = false
     end)
+
+	-- TODO: Load saves and options
+	spdlog.info("Loading,Init: "..tostring(saveSettings.tryToLoadSettings()))
+	saveLimit,saveCharacterLimit = saveSettings.options.saveLimit,saveSettings.options.saveCharacterLimit
 end)
 
 registerForEvent('onUpdate', function(delta)
@@ -181,20 +187,28 @@ registerForEvent("onDraw",function ()
 		ImGui.EndTabItem()
 	end
 
+
+	-- #####################################################################################################
+	-- Options Tab
+	if ImGui.BeginTabItem("Options") then
+		ImGui.TextWrapped("Maximum amount of saves:")
+		saveLimit = ImGui.SliderInt("sl", saveLimit, 5, 20, "%d")
+		ImGui.TextWrapped("Save Name Character Limit:")
+		saveCharacterLimit = ImGui.SliderInt("scl", saveCharacterLimit, 16, 256, "%d")
+		ImGui.EndTabItem()
+	end
+
+
 	-- #####################################################################################################
 	-- Test Tab
 	if ImGui.BeginTabItem("Test") then
 		ImGui.TextWrapped(debugText)
 		if ImGui.Button("Save settings to file",(0.95*ImGui.GetWindowWidth()),50) then
-			debugText = tostring(saveSettings.tryToSaveSettings())
+			spdlog.info("Saving,Test: "..tostring(saveSettings.tryToLoadSettings()))
 		end
-		ImGui.EndTabItem()
-	end
-
-	-- #####################################################################################################
-	-- Options Tab
-	if ImGui.BeginTabItem("Test") then
-		-- TODO: Add options
+		if ImGui.Button("Debug: Print options",(0.95*ImGui.GetWindowWidth()),50) then
+			print(saveLimit,saveCharacterLimit)
+		end
 		ImGui.EndTabItem()
 	end
 
