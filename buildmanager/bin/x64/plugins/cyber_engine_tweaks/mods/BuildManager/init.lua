@@ -153,6 +153,69 @@ registerForEvent("onDraw",function ()
 		ImGui.EndTabItem()
 	end
 
+
+	-- #####################################################################################################
+	-- Load Tab
+	if ImGui.BeginTabItem("Load") then
+		-- List all saves
+		ImGui.Text("Click on a save to load it:")
+		ImGui.BeginGroup()
+		for k,attr in pairs(saveSettings.settings) do
+			if ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30) then
+				util.setBuild(playerDevelopmentData, saveSettings.settings[k])
+			end
+
+			ImGui.SameLine()
+			ImGui.PushID("info"..k)
+			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
+				-- TODO
+			end
+			ImGui.PopID()
+
+			ImGui.SameLine()
+			ImGui.PushID("del"..k)
+			if ImGui.SmallButton(IconGlyphs.DeleteOutline) then
+				deleteNameText = k
+				ImGui.OpenPopup("Delete Save (Load Tab)")
+			end
+
+			-------------------------------
+			-- Delete Save Popup (Load Tab)
+			if ImGui.BeginPopupModal("Delete Save (Load Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
+				ImGui.Text("Are you sure you want to delete this save?\n"..deleteNameText)
+				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", saveCharacterLimit)),25) then
+					saveSettings.deleteSave(deleteNameText)
+					deleteNameText = ""
+					ImGui.CloseCurrentPopup()
+				end
+				if ImGui.Button("No",ImGui.CalcTextSize(string.rep("A", saveCharacterLimit)),25) then
+					deleteNameText = ""
+					ImGui.CloseCurrentPopup()
+				end
+				ImGui.EndPopup()
+			end
+			-- Delete Save Popup (Load Tab)
+			-------------------------------
+
+			ImGui.PopID()
+			
+		end
+
+		ImGui.EndGroup()
+
+		-- ##########
+		-- Save Limit reached / No name entered Popup
+		if ImGui.BeginPopupModal("Save Limit reached / No name entered", true, ImGuiWindowFlags.AlwaysAutoResize) then
+			ImGui.Text("No name entered or save limit ("..saveLimit..") reached.")
+			if ImGui.Button("Understood",ImGui.CalcTextSize("No name entered or save limit ("..saveLimit..") reached."),25) then
+				ImGui.CloseCurrentPopup() 
+			end
+			ImGui.EndPopup()
+		end
+
+		ImGui.EndTabItem()
+	end
+
 	-- #####################################################################################################
 	-- Reset
 	if ImGui.BeginTabItem("Reset") then

@@ -69,7 +69,6 @@ function fileFunctions.load()
     local file = io.open(path, "r")
     local content = file:read("*a")
     local jsonObject = json.decode(content)
-    print(jsonObject)
     saveSettings.settings,saveSettings.options = jsonObject.settings,jsonObject.options
     file:close()
 end
