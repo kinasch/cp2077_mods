@@ -35,4 +35,4 @@ Use this mod near a ripper doc (or with the [RipperDeck](https://www.nexusmods.c
 The people over at the [modding discord](https://discord.gg/Epkq79kd96).  
 The [CET team](https://github.com/yamashi/CyberEngineTweaks/graphs/contributors) for [Cyber Engine Tweaks](https://github.com/yamashi/CyberEngineTweaks).  
 The people behind the [decompiled code](https://codeberg.org/adamsmasher/cyberpunk).  
-Especially to [psiberx](https://www.nexusmods.com/users/108159138) for the GameSession.lua and Cron.lua from the [cet-kit](https://github.com/psiberx/cp2077-cet-kit).
+Especially to [psiberx](https://www.nexusmods.com/users/108159138) for the GameSession.lua from the [cet-kit](https://github.com/psiberx/cp2077-cet-kit).

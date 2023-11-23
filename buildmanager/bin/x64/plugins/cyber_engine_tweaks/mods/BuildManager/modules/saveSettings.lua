@@ -44,7 +44,6 @@ end
 
 -- Tries to load the settings from the savedSettings.json
 -- returns bool: true if a file was found, false if not
--- TODO: Rewrite  <-- lmao
 function saveSettings.tryToLoadSettings()
     local status, err = pcall(fileFunctions.load)
     if status then

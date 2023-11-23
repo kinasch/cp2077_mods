@@ -1,16 +1,24 @@
 local GameSession = require('GameSession')
-local Cron = require('Cron')
 local util = require("modules/util")
 local saveSettings = require("modules/saveSettings")
 
 local openMenu,gameLoaded = false,false
 local playerDevelopmentData,playerLevel
 local resetConfirmation = false
-
--- TODO: Create options for these
-local saveLimit,saveCharacterLimit = 10,64
-
+-- TODO: Add Experience
+local profLevelList = {
+	{name="StrengthSkill",lvl=1},
+	{name="ReflexesSkill",lvl=1},
+	{name="CoolSkill",lvl=1},
+	{name="IntelligenceSkill",lvl=1},
+	{name="TechnicalAbilitySkill",lvl=1}
+}
 local saveNameText, deleteNameText = "",""
+local profOpened = true
+
+-- Variables for the options
+local saveLimit,saveCharacterLimit = 10,64
+local letProfs = true
 
 -- Debug Text in the Test tab
 local debugText = ""
@@ -22,6 +30,8 @@ registerForEvent("onOverlayOpen", function()
 	-- Get playerDevelopmentData and playerLevel everytime the overlay is opened.
 	playerDevelopmentData = PlayerDevelopmentSystem.GetData(Game.GetPlayer())
 	playerLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
+
+	profLevelList = util.prof.getProficiencies(playerDevelopmentData,profLevelList)
 end)
 registerForEvent("onOverlayClose", function()
 	openMenu = false
@@ -60,11 +70,6 @@ registerForEvent("onInit", function()
 	saveLimit,saveCharacterLimit = saveSettings.options.saveLimit,saveSettings.options.saveCharacterLimit
 end)
 
-registerForEvent('onUpdate', function(delta)
-    -- This is required for Cron to function
-    Cron.Update(delta)
-end)
-
 registerForEvent("onDraw",function ()
 	if not openMenu or not gameLoaded then return end
 	
@@ -86,7 +91,7 @@ registerForEvent("onDraw",function ()
 		-- Create a new save, when the name is neither null nor empty and the maximum amount of allowed saves is not reached.
 		if ImGui.Button("New Save",(0.95*ImGui.GetWindowWidth()),50) then
 			if saveNameText ~= nil and saveNameText ~= "" and util.tableLength(saveSettings.settings) < saveLimit then
-				saveSettings.saveData(saveNameText,util.createNewSave(saveNameText,playerDevelopmentData))
+				saveSettings.saveData(saveNameText,util.createNewSave(saveNameText,playerDevelopmentData,profLevelList))
 				saveNameText = ""
 			else
 				ImGui.OpenPopup("Save Limit reached / No name entered")
@@ -99,7 +104,7 @@ registerForEvent("onDraw",function ()
 		ImGui.BeginGroup()
 		for k,attr in pairs(saveSettings.settings) do
 			if ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30) then
-				saveSettings.saveData(k,util.createNewSave(k,playerDevelopmentData))
+				saveSettings.saveData(k,util.createNewSave(k,playerDevelopmentData,profLevelList))
 			end
 
 			ImGui.SameLine()
@@ -215,10 +220,46 @@ registerForEvent("onDraw",function ()
 		ImGui.EndTabItem()
 	end
 
+
+	-- #####################################################################################################
+	-- Proficiencies / Skills
+	if ImGui.BeginTabItem("Skills") then
+		if profOpened then
+			profLevelList = util.prof.getProficiencies(playerDevelopmentData,profLevelList)
+			profOpened = false
+		end
+
+		if not letProfs then
+			ImGui.TextWrapped("Enable manually modifying the Skills in the options.")
+		else
+			ImGui.TextWrapped("Adjust Proficiencies and set them using the button below:")
+			ImGui.SameLine()
+			if ImGui.SmallButton(IconGlyphs.Reload) then
+				profLevelList = util.prof.getProficiencies(playerDevelopmentData,profLevelList)
+			end
+
+			ImGui.BeginGroup()
+			for k,v in pairs(profLevelList) do
+				ImGui.PushItemWidth(0.55*ImGui.GetWindowWidth())
+				v.lvl = ImGui.SliderInt(GetLocalizedText(TweakDB:GetRecord("Proficiencies."..v.name):Loc_name_key()),v.lvl,1,60,"%d")
+			end
+			ImGui.EndGroup()
+
+			if ImGui.Button("Set Skills",(0.95*ImGui.GetWindowWidth()),30) then
+				util.prof.setProficiencies(playerDevelopmentData,profLevelList)
+			end
+		end
+
+		ImGui.EndTabItem()
+	else
+		profOpened = true
+	end
+
+
 	-- #####################################################################################################
 	-- Reset
 	if ImGui.BeginTabItem("Reset") then
-		ImGui.Text("Reset attributes, perks and traits.")
+		ImGui.Text("Reset attributes, perks and skills.")
 		-- Do not allow resetting while the confirmation popup is open.
 		if not ImGui.IsPopupOpen("Reset?") then
 			if ImGui.Button("Reset everything",(0.95*ImGui.GetWindowWidth()),30) then
@@ -255,8 +296,13 @@ registerForEvent("onDraw",function ()
 	if ImGui.BeginTabItem("Options") then
 		ImGui.TextWrapped("Maximum amount of saves:")
 		saveLimit = ImGui.SliderInt("sl", saveLimit, 5, 20, "%d")
+		ImGui.Separator()
 		ImGui.TextWrapped("Save Name Character Limit:")
 		saveCharacterLimit = ImGui.SliderInt("scl", saveCharacterLimit, 16, 256, "%d")
+		ImGui.Separator()
+		ImGui.TextWrapped("Allow manual modification of the skills?")
+		letProfs = ImGui.Checkbox("Allow?", letProfs)
+
 		ImGui.EndTabItem()
 	end
 
@@ -268,9 +314,13 @@ registerForEvent("onDraw",function ()
 		if ImGui.Button("Save settings to file",(0.95*ImGui.GetWindowWidth()),50) then
 			spdlog.info("Saving,Test: "..tostring(saveSettings.tryToLoadSettings()))
 		end
-		if ImGui.Button("Debug: Print options",(0.95*ImGui.GetWindowWidth()),50) then
-			print(saveLimit,saveCharacterLimit)
+		ImGui.Separator()
+		if ImGui.Button("Debug: Print profs",(0.95*ImGui.GetWindowWidth()),30) then
+			for k,v in pairs(profLevelList) do
+				print(v.name..":"..v.lvl)
+			end
 		end
+
 		ImGui.EndTabItem()
 	end
 
