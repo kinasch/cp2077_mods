@@ -5,7 +5,6 @@ local saveSettings = require("modules/saveSettings")
 local openMenu,gameLoaded = false,false
 local playerDevelopmentData,playerLevel
 local resetConfirmation = false
--- TODO: Add Experience
 local profLevelList = {
 	{name="StrengthSkill",lvl=1,exp=0},
 	{name="ReflexesSkill",lvl=1,exp=0},
@@ -13,7 +12,7 @@ local profLevelList = {
 	{name="IntelligenceSkill",lvl=1,exp=0},
 	{name="TechnicalAbilitySkill",lvl=1,exp=0}
 }
-local saveNameText, deleteNameText = "",""
+local saveNameText, deleteNameText, infoSave = "","",{}
 local profOpened = true
 
 -- Variables for the options
@@ -41,6 +40,7 @@ registerForEvent("onOverlayClose", function()
 	playerLevel = 0
 
 	saveSettings.saveOptions(options)
+	local saveNameText, deleteNameText, infoSave = "","",{}
 end)
 
 -- Load the settings upon starting the game
@@ -119,8 +119,54 @@ registerForEvent("onDraw",function ()
 			ImGui.SameLine()
 			ImGui.PushID("info"..k)
 			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
-				-- TODO
+				infoSave = attr
+				ImGui.OpenPopup("Info (Save Tab)")
 			end
+
+			-------------------------------
+			-- Info Popup (Save Tab)
+			if ImGui.BeginPopupModal("Info (Save Tab)", ImGuiWindowFlags.AlwaysAutoResize) then
+
+				ImGui.Text("Build Level: "..infoSave.buildLevel)
+				ImGui.Spacing()
+
+				if ImGui.BeginTable("attributes",2) then
+					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
+					ImGui.TableSetupColumn("Column2", ImGuiTableColumnFlags.None)
+					for ik,v in pairs(infoSave.attributes) do
+						ImGui.TableNextRow()
+						ImGui.TableNextColumn()
+						ImGui.Text(v.name)
+						ImGui.TableNextColumn()
+						ImGui.Text(""..v.level)
+					end
+					ImGui.EndTable()
+				end
+				ImGui.Spacing()
+
+				if ImGui.BeginTable("profs",2) then
+					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
+					ImGui.TableSetupColumn("Column2", ImGuiTableColumnFlags.None)
+					for ik,v in pairs(infoSave.profs) do
+						ImGui.TableNextRow()
+						ImGui.TableNextColumn()
+						ImGui.Text(GetLocalizedText(TweakDB:GetRecord("Proficiencies."..v.name):Loc_name_key()))
+						ImGui.TableNextColumn()
+						ImGui.Text(v.lvl.. " ("..v.exp.."XP)")
+					end
+					ImGui.EndTable()
+				end
+				ImGui.Spacing()
+
+				if ImGui.Button("Close",250,30) then
+					infoSave = {}
+					ImGui.CloseCurrentPopup()
+				end
+				ImGui.EndPopup()
+			end
+			-- Info Popup (Save Tab)
+			-------------------------------
+
 			ImGui.PopID()
 
 			ImGui.SameLine()
@@ -182,8 +228,54 @@ registerForEvent("onDraw",function ()
 			ImGui.SameLine()
 			ImGui.PushID("info"..k)
 			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
-				-- TODO
+				infoSave = attr
+				ImGui.OpenPopup("Info (Load Tab)")
 			end
+
+			-------------------------------
+			-- Info Popup (Load Tab)
+			if ImGui.BeginPopupModal("Info (Load Tab)", ImGuiWindowFlags.AlwaysAutoResize) then
+
+				ImGui.Text("Build Level: "..infoSave.buildLevel)
+				ImGui.Spacing()
+
+				if ImGui.BeginTable("attributes",2) then
+					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
+					ImGui.TableSetupColumn("Column2", ImGuiTableColumnFlags.None)
+					for ik,v in pairs(infoSave.attributes) do
+						ImGui.TableNextRow()
+						ImGui.TableNextColumn()
+						ImGui.Text(v.name)
+						ImGui.TableNextColumn()
+						ImGui.Text(""..v.level)
+					end
+					ImGui.EndTable()
+				end
+				ImGui.Spacing()
+
+				if ImGui.BeginTable("profs",2) then
+					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
+					ImGui.TableSetupColumn("Column2", ImGuiTableColumnFlags.None)
+					for ik,v in pairs(infoSave.profs) do
+						ImGui.TableNextRow()
+						ImGui.TableNextColumn()
+						ImGui.Text(GetLocalizedText(TweakDB:GetRecord("Proficiencies."..v.name):Loc_name_key()))
+						ImGui.TableNextColumn()
+						ImGui.Text(v.lvl.. " ("..v.exp.."XP)")
+					end
+					ImGui.EndTable()
+				end
+				ImGui.Spacing()
+
+				if ImGui.Button("Close",250,30) then
+					infoSave = {}
+					ImGui.CloseCurrentPopup()
+				end
+				ImGui.EndPopup()
+			end
+			-- Info Popup (Load Tab)
+			-------------------------------
+
 			ImGui.PopID()
 
 			ImGui.SameLine()
@@ -320,6 +412,17 @@ registerForEvent("onDraw",function ()
 			for k,v in pairs(profLevelList) do
 				print(v.name..":"..v.lvl)
 			end
+		end
+
+		if ImGui.BeginTable("test",2) then
+			for i=0,10,1 do
+				ImGui.TableNextRow()
+				ImGui.TableNextColumn()
+				ImGui.Text("links"..i)
+				ImGui.TableNextColumn()
+				ImGui.Text("rechts"..i)
+			end
+			ImGui.EndTable()
 		end
 
 		ImGui.EndTabItem()
