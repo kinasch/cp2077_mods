@@ -7,18 +7,17 @@ local playerDevelopmentData,playerLevel
 local resetConfirmation = false
 -- TODO: Add Experience
 local profLevelList = {
-	{name="StrengthSkill",lvl=1},
-	{name="ReflexesSkill",lvl=1},
-	{name="CoolSkill",lvl=1},
-	{name="IntelligenceSkill",lvl=1},
-	{name="TechnicalAbilitySkill",lvl=1}
+	{name="StrengthSkill",lvl=1,exp=0},
+	{name="ReflexesSkill",lvl=1,exp=0},
+	{name="CoolSkill",lvl=1,exp=0},
+	{name="IntelligenceSkill",lvl=1,exp=0},
+	{name="TechnicalAbilitySkill",lvl=1,exp=0}
 }
 local saveNameText, deleteNameText = "",""
 local profOpened = true
 
 -- Variables for the options
-local saveLimit,saveCharacterLimit = 10,64
-local letProfs = true
+local options = {saveLimit=10,saveCharacterLimit=64,letProfs=true}
 
 -- Debug Text in the Test tab
 local debugText = ""
@@ -41,7 +40,7 @@ registerForEvent("onOverlayClose", function()
 	playerDevelopmentData = nil
 	playerLevel = 0
 
-	saveSettings.saveOptions(saveLimit,saveCharacterLimit)
+	saveSettings.saveOptions(options)
 end)
 
 -- Load the settings upon starting the game
@@ -65,9 +64,17 @@ registerForEvent("onInit", function()
         gameLoaded = false
     end)
 
+	if gameLoaded then
+		playerDevelopmentData = PlayerDevelopmentSystem.GetData(Game.GetPlayer())
+		playerLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
+	end
+
 	-- Load saves and options
 	-- spdlog.info("Loading,Init: "..tostring(saveSettings.tryToLoadSettings()))
-	saveLimit,saveCharacterLimit = saveSettings.options.saveLimit,saveSettings.options.saveCharacterLimit
+	local tempOptions = saveSettings.loadOptions()
+	if util.tableLength(tempOptions) == util.tableLength(options) then
+		options = tempOptions
+	end
 end)
 
 registerForEvent("onDraw",function ()
@@ -87,11 +94,12 @@ registerForEvent("onDraw",function ()
 		-- Limit the InputText Size such that the Label can be seen.
 		ImGui.SetNextItemWidth(0.9*ImGui.GetWindowWidth()-ImGui.CalcTextSize("Save Name"))
 		-- Create a new inputText to let the user name the save.
-		saveNameText = ImGui.InputText("Save Name", saveNameText, saveCharacterLimit)
+		saveNameText = ImGui.InputText("Save Name", saveNameText, options.saveCharacterLimit)
 		-- Create a new save, when the name is neither null nor empty and the maximum amount of allowed saves is not reached.
 		if ImGui.Button("New Save",(0.95*ImGui.GetWindowWidth()),50) then
-			if saveNameText ~= nil and saveNameText ~= "" and util.tableLength(saveSettings.settings) < saveLimit then
-				saveSettings.saveData(saveNameText,util.createNewSave(saveNameText,playerDevelopmentData,profLevelList))
+			if saveNameText ~= nil and saveNameText ~= "" and util.tableLength(saveSettings.settings) < options.saveLimit then
+				savePLL = util.prof.getProficiencies(playerDevelopmentData)
+				saveSettings.saveData(saveNameText,util.createNewSave(saveNameText,playerDevelopmentData,savePLL))
 				saveNameText = ""
 			else
 				ImGui.OpenPopup("Save Limit reached / No name entered")
@@ -104,7 +112,8 @@ registerForEvent("onDraw",function ()
 		ImGui.BeginGroup()
 		for k,attr in pairs(saveSettings.settings) do
 			if ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30) then
-				saveSettings.saveData(k,util.createNewSave(k,playerDevelopmentData,profLevelList))
+				savePLL = util.prof.getProficiencies(playerDevelopmentData)
+				saveSettings.saveData(k,util.createNewSave(k,playerDevelopmentData,savePLL))
 			end
 
 			ImGui.SameLine()
@@ -125,12 +134,12 @@ registerForEvent("onDraw",function ()
 			-- Delete Save Popup (Save Tab)
 			if ImGui.BeginPopupModal("Delete Save (Save Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
 				ImGui.Text("Are you sure you want to delete this save?\n"..deleteNameText)
-				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", saveCharacterLimit)),25) then
+				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
 					saveSettings.deleteSave(deleteNameText)
 					deleteNameText = ""
 					ImGui.CloseCurrentPopup()
 				end
-				if ImGui.Button("No",ImGui.CalcTextSize(string.rep("A", saveCharacterLimit)),25) then
+				if ImGui.Button("No",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
 					deleteNameText = ""
 					ImGui.CloseCurrentPopup()
 				end
@@ -148,8 +157,8 @@ registerForEvent("onDraw",function ()
 		-- ##########
 		-- Save Limit reached / No name entered Popup
 		if ImGui.BeginPopupModal("Save Limit reached / No name entered", true, ImGuiWindowFlags.AlwaysAutoResize) then
-			ImGui.Text("No name entered or save limit ("..saveLimit..") reached.")
-			if ImGui.Button("Understood",ImGui.CalcTextSize("No name entered or save limit ("..saveLimit..") reached."),25) then
+			ImGui.Text("No name entered or save limit ("..options.saveLimit..") reached.")
+			if ImGui.Button("Understood",ImGui.CalcTextSize("No name entered or save limit ("..options.saveLimit..") reached."),25) then
 				ImGui.CloseCurrentPopup() 
 			end
 			ImGui.EndPopup()
@@ -188,12 +197,12 @@ registerForEvent("onDraw",function ()
 			-- Delete Save Popup (Load Tab)
 			if ImGui.BeginPopupModal("Delete Save (Load Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
 				ImGui.Text("Are you sure you want to delete this save?\n"..deleteNameText)
-				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", saveCharacterLimit)),25) then
+				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
 					saveSettings.deleteSave(deleteNameText)
 					deleteNameText = ""
 					ImGui.CloseCurrentPopup()
 				end
-				if ImGui.Button("No",ImGui.CalcTextSize(string.rep("A", saveCharacterLimit)),25) then
+				if ImGui.Button("No",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
 					deleteNameText = ""
 					ImGui.CloseCurrentPopup()
 				end
@@ -207,16 +216,6 @@ registerForEvent("onDraw",function ()
 
 		ImGui.EndGroup()
 
-		-- ##########
-		-- Save Limit reached / No name entered Popup
-		if ImGui.BeginPopupModal("Save Limit reached / No name entered", true, ImGuiWindowFlags.AlwaysAutoResize) then
-			ImGui.Text("No name entered or save limit ("..saveLimit..") reached.")
-			if ImGui.Button("Understood",ImGui.CalcTextSize("No name entered or save limit ("..saveLimit..") reached."),25) then
-				ImGui.CloseCurrentPopup() 
-			end
-			ImGui.EndPopup()
-		end
-
 		ImGui.EndTabItem()
 	end
 
@@ -229,7 +228,7 @@ registerForEvent("onDraw",function ()
 			profOpened = false
 		end
 
-		if not letProfs then
+		if not options.letProfs then
 			ImGui.TextWrapped("Enable manually modifying the Skills in the options.")
 		else
 			ImGui.TextWrapped("Adjust Proficiencies and set them using the button below:")
@@ -252,7 +251,9 @@ registerForEvent("onDraw",function ()
 
 		ImGui.EndTabItem()
 	else
-		profOpened = true
+		if not profOpened then
+			profOpened = true
+		end
 	end
 
 
@@ -295,13 +296,13 @@ registerForEvent("onDraw",function ()
 	-- Options Tab
 	if ImGui.BeginTabItem("Options") then
 		ImGui.TextWrapped("Maximum amount of saves:")
-		saveLimit = ImGui.SliderInt("sl", saveLimit, 5, 20, "%d")
+		options.saveLimit = ImGui.SliderInt("sl", options.saveLimit, 5, 20, "%d")
 		ImGui.Separator()
 		ImGui.TextWrapped("Save Name Character Limit:")
-		saveCharacterLimit = ImGui.SliderInt("scl", saveCharacterLimit, 16, 256, "%d")
+		options.saveCharacterLimit = ImGui.SliderInt("scl", options.saveCharacterLimit, 16, 256, "%d")
 		ImGui.Separator()
 		ImGui.TextWrapped("Allow manual modification of the skills?")
-		letProfs = ImGui.Checkbox("Allow?", letProfs)
+		options.letProfs = ImGui.Checkbox("Allow?", options.letProfs)
 
 		ImGui.EndTabItem()
 	end

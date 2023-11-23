@@ -1,6 +1,12 @@
 util = {attributes={},perk={},prof={}}
 
-defaultProfLevelList = {{name="StrengthSkill",lvl=1},{name="ReflexesSkill",lvl=1},{name="CoolSkill",lvl=1},{name="IntelligenceSkill",lvl=1},{name="TechnicalAbilitySkill",lvl=1}}
+local defaultProfLevelList = {
+	{name="StrengthSkill",lvl=1,exp=0},
+	{name="ReflexesSkill",lvl=1,exp=0},
+	{name="CoolSkill",lvl=1,exp=0},
+	{name="IntelligenceSkill",lvl=1,exp=0},
+	{name="TechnicalAbilitySkill",lvl=1,exp=0}
+}
 
 -- ##########################################################################
 -- Save Functions
@@ -105,7 +111,7 @@ end
 -- ##########################################################################
 -- Proficiency Functions
 -- ##########################################################################
-function util.prof.setProficiency(playerDevelopmentData, profType, profLevel)
+function util.prof.setProficiency(playerDevelopmentData, profType, profLevel, exp)
     -- Reduce the perk points if prof level was greater than or equal to certain values.
     if playerDevelopmentData:GetProficiencyLevel(profType) >= 15 then
         playerDevelopmentData:AddDevelopmentPoints(-1,gamedataDevelopmentPointType.Primary)
@@ -118,18 +124,24 @@ function util.prof.setProficiency(playerDevelopmentData, profType, profLevel)
     if profLevel > 1 then
         playerDevelopmentData:SetLevel(profType,profLevel,telemetryLevelGainReason.Ignore)
     end
+
+    playerDevelopmentData:AddExperience(exp,profType,telemetryLevelGainReason.Ignore)
 end
 
 function util.prof.setProficiencies(playerDevelopmentData, profLevelList)
     for key, value in pairs(profLevelList) do
-        util.prof.setProficiency(playerDevelopmentData,(gamedataProficiencyType[value.name]),value.lvl)
+        util.prof.setProficiency(playerDevelopmentData,(gamedataProficiencyType[value.name]),value.lvl,value.exp)
     end
 end
 
 -- Returns the profLevelList with the levels from the player
-function util.prof.getProficiencies(playerDevelopmentData,profLevelList)
-    for key, value in pairs(profLevelList) do
-        value.lvl = playerDevelopmentData:GetProficiencyLevel(gamedataProficiencyType[value.name])
+function util.prof.getProficiencies(playerDevelopmentData)
+    profLevelList = {}
+    for key, value in pairs(defaultProfLevelList) do
+        local tlvl = playerDevelopmentData:GetProficiencyLevel(gamedataProficiencyType[value.name])
+        local texp = playerDevelopmentData:GetProficiencyExperience(gamedataProficiencyType[value.name])
+
+        table.insert(profLevelList,{name=value.name,lvl=tlvl,exp=texp})
     end
     return profLevelList
 end

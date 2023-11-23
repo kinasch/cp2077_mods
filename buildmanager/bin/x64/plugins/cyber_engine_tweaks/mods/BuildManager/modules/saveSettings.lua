@@ -16,9 +16,15 @@ function saveSettings.saveData(name,attributes,perks,currLevel,proficiencies)
     --spdlog.info("Saving,sS.saveData: "..tostring(saveSettings.tryToSaveSettings()))
 end
 
-function saveSettings.saveOptions(saveLimit,saveCharacterLimit)
-    saveSettings.options = {saveLimit=saveLimit,saveCharacterLimit=saveCharacterLimit}
+function saveSettings.saveOptions(options)
+    saveSettings.options = options
     saveSettings.tryToSaveSettings()
+    --spdlog.info("Saving,sS.saveOptions: "..tostring(saveSettings.tryToSaveSettings()))
+end
+function saveSettings.loadOptions()
+    saveSettings.tryToLoadSettings()
+    return saveSettings.options
+    
     --spdlog.info("Saving,sS.saveOptions: "..tostring(saveSettings.tryToSaveSettings()))
 end
 
