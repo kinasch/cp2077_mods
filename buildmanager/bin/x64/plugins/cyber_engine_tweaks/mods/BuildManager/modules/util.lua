@@ -1,185 +1,188 @@
-util = {attributes={},perk={},traits={},prof={}}
+util = {attributes={},perk={},prof={}}
 
-local oneProfs = {
-	{name="Assault",level=1,pp={3,6,9,10,12,15,18},xp=0.0},
-	{name="Athletics",level=1,pp={3,7,8,10,11,16,19},xp=0.0},
-	{name="Brawling",level=1,pp={3,6,9,10,12,15,18},xp=0.0},
-	{name="ColdBlood",level=1,pp={4,5,9,10,11,13,17},xp=0.0},
-	{name="CombatHacking",level=1,pp={2,4,9,11,14,19},xp=0.0},
-	{name="Crafting",level=1,pp={4,6,8,10,14,17},xp=0.0},
-	{name="Demolition",level=1,pp={3,6,9,10,12,15,18},xp=0.0},
-	{name="Engineering",level=1,pp={2,6,8,10,14,17,18},xp=0.0},
-	{name="Gunslinger",level=1,pp={3,6,9,10,12,15,18},xp=0.0},
-	{name="Hacking",level=1,pp={2,6,10,14,16,18},xp=0.0},
-	{name="Kenjutsu",level=1,pp={3,8,9,10,14,16,17},xp=0.0},
-	{name="Stealth",level=1,pp={3,5,7,10,13,17,18},xp=0.0}
+local defaultProfLevelList = {
+	{name="StrengthSkill",lvl=1,exp=0},
+	{name="ReflexesSkill",lvl=1,exp=0},
+	{name="CoolSkill",lvl=1,exp=0},
+	{name="IntelligenceSkill",lvl=1,exp=0},
+	{name="TechnicalAbilitySkill",lvl=1,exp=0}
 }
 
 -- ##########################################################################
+-- Save Functions
+-- ##########################################################################
+-- Returns attributes, perks, buildLevel and proficiencies.
+function util.createNewSave(name, playerDevelopmentData,profLevelList)
+    local attributes,perks,buildLevel,profs = nil,nil,nil,nil
+    -- Get Attributes and their levels
+    attributes = util.attributes.getAttributes(playerDevelopmentData)
+    -- Get Perks and their levels
+    perks = util.perk.getPerks(playerDevelopmentData)
+    -- Get current Player Level to only show builds you can afford.
+    buildLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), 'PowerLevel')
+
+    -- Get the profs
+    profs = profLevelList
+
+    return attributes,perks,buildLevel,profs
+end
+
+
+-- ##########################################################################
+-- Load Functions
+-- ##########################################################################
+function util.setBuild(playerDevelopmentData, save)
+    -- save = {attributes:{},perks:{}}
+    util.tabulaRasa(playerDevelopmentData)
+
+    tempPP = util.prof.getPerkPointsFromProfs(save.profs)
+
+    util.attributes.buyAttributes(playerDevelopmentData, save.attributes)
+
+    util.givePerkPoints(playerDevelopmentData, tempPP)
+    util.perk.buyPerks(playerDevelopmentData, save.perks)
+
+    util.prof.setProficiencies(playerDevelopmentData, save.profs)
+    util.givePerkPoints(playerDevelopmentData, -tempPP)
+end
+
+
+
+-- ##########################################################################
 -- Attribute Functions
+-- ##########################################################################
 function util.attributes.getAttributes(playerDevelopmentData)
-    local attr = {names={},levels={}}
+    local attr = {}
     local gameAttr = playerDevelopmentData:GetAttributes()
     local counter = 1
 
     for l,attribute in ipairs(gameAttr) do
-        if attribute.attributeName.value == "Gunslinger" then goto continue end
-        attr.names[counter] = attribute.attributeName
-        attr.levels[counter] = attribute.value
+        if attribute.attributeName.value == "Gunslinger" or attribute.attributeName.value == "Espionage" then goto continue end
+        attr[counter] = {name=attribute.attributeName.value,level=attribute.value}
         counter = counter + 1
         ::continue::
     end
 
     return attr
 end
-function util.attributes.getRemainingAttrPoints(attr)
-    local levelSum = 0
-    for index, value in ipairs(attr.levels) do
-        levelSum = levelSum + value
-    end
-    return (levelSum - 15)
-end
-
-function util.attributes.setAttributes(playerDevelopmentData,attr,sameLevel)
-    -- local attr = {names={},levels={}}
-    if sameLevel ~= nil then
-        for i = 1,#attr.names,1 do
-            playerDevelopmentData:SetAttribute(attr.names[i],sameLevel)
-        end
-    end
-end
 
 function util.attributes.buyAttributes(playerDevelopmentData,attr)
-    -- local attr = {names={},levels={}}
-    for l,name in ipairs(attr.names) do
-        local lvl = (attr.levels[l]-3)
-        for i = 1,lvl,1 do
-            playerDevelopmentData:BuyAttribute(name)
+    -- local attr = { {name,level},{name,level},... }
+    for l,a in ipairs(attr) do
+        for i = 3,a.level-1,1 do
+            playerDevelopmentData:BuyAttribute(gamedataStatType[a.name])
         end
     end
 end
 
 -- ##########################################################################
 -- Perk Functions
+-- ##########################################################################
+
+-- Maybe try to get Perks in order?
 function util.perk.getPerks(playerDevelopmentData)
-    local boughtPerks = playerDevelopmentData:GetBoughtPerks()
-    local perksByAmountBought = {}
+    local attributeData = playerDevelopmentData:GetAttributesData()
+    local perks = {}
     local counter = 1
-    for l,perk in ipairs(boughtPerks) do
-        for i = 1,perk.currLevel,1 do
-            perksByAmountBought[counter] = perk.type
-            counter = counter + 1
-        end
-    end
-    return perksByAmountBought
-end
-
-function util.perk.buyPerks(playerDevelopmentData, perkEnums)
-    for i,perk in ipairs(perkEnums) do
-        playerDevelopmentData:BuyPerk(perk)
-    end
-end
-
--- ##########################################################################
--- Trait Functions
-function util.traits.getTraits(playerDevelopmentData)
-    local boughtTraits = playerDevelopmentData:GetBoughtTraits()
-    local traitsByAmountBought = {}
-    local counter = 1
-    for l,trait in ipairs(boughtTraits) do
-        for i = 1,trait.currLevel,1 do
-            traitsByAmountBought[counter] = trait.type
-            counter = counter + 1
-        end
-    end
-    return traitsByAmountBought
-end
-
-function util.traits.buyTraits(playerDevelopmentData, traitEnums)
-    for i,trait in ipairs(traitEnums) do
-        playerDevelopmentData:IncreaseTraitLevel(trait)
-    end
-end
-
--- ##########################################################################
--- Proficiencies
-
-function util.prof.setProficiencies(playerDevelopmentData,profs)
-    for k,attr in pairs(profs) do
-        local oldLevel = playerDevelopmentData:GetProficiencyLevel(gamedataProficiencyType[attr.name])
-        if attr.level == oldLevel then goto contSetProf end
-
-        playerDevelopmentData:SetLevel(gamedataProficiencyType[attr.name],attr.level,telemetryLevelGainReason.Ignore)
-
-        if attr.xp < 1 or playerDevelopmentData:IsProficiencyMaxLvl(gamedataProficiencyType[attr.name]) then goto afterXP end
-        playerDevelopmentData:AddExperience(attr.xp,gamedataProficiencyType[attr.name],telemetryLevelGainReason.Ignore)
-
-        ::afterXP::
-
-        if attr.level > oldLevel then goto contSetProf end
-        local count = 0
-        for ppK,ppAttr in pairs(attr.pp) do
-            if ppAttr > attr.level and ppAttr <= oldLevel then
-                count = count - 1
+    for l,attrData in ipairs(attributeData) do
+        for k,perk in ipairs(attrData.unlockedPerks) do
+            if perk.currLevel > 0 then
+                perks[counter] = {name=perk.type.value,level=perk.currLevel}
+                counter = counter + 1
             end
         end
-        playerDevelopmentData:AddDevelopmentPoints(count,gamedataDevelopmentPointType.Primary)
+    end
+    return perks
+end
 
-        if oldLevel == 20 and attr.level < 20 then
-            playerDevelopmentData:LockTraitOfProf(gamedataProficiencyType[attr.name])
+-- Cannot be done like this
+-- Perks now need to be bought in an order.
+function util.perk.buyPerks(playerDevelopmentData, perks)
+    -- local perks = { {name,level},{name,level},... }
+    for l,p in ipairs(perks) do
+        for i = 1,p.level,1 do
+            playerDevelopmentData:UnlockNewPerk(gamedataNewPerkType[p.name])
+            playerDevelopmentData:BuyNewPerk(gamedataNewPerkType[p.name],false)
         end
+    end
+end
 
-        ::contSetProf::
+
+-- ##########################################################################
+-- Proficiency Functions
+-- ##########################################################################
+function util.prof.setProficiency(playerDevelopmentData, profType, profLevel, exp)
+    -- Reduce the perk points if prof level was greater than or equal to certain values.
+    if playerDevelopmentData:GetProficiencyLevel(profType) >= 15 then
+        playerDevelopmentData:AddDevelopmentPoints(-1,gamedataDevelopmentPointType.Primary)
+    end
+    if playerDevelopmentData:GetProficiencyLevel(profType) >= 35 then
+        playerDevelopmentData:AddDevelopmentPoints(-1,gamedataDevelopmentPointType.Primary)
     end
 
-    return true
-    --playerDevelopmentData:RefreshProficiencyStats()
+    playerDevelopmentData:SetLevel(profType,1,telemetryLevelGainReason.Ignore)
+    if profLevel > 1 then
+        playerDevelopmentData:SetLevel(profType,profLevel,telemetryLevelGainReason.Ignore)
+    end
+
+    playerDevelopmentData:AddExperience(exp,profType,telemetryLevelGainReason.Ignore)
 end
+
+function util.prof.setProficiencies(playerDevelopmentData, profLevelList)
+    for key, value in pairs(profLevelList) do
+        util.prof.setProficiency(playerDevelopmentData,(gamedataProficiencyType[value.name]),value.lvl,value.exp)
+    end
+end
+
+-- Returns the profLevelList with the levels from the player
+function util.prof.getProficiencies(playerDevelopmentData)
+    profLevelList = {}
+    for key, value in pairs(defaultProfLevelList) do
+        local tlvl = playerDevelopmentData:GetProficiencyLevel(gamedataProficiencyType[value.name])
+        local texp = playerDevelopmentData:GetProficiencyExperience(gamedataProficiencyType[value.name])
+
+        table.insert(profLevelList,{name=value.name,lvl=tlvl,exp=texp})
+    end
+    return profLevelList
+end
+
+-- Returns the profLevelList with the levels from the player
+function util.prof.getPerkPointsFromProfs(profLevelList)
+    perkPoints = 0
+    for key, value in pairs(profLevelList) do
+        tempValue = 0
+        if value.lvl >= 15 then
+            tempValue = 1
+        elseif value.lvl >= 35 then
+            tempValue = 2
+        end
+        perkPoints = perkPoints + tempValue
+    end
+    return perkPoints
+end
+
 
 -- ##########################################################################
 -- General Functions
-function util.EnumValuesToString(enums)
-    local strings = {}
-    for i,enum in ipairs(enums) do
-        strings[i] = enum.value
-    end
-    return strings
+-- ##########################################################################
+
+-- Reset every part of the development data.
+-- Currently only attributes and perks
+function util.tabulaRasa(playerDevelopmentData)
+    playerDevelopmentData:ResetNewPerks()
+	playerDevelopmentData:ResetAttributes()
+    util.prof.setProficiencies(playerDevelopmentData,defaultProfLevelList)
 end
 
-function util.tabulaRasa(playerDevelopmentData,attr)
-    playerDevelopmentData:RemoveAllPerks(true)
-    -- Reset Proficiencies
-    util.prof.setProficiencies(playerDevelopmentData,oneProfs)
-
-    -- Reset Attributes
-    local points = util.attributes.getRemainingAttrPoints(attr)
-    playerDevelopmentData:AddDevelopmentPoints(points,gamedataDevelopmentPointType.Attribute)
-    util.attributes.setAttributes(playerDevelopmentData,attr,3)
-    playerDevelopmentData:ResetSpentDevPoints(gamedataDevelopmentPointType.Attribute)
+-- Returns the length of a given table.
+function util.tableLength(T)
+	local count = 0
+	for _ in pairs(T) do count = count + 1 end
+	return count
 end
 
--- Following functions could technically be put into one with a second parameter
--- Thus they are in the general tab
-function util.traits.StringToEnumValues(strings)
-    local enums = {}
-    for i,s in ipairs(strings) do
-        enums[i] = gamedataTraitType[s]
-    end
-    return enums
-end
-function util.perk.StringToEnumValues(perkStrings)
-    local perkEnums = {}
-    for i,perk in ipairs(perkStrings) do
-        perkEnums[i] = gamedataPerkType[perk]
-    end
-    return perkEnums
-end
-function util.attributes.StringToEnumValues(attrStrings)
-    local attrEnums = {}
-    for i,attr in ipairs(attrStrings) do
-        attrEnums[i] = gamedataStatType[attr]
-    end
-    return attrEnums
+function util.givePerkPoints(playerDevelopmentData,amount)
+    playerDevelopmentData:AddDevelopmentPoints(amount,gamedataDevelopmentPointType.Primary)
 end
 
 return util
