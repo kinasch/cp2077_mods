@@ -112,9 +112,28 @@ registerForEvent("onDraw",function ()
 		ImGui.BeginGroup()
 		for k,attr in pairs(saveSettings.settings) do
 			if ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30) then
-				savePLL = util.prof.getProficiencies(playerDevelopmentData)
-				saveSettings.saveData(k,util.createNewSave(k,playerDevelopmentData,savePLL))
+				deleteNameText = k
+				ImGui.OpenPopup("Overwrite Save (Save Tab)")
 			end
+
+			-------------------------------
+			-- Overwrite Save Popup (Save Tab)
+			if ImGui.BeginPopupModal("Overwrite Save (Save Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
+				ImGui.Text("Overwrite save?\n"..deleteNameText)
+				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
+					savePLL = util.prof.getProficiencies(playerDevelopmentData)
+					saveSettings.saveData(deleteNameText,util.createNewSave(deleteNameText,playerDevelopmentData,savePLL))
+					deleteNameText = ""
+					ImGui.CloseCurrentPopup()
+				end
+				if ImGui.Button("No",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
+					deleteNameText = ""
+					ImGui.CloseCurrentPopup()
+				end
+				ImGui.EndPopup()
+			end
+			-- Overwrite Save Popup (Save Tab)
+			-------------------------------
 
 			ImGui.SameLine()
 			ImGui.PushID("info"..k)
@@ -395,35 +414,6 @@ registerForEvent("onDraw",function ()
 		ImGui.Separator()
 		ImGui.TextWrapped("Allow manual modification of the skills?")
 		options.letProfs = ImGui.Checkbox("Allow?", options.letProfs)
-
-		ImGui.EndTabItem()
-	end
-
-
-	-- #####################################################################################################
-	-- Test Tab
-	if ImGui.BeginTabItem("Test") then
-		ImGui.TextWrapped(debugText)
-		if ImGui.Button("Save settings to file",(0.95*ImGui.GetWindowWidth()),50) then
-			spdlog.info("Saving,Test: "..tostring(saveSettings.tryToLoadSettings()))
-		end
-		ImGui.Separator()
-		if ImGui.Button("Debug: Print profs",(0.95*ImGui.GetWindowWidth()),30) then
-			for k,v in pairs(profLevelList) do
-				print(v.name..":"..v.lvl)
-			end
-		end
-
-		if ImGui.BeginTable("test",2) then
-			for i=0,10,1 do
-				ImGui.TableNextRow()
-				ImGui.TableNextColumn()
-				ImGui.Text("links"..i)
-				ImGui.TableNextColumn()
-				ImGui.Text("rechts"..i)
-			end
-			ImGui.EndTable()
-		end
 
 		ImGui.EndTabItem()
 	end
