@@ -1,14 +1,15 @@
 -- Default values are taken from the respective TweakDB defaults
 saveSettings = { settings = {},options = {saveLimit=10,saveCharacterLimit=64} }
 
-function saveSettings.saveData(name,attributes,perks,currLevel,proficiencies)
+function saveSettings.saveData(name,attributes,perks,currLevel,proficiencies,usedPoints)
     saveSettings.settings[name] = {
         -- Order: Attribute,Amount
         attributes = attributes,
         -- Order: Perk1,Perk1,Perk2,Perk3,Perk3,Perk3
         perks = perks,
         buildLevel = currLevel,
-        profs = proficiencies
+        profs = proficiencies,
+        usedPoints = usedPoints
     }
 
     -- WARNING
