@@ -129,7 +129,7 @@ function util.getUrlForCurrentBuild(playerDevelopmentData)
         end
     end
 
-    url = url .. "https://www.cyberpunk.net/de/build-planner" .. urlComponents.a
+    url = url .. "https://www.cyberpunk.net/en/build-planner" .. urlComponents.a
 
     -- Combine all perkLists into one list.
     perkListsCombined = {}
