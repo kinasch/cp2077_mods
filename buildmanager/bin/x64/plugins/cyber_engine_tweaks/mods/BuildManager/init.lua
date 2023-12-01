@@ -12,7 +12,8 @@ local profLevelList = {
 	{name="IntelligenceSkill",lvl=1,exp=0},
 	{name="TechnicalAbilitySkill",lvl=1,exp=0}
 }
-local saveNameText, deleteNameText, infoSave, importURL = "", "", {}, ""
+local saveNameText, deleteNameText, infoSave = "", "", {}
+local importURL, exportURL = "",""
 local profOpened = true
 
 -- Variables for the options
@@ -99,7 +100,7 @@ registerForEvent("onDraw",function ()
 		if ImGui.Button("New Save",(0.95*ImGui.GetWindowWidth()),50) then
 			if saveNameText ~= nil and saveNameText ~= "" and util.tableLength(saveSettings.settings) < options.saveLimit then
 				savePLL = util.prof.getProficiencies(playerDevelopmentData)
-				saveSettings.saveData(saveNameText,util.createNewSave(saveNameText,playerDevelopmentData,savePLL))
+				saveSettings.saveData(saveNameText,util.createNewSave(playerDevelopmentData,savePLL))
 				saveNameText = ""
 			else
 				ImGui.OpenPopup("Save Limit reached / No name entered")
@@ -122,7 +123,7 @@ registerForEvent("onDraw",function ()
 				ImGui.Text("Overwrite save?\n"..deleteNameText)
 				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
 					savePLL = util.prof.getProficiencies(playerDevelopmentData)
-					saveSettings.saveData(deleteNameText,util.createNewSave(deleteNameText,playerDevelopmentData,savePLL))
+					saveSettings.saveData(deleteNameText,util.createNewSave(playerDevelopmentData,savePLL))
 					deleteNameText = ""
 					ImGui.CloseCurrentPopup()
 				end
@@ -465,7 +466,7 @@ registerForEvent("onDraw",function ()
 		ImGui.SetNextItemWidth(0.9*ImGui.GetWindowWidth()-ImGui.CalcTextSize("URL"))
 		-- Create a new inputText to let the user name the save.
 		importURL = ImGui.InputText("URL", importURL, 300)
-		if ImGui.Button("Import and Load",(0.95*ImGui.GetWindowWidth()),50) then
+		if ImGui.Button("Import and Load",(0.95*ImGui.GetWindowWidth()),30) then
 			if importURL ~= nil and importURL ~= "" then
 				ImGui.OpenPopup("Import Save Popup (Import Tab)")
 			else
@@ -501,6 +502,26 @@ registerForEvent("onDraw",function ()
 		end
 		-- No URL entered
 		-----------------
+
+		-- #####################################################
+		-- Export
+		ImGui.Spacing()
+		ImGui.Separator()
+		ImGui.Spacing()
+		if ImGui.Button("Current Build To Url",(0.95*ImGui.GetWindowWidth()),30) then
+			exportURL = tostring(util.getUrlForCurrentBuild(playerDevelopmentData))
+		end
+		-- Set Output width to a value, such that the small button is still visible fully.
+		ImGui.SetNextItemWidth(0.95*ImGui.GetWindowWidth()-ImGui.CalcTextSize("--------"))
+		ImGui.PushID("exportoutput")
+		ImGui.InputText("", exportURL, 300, ImGuiInputTextFlags.ReadOnly)
+		ImGui.PopID()
+		ImGui.SameLine()
+		ImGui.PushID("clearexport")
+		if ImGui.SmallButton(IconGlyphs.DeleteOutline) then
+			exportURL = ""
+		end
+		ImGui.PopID()
 
 		ImGui.EndTabItem()
 	end
