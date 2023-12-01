@@ -12,7 +12,8 @@ local profLevelList = {
 	{name="IntelligenceSkill",lvl=1,exp=0},
 	{name="TechnicalAbilitySkill",lvl=1,exp=0}
 }
-local saveNameText, deleteNameText, infoSave = "","",{}
+local saveNameText, deleteNameText, infoSave = "", "", {}
+local importURL, exportURL = "",""
 local profOpened = true
 
 -- Variables for the options
@@ -82,7 +83,7 @@ registerForEvent("onDraw",function ()
 	
 	-- Create new window for the build manager (randomly chosen values by me)
 	ImGui.SetNextWindowPos(100, 700, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSize(300, 500,ImGuiCond.Appearing)
+	ImGui.SetNextWindowSize(400, 500,ImGuiCond.Appearing)
 	ImGui.Begin("BuildManager")
 
 	-- Create a tab bar to access the different tabs
@@ -99,7 +100,7 @@ registerForEvent("onDraw",function ()
 		if ImGui.Button("New Save",(0.95*ImGui.GetWindowWidth()),50) then
 			if saveNameText ~= nil and saveNameText ~= "" and util.tableLength(saveSettings.settings) < options.saveLimit then
 				savePLL = util.prof.getProficiencies(playerDevelopmentData)
-				saveSettings.saveData(saveNameText,util.createNewSave(saveNameText,playerDevelopmentData,savePLL))
+				saveSettings.saveData(saveNameText,util.createNewSave(playerDevelopmentData,savePLL))
 				saveNameText = ""
 			else
 				ImGui.OpenPopup("Save Limit reached / No name entered")
@@ -122,7 +123,7 @@ registerForEvent("onDraw",function ()
 				ImGui.Text("Overwrite save?\n"..deleteNameText)
 				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
 					savePLL = util.prof.getProficiencies(playerDevelopmentData)
-					saveSettings.saveData(deleteNameText,util.createNewSave(deleteNameText,playerDevelopmentData,savePLL))
+					saveSettings.saveData(deleteNameText,util.createNewSave(playerDevelopmentData,savePLL))
 					deleteNameText = ""
 					ImGui.CloseCurrentPopup()
 				end
@@ -139,15 +140,15 @@ registerForEvent("onDraw",function ()
 			ImGui.PushID("info"..k)
 			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
 				infoSave = attr
-				ImGui.OpenPopup("Info (Save Tab)")
+				ImGui.OpenPopup("Info for \""..k.."\" (Save Tab)")
 			end
 
 			-------------------------------
 			-- Info Popup (Save Tab)
-			if ImGui.BeginPopupModal("Info (Save Tab)", ImGuiWindowFlags.AlwaysAutoResize) then
+			if ImGui.BeginPopupModal("Info for \""..k.."\" (Save Tab)", ImGuiWindowFlags.AlwaysAutoResize) then
 
 				ImGui.Text("Build Level: "..infoSave.buildLevel)
-				ImGui.Spacing()
+				ImGui.Separator()
 
 				if ImGui.BeginTable("attributes",2) then
 					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
@@ -155,13 +156,32 @@ registerForEvent("onDraw",function ()
 					for ik,v in pairs(infoSave.attributes) do
 						ImGui.TableNextRow()
 						ImGui.TableNextColumn()
-						ImGui.Text(v.name)
+						ImGui.Text(GetLocalizedText(TweakDB:GetRecord("BaseStats."..v.name):LocalizedName()))
 						ImGui.TableNextColumn()
 						ImGui.Text(""..v.level)
 					end
+					-- Spacing Row
+					ImGui.TableNextRow()
+					ImGui.TableNextColumn()
+					ImGui.Text("--------------------------")
+					ImGui.TableNextColumn()
+					ImGui.Text("")
+					
+					-- Used Points Rows
+					ImGui.TableNextRow()
+					ImGui.TableNextColumn()
+					ImGui.Text("Used Attribute Points:")
+					ImGui.TableNextColumn()
+					ImGui.Text(""..infoSave.usedPoints.attributePoints)
+					ImGui.TableNextRow()
+					ImGui.TableNextColumn()
+					ImGui.Text("Used Perk Points:")
+					ImGui.TableNextColumn()
+					ImGui.Text(""..infoSave.usedPoints.perkPoints)
+
 					ImGui.EndTable()
 				end
-				ImGui.Spacing()
+				ImGui.Separator()
 
 				if ImGui.BeginTable("profs",2) then
 					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
@@ -219,7 +239,7 @@ registerForEvent("onDraw",function ()
 
 		ImGui.EndGroup()
 
-		-- ##########
+		---------------------------------------------
 		-- Save Limit reached / No name entered Popup
 		if ImGui.BeginPopupModal("Save Limit reached / No name entered", true, ImGuiWindowFlags.AlwaysAutoResize) then
 			ImGui.Text("No name entered or save limit ("..options.saveLimit..") reached.")
@@ -228,6 +248,8 @@ registerForEvent("onDraw",function ()
 			end
 			ImGui.EndPopup()
 		end
+		-- Save Limit reached / No name entered Popup
+		---------------------------------------------
 
 		ImGui.EndTabItem()
 	end
@@ -241,22 +263,38 @@ registerForEvent("onDraw",function ()
 		ImGui.BeginGroup()
 		for k,attr in pairs(saveSettings.settings) do
 			if ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30) then
-				util.setBuild(playerDevelopmentData, saveSettings.settings[k])
+				ImGui.OpenPopup("Load Save \""..k.."\"")
 			end
+
+			-------------------------------
+			-- Load Save Popup
+			if ImGui.BeginPopupModal("Load Save \""..k.."\"", true, ImGuiWindowFlags.AlwaysAutoResize) then
+				ImGui.Text("Load selected save and overwrite current build?")
+				if ImGui.Button("Yes",ImGui.CalcTextSize("Load selected save and overwrite current build"),25) then
+					util.setBuild(playerDevelopmentData, saveSettings.settings[k])
+					ImGui.CloseCurrentPopup()
+				end
+				if ImGui.Button("No",ImGui.CalcTextSize("Load selected save and overwrite current build"),25) then
+					ImGui.CloseCurrentPopup()
+				end
+				ImGui.EndPopup()
+			end
+			-- Load Save Popup
+			-------------------------------
 
 			ImGui.SameLine()
 			ImGui.PushID("info"..k)
 			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
 				infoSave = attr
-				ImGui.OpenPopup("Info (Load Tab)")
+				ImGui.OpenPopup("Info for \""..k.."\" (Load Tab)")
 			end
 
 			-------------------------------
 			-- Info Popup (Load Tab)
-			if ImGui.BeginPopupModal("Info (Load Tab)", ImGuiWindowFlags.AlwaysAutoResize) then
+			if ImGui.BeginPopupModal("Info for \""..k.."\" (Load Tab)", ImGuiWindowFlags.AlwaysAutoResize) then
 
 				ImGui.Text("Build Level: "..infoSave.buildLevel)
-				ImGui.Spacing()
+				ImGui.Separator()
 
 				if ImGui.BeginTable("attributes",2) then
 					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
@@ -264,13 +302,32 @@ registerForEvent("onDraw",function ()
 					for ik,v in pairs(infoSave.attributes) do
 						ImGui.TableNextRow()
 						ImGui.TableNextColumn()
-						ImGui.Text(v.name)
+						ImGui.Text(GetLocalizedText(TweakDB:GetRecord("BaseStats."..v.name):LocalizedName()))
 						ImGui.TableNextColumn()
 						ImGui.Text(""..v.level)
 					end
+					-- Spacing Row
+					ImGui.TableNextRow()
+					ImGui.TableNextColumn()
+					ImGui.Text("--------------------------")
+					ImGui.TableNextColumn()
+					ImGui.Text("")
+					
+					-- Used Points Rows
+					ImGui.TableNextRow()
+					ImGui.TableNextColumn()
+					ImGui.Text("Used Attribute Points:")
+					ImGui.TableNextColumn()
+					ImGui.Text(""..infoSave.usedPoints.attributePoints)
+					ImGui.TableNextRow()
+					ImGui.TableNextColumn()
+					ImGui.Text("Used Perk Points:")
+					ImGui.TableNextColumn()
+					ImGui.Text(""..infoSave.usedPoints.perkPoints)
+
 					ImGui.EndTable()
 				end
-				ImGui.Spacing()
+				ImGui.Separator()
 
 				if ImGui.BeginTable("profs",2) then
 					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
@@ -398,6 +455,73 @@ registerForEvent("onDraw",function ()
 			if ImGui.Button("No",50,25) then ImGui.CloseCurrentPopup() end
 			ImGui.EndPopup()
 		end
+
+		ImGui.EndTabItem()
+	end
+
+
+	-- #####################################################################################################
+	-- Import/Export Tab
+	if ImGui.BeginTabItem("Import/Export") then
+		ImGui.SetNextItemWidth(0.9*ImGui.GetWindowWidth()-ImGui.CalcTextSize("URL"))
+		-- Create a new inputText to let the user name the save.
+		importURL = ImGui.InputText("URL", importURL, 300)
+		if ImGui.Button("Import and Load",(0.95*ImGui.GetWindowWidth()),30) then
+			if importURL ~= nil and importURL ~= "" then
+				ImGui.OpenPopup("Import Save Popup (Import Tab)")
+			else
+				ImGui.OpenPopup("No URL entered")
+			end
+		end
+
+		-------------------------------
+		-- Import Save Popup (Import Tab)
+		if ImGui.BeginPopupModal("Import Save Popup (Import Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
+			ImGui.Text("Overwrite your current build with the import?")
+			if ImGui.Button("Yes",ImGui.CalcTextSize("Overwrite your current build with the import"),25) then
+				util.setBuildFromURL(playerDevelopmentData,importURL)
+				ImGui.CloseCurrentPopup()
+			end
+			if ImGui.Button("No",ImGui.CalcTextSize("Overwrite your current build with the import"),25) then
+				importURL = ""
+				ImGui.CloseCurrentPopup()
+			end
+			ImGui.EndPopup()
+		end
+		-- Import Save Popup (Import Tab)
+		-------------------------------
+
+		-----------------
+		-- No URL entered
+		if ImGui.BeginPopupModal("No URL entered", true, ImGuiWindowFlags.AlwaysAutoResize) then
+			ImGui.Text("No URL entered.")
+			if ImGui.Button("Understood",ImGui.CalcTextSize("No URL entered"),25) then
+				ImGui.CloseCurrentPopup()
+			end
+			ImGui.EndPopup()
+		end
+		-- No URL entered
+		-----------------
+
+		-- #####################################################
+		-- Export
+		ImGui.Spacing()
+		ImGui.Separator()
+		ImGui.Spacing()
+		if ImGui.Button("Current Build To Url",(0.95*ImGui.GetWindowWidth()),30) then
+			exportURL = tostring(util.getUrlForCurrentBuild(playerDevelopmentData))
+		end
+		-- Set Output width to a value, such that the small button is still visible fully.
+		ImGui.SetNextItemWidth(0.95*ImGui.GetWindowWidth()-ImGui.CalcTextSize("--------"))
+		ImGui.PushID("exportoutput")
+		ImGui.InputText("", exportURL, 300, ImGuiInputTextFlags.ReadOnly)
+		ImGui.PopID()
+		ImGui.SameLine()
+		ImGui.PushID("clearexport")
+		if ImGui.SmallButton(IconGlyphs.DeleteOutline) then
+			exportURL = ""
+		end
+		ImGui.PopID()
 
 		ImGui.EndTabItem()
 	end
