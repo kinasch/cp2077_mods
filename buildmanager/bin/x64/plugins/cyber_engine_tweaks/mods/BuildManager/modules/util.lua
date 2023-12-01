@@ -74,7 +74,7 @@ function util.setBuildFromURL(playerDevelopmentData,url)
     aTable = {}
     ---@diagnostic disable-next-line: discard-returns
     aString:gsub(".",function(c) table.insert(aTable,tonumber(c,21)) end)
-    attr = {"Body","Reflexes","Intelligence","TechnicalAbility","Cool"}
+    attr = {"Strength","Reflexes","Intelligence","TechnicalAbility","Cool"}
     for index, value in ipairs(aTable) do
         table.insert(newSave.attributes,{name=attr[index],level=value})
     end
