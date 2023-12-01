@@ -83,7 +83,7 @@ registerForEvent("onDraw",function ()
 	
 	-- Create new window for the build manager (randomly chosen values by me)
 	ImGui.SetNextWindowPos(100, 700, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSize(370, 500,ImGuiCond.Appearing)
+	ImGui.SetNextWindowSize(400, 500,ImGuiCond.Appearing)
 	ImGui.Begin("BuildManager")
 
 	-- Create a tab bar to access the different tabs
