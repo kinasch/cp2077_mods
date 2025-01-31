@@ -549,22 +549,27 @@ registerForEvent("onDraw",function ()
 		ImGui.Separator()
 		if ImGui.Button("DEBUG: Save Hand CW to options",200,25) then
 			local itemIDTemp = Game.GetPlayer():GetEquippedItemIdInArea(gamedataEquipmentArea.MusculoskeletalSystemCW,1)
-			options.testCW.ToTweakDBID.hash = itemIDTemp.id.hash
-			options.testCW.ToTweakDBID.length = itemIDTemp.id.length
-			options.testCW.rng_seed = itemIDTemp.rng_seed
-			print(options.testCW.ToTweakDBID.hash, options.testCW.ToTweakDBID.length, options.testCW.rng_seed)
+			options.testCW.testItem = itemIDTemp
+			print(itemIDTemp)
+			--options.testCW.ToTweakDBID.hash = itemIDTemp.id.hash
+			--options.testCW.ToTweakDBID.length = itemIDTemp.id.length
+			--options.testCW.rng_seed = itemIDTemp.rng_seed
+			--print(options.testCW.ToTweakDBID.hash, options.testCW.ToTweakDBID.length, options.testCW.rng_seed)
+		end
+		if ImGui.Button("DEBUG: Clear testCW option locally",200,25) then
+			options.testCW.testItem = nil
 		end
 		if ImGui.Button("DEBUG: Unequip Hand CW 0",200,25) then
 			local localTestCW = options.testCW
-			EquipmentSystem.GetData(Game.GetPlayer()):UnequipItem(ToItemID{
-				id=ToTweakDBID{hash=localTestCW.ToTweakDBID.hash, length=localTestCW.ToTweakDBID.length},rng_seed=localTestCW.rng_seed
-			})
+			EquipmentSystem.GetData(Game.GetPlayer()):UnequipItem(
+				options.testCW.testItem
+			)
 		end
 		if ImGui.Button("DEBUG: Equip Hand CW 0",200,25) then
 			local localTestCW = options.testCW
-			EquipmentSystem.GetData(Game.GetPlayer()):EquipItem(ToItemID{
-				id=ToTweakDBID{hash=localTestCW.ToTweakDBID.hash, length=localTestCW.ToTweakDBID.length},rng_seed=localTestCW.rng_seed
-			})
+			EquipmentSystem.GetData(Game.GetPlayer()):EquipItem(
+				options.testCW.testItem
+			)
 		end
 
 		ImGui.EndTabItem()
