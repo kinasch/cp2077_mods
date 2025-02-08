@@ -519,9 +519,15 @@ registerForEvent("onDraw",function ()
 			exportURL = tostring(util.getUrlForCurrentBuild(playerDevelopmentData))
 		end
 		-- Set Output width to a value, such that the small button is still visible fully.
-		ImGui.SetNextItemWidth(0.95*ImGui.GetWindowWidth()-ImGui.CalcTextSize("--------"))
+		ImGui.SetNextItemWidth(0.95*ImGui.GetWindowWidth()-ImGui.CalcTextSize("----------------"))
 		ImGui.PushID("exportoutput")
 		ImGui.InputText("", exportURL, 300, ImGuiInputTextFlags.ReadOnly)
+		ImGui.PopID()
+		ImGui.SameLine()
+		ImGui.PushID("copyexport")
+		if ImGui.SmallButton(IconGlyphs.ContentCopy) then
+			ImGui.SetClipboardText(exportURL)
+		end
 		ImGui.PopID()
 		ImGui.SameLine()
 		ImGui.PushID("clearexport")
@@ -529,6 +535,7 @@ registerForEvent("onDraw",function ()
 			exportURL = ""
 		end
 		ImGui.PopID()
+		ImGui.TextWrapped("Might not work correctly if you used 80 or more perk points and/or more than 66 attribute points.")
 
 		ImGui.EndTabItem()
 	end
