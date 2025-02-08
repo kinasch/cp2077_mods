@@ -528,7 +528,7 @@ registerForEvent("onDraw",function ()
 			exportURL = ""
 		end
 		ImGui.PopID()
-		ImGui.TextWrapped("Might not work correctly if you used 80 or more perk points and/or 66 or more attribute points.")
+		ImGui.TextWrapped("Might not work correctly if you used 80 or more perk points and/or more than 66 attribute points.")
 
 		ImGui.EndTabItem()
 	end
