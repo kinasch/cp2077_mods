@@ -325,6 +325,46 @@ function util.prof.getPerkPointsFromProfs(profLevelList)
     return perkPoints
 end
 
+-- ##########################################################################
+-- Equipment
+-- ##########################################################################
+
+-- Returns all equipped Cyberware in an array consisting of tables with ItemID components
+-- - tdb_name, rng_seed, slotIndex
+function util.getEquippedCyberware()
+    local items = {}
+
+    -- This returns an array of SItemInfo
+    local equippedCyberware = EquipmentSystem.GetData(Game.GetPlayer()):GetAllCyberwareItems()
+    for k,v in pairs(equippedCyberware) do
+        if v.itemID.id.hash ~= 0 then
+            table.insert(items, {tdb_name=v.itemID.id.value,rng_seed=v.itemID.rng_seed,slotIndex=v.slotIndex})
+        end
+    end
+
+    return items
+end
+
+-- Call the ClearEquipment function (removes Cyberware, Weapons and Clothing (Clothing sets are untouched))
+function util.unequipEverything()
+    EquipmentSystem.GetData(GetPlayer()):ClearEquipment()
+end
+
+-- Equip all the cyberware from a list of items. List of items in the style of:
+-- - [{tdb_name, rng_seed, slotIndex}, {tdb_name, rng_seed, slotIndex}, ...]
+function util.equipCyberwareFromItemList(cyberware_items)
+    local items = {}
+    for k,v in pairs(cyberware_items) do
+        local s_item_info = SItemInfo.new()
+        -- v = {tdb_name, rng_seed, slotIndex}
+        s_item_info.itemID = ToItemID{id=TDBID.Create(v.tdb_name), rng_seed=v.rng_seed}
+        s_item_info.slotIndex = v.slotIndex
+        table.insert(items, s_item_info)
+    end
+
+    EquipmentSystem.GetData(Game.GetPlayer()):EquipAllCyberware(items)
+end
+
 
 -- ##########################################################################
 -- General Functions

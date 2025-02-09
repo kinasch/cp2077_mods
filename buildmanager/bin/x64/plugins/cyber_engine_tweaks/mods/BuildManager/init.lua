@@ -23,7 +23,7 @@ local options = {
 	saveLimit=10,
 	saveCharacterLimit=64,
 	letProfs=true,
-	testCW={ToTweakDBID={hash=0,length=0},rng_seed=0}
+	testCW={}
 }
 
 -- Debug Text in the Test tab
@@ -554,24 +554,14 @@ registerForEvent("onDraw",function ()
 		options.letProfs = ImGui.Checkbox("Allow?", options.letProfs)
 
 		ImGui.Separator()
-		if ImGui.Button("DEBUG: Save Hand CW to options",200,25) then
-			local itemIDTemp = Game.GetPlayer():GetEquippedItemIdInArea(gamedataEquipmentArea.MusculoskeletalSystemCW,1)
-			options.testCW.ToTweakDBID.hash = itemIDTemp.id.hash
-			options.testCW.ToTweakDBID.length = itemIDTemp.id.length
-			options.testCW.rng_seed = itemIDTemp.rng_seed
-			print(options.testCW.ToTweakDBID.hash, options.testCW.ToTweakDBID.length, options.testCW.rng_seed)
+		if ImGui.Button("DEBUG: Save CW to options",200,25) then
+			options.testCW = util.getEquippedCyberware()
 		end
-		if ImGui.Button("DEBUG: Unequip Hand CW 0",200,25) then
-			local localTestCW = options.testCW
-			EquipmentSystem.GetData(Game.GetPlayer()):UnequipItem(ToItemID{
-				id=ToTweakDBID{hash=localTestCW.ToTweakDBID.hash, length=localTestCW.ToTweakDBID.length},rng_seed=localTestCW.rng_seed
-			})
+		if ImGui.Button("DEBUG: Unequip CW",200,25) then
+			util.unequipEverything()
 		end
-		if ImGui.Button("DEBUG: Equip Hand CW 0",200,25) then
-			local localTestCW = options.testCW
-			EquipmentSystem.GetData(Game.GetPlayer()):EquipItem(ToItemID{
-				id=ToTweakDBID{hash=localTestCW.ToTweakDBID.hash, length=localTestCW.ToTweakDBID.length},rng_seed=localTestCW.rng_seed
-			})
+		if ImGui.Button("DEBUG: Equip CW from options",200,25) then
+			util.equipCyberwareFromItemList(options.testCW)
 		end
 
 		ImGui.EndTabItem()
