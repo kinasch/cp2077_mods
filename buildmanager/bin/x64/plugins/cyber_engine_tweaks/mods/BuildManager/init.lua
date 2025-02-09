@@ -17,13 +17,13 @@ local importURL, exportURL = "",""
 local profOpened = true
 
 -- Variables for the options
--- testCW = ToItemID
--- ToItemID{id=ToTweakDBID{hash=2311666898, length=40},rng_seed=1758855869}
 local options = {
 	saveLimit=10,
 	saveCharacterLimit=64,
 	letProfs=true,
-	testCW={}
+	-- TODO: Remove testCW
+	testCW={},
+	loadEquipment=false
 }
 
 -- Debug Text in the Test tab
@@ -278,7 +278,7 @@ registerForEvent("onDraw",function ()
 			if ImGui.BeginPopupModal("Load Save \""..k.."\"", true, ImGuiWindowFlags.AlwaysAutoResize) then
 				ImGui.Text("Load selected save and overwrite current build?")
 				if ImGui.Button("Yes",ImGui.CalcTextSize("Load selected save and overwrite current build"),25) then
-					util.setBuild(playerDevelopmentData, saveSettings.settings[k])
+					util.setBuild(playerDevelopmentData, saveSettings.settings[k], options.loadEquipment)
 					ImGui.CloseCurrentPopup()
 				end
 				if ImGui.Button("No",ImGui.CalcTextSize("Load selected save and overwrite current build"),25) then
@@ -486,7 +486,7 @@ registerForEvent("onDraw",function ()
 		if ImGui.BeginPopupModal("Import Save Popup (Import Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
 			ImGui.Text("Overwrite your current build with the import?")
 			if ImGui.Button("Yes",ImGui.CalcTextSize("Overwrite your current build with the import"),25) then
-				util.setBuildFromURL(playerDevelopmentData,importURL)
+				util.setBuildFromURL(playerDevelopmentData,importURL, false)
 				ImGui.CloseCurrentPopup()
 			end
 			if ImGui.Button("No",ImGui.CalcTextSize("Overwrite your current build with the import"),25) then
@@ -552,6 +552,9 @@ registerForEvent("onDraw",function ()
 		ImGui.Separator()
 		ImGui.TextWrapped("Allow manual modification of the skills?")
 		options.letProfs = ImGui.Checkbox("Allow?", options.letProfs)
+		ImGui.Separator()
+		ImGui.TextWrapped("Load Equipment on Save/Build Load?")
+		options.loadEquipment = ImGui.Checkbox("Load?", options.loadEquipment)
 
 		ImGui.Separator()
 		if ImGui.Button("DEBUG: Save CW to options",200,25) then

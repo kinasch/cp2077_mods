@@ -15,7 +15,7 @@ local defaultProfLevelList = {
 --- Returns attributes, perks, buildLevel, proficiencies and usedPoints.
 ---@param playerDevelopmentData PlayerDevelopmentData
 ---@param profLevelList table
-function util.createNewSave(playerDevelopmentData,profLevelList,saveEquipment)
+function util.createNewSave(playerDevelopmentData,profLevelList)
     local attributes,perks,buildLevel,profs,equipment = nil,nil,nil,nil,nil
     -- Get Attributes and their levels
     attributes = util.attributes.getAttributes(playerDevelopmentData)
@@ -28,9 +28,8 @@ function util.createNewSave(playerDevelopmentData,profLevelList,saveEquipment)
     -- Get the profs
     profs = profLevelList
 
-    if saveEquipment then
-        equipment = util.equip.getEquippedCyberware()
-    end
+    -- Always save the equipment as well (just in case)
+    equipment = util.equip.getEquippedCyberware()
 
     return attributes,perks,buildLevel,profs,usedPoints,equipment
 end
@@ -39,19 +38,29 @@ end
 -- ##########################################################################
 -- Load Functions
 -- ##########################################################################
-function util.setBuild(playerDevelopmentData, save)
+function util.setBuild(playerDevelopmentData, save, loadEquipment)
     -- save = {attributes:{},perks:{}}
     util.tabulaRasa(playerDevelopmentData)
 
-    tempPP = util.prof.getPerkPointsFromProfs(save.profs)
+    -- Very hacky and weird fixing attempt
+    -- Give the player the max amount of perk points theoretically possible.
+    -- Needed because the attributes and proficiencies aren't being bought/levelled fast enough internally.
+    tempPP = 80
+    util.givePerkPoints(playerDevelopmentData, tempPP)
 
     util.attributes.buyAttributes(playerDevelopmentData, save.attributes)
 
-    util.givePerkPoints(playerDevelopmentData, tempPP)
     util.perk.buyPerks(playerDevelopmentData, save.perks)
 
     util.prof.setProficiencies(playerDevelopmentData, save.profs)
     util.givePerkPoints(playerDevelopmentData, -tempPP)
+
+    if loadEquipment then
+        -- Calling this seperatly from tabulaRasa, to include the loadEquipment check. Might be subject to change...
+        util.equip.unequipEverything()
+
+        util.equip.equipCyberwareFromItemList(save.equipment)
+    end
 end
 
 
@@ -262,7 +271,8 @@ function util.perk.buyPerks(playerDevelopmentData, perks)
     for l,p in ipairs(perks) do
         for i = 1,p.level,1 do
             playerDevelopmentData:UnlockNewPerk(gamedataNewPerkType[p.name])
-            playerDevelopmentData:BuyNewPerk(gamedataNewPerkType[p.name],false)
+            local success = playerDevelopmentData:BuyNewPerk(gamedataNewPerkType[p.name],false)
+            print(p.name, success, playerDevelopmentData:GetCurrentPerkPoints())
         end
     end
 end
@@ -270,7 +280,7 @@ end
 function util.perk.getUsedPerkPoints(perks)
     local usedPerkPoints = 0
     for k,v in pairs(perks) do
-        if string.find(v.name, "Espionage") ~= nil then
+        if string.find(v.name, "Espionage") == nil then
             usedPerkPoints = usedPerkPoints + v.level
         end
     end
