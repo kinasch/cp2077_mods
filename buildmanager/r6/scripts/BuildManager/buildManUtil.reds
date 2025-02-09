@@ -16,6 +16,7 @@ private final func GetAllEquippedItems() -> [SItemInfo] {
   let itemInfo: SItemInfo;
   let i: Int32;
   let j: Int32;
+  // Cyberware
   ArrayPush(areasToSave, gamedataEquipmentArea.SystemReplacementCW);
   ArrayPush(areasToSave, gamedataEquipmentArea.ArmsCW);
   ArrayPush(areasToSave, gamedataEquipmentArea.HandsCW);
@@ -26,6 +27,15 @@ private final func GetAllEquippedItems() -> [SItemInfo] {
   ArrayPush(areasToSave, gamedataEquipmentArea.IntegumentarySystemCW);
   ArrayPush(areasToSave, gamedataEquipmentArea.MusculoskeletalSystemCW);
   ArrayPush(areasToSave, gamedataEquipmentArea.NervousSystemCW);
+  // Weapons
+  ArrayPush(areasToSave, gamedataEquipmentArea.Weapon);
+  // Clothing
+  ArrayPush(areasToSave, gamedataEquipmentArea.InnerChest);
+  ArrayPush(areasToSave, gamedataEquipmentArea.OuterChest);
+  ArrayPush(areasToSave, gamedataEquipmentArea.Face);
+  ArrayPush(areasToSave, gamedataEquipmentArea.Head);
+  ArrayPush(areasToSave, gamedataEquipmentArea.Legs);
+  ArrayPush(areasToSave, gamedataEquipmentArea.Feet);
   i = 0;
   while i < ArraySize(this.m_equipment.equipAreas) {
     if ArrayContains(areasToSave, this.m_equipment.equipAreas[i].areaType) {
@@ -42,7 +52,6 @@ private final func GetAllEquippedItems() -> [SItemInfo] {
   return items;
 }
 
-// Currently removes all Quickhacks! (or other cyberware parts, should only be cyberdecks tho)
 @addMethod(EquipmentSystemPlayerData)
 private final func EquipAllItemsFromList(items: array<SItemInfo>) -> Void {
   let itemToEquip: ItemID;

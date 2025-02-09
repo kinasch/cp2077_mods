@@ -1,4 +1,4 @@
-util = {attributes={},perk={},prof={}}
+util = {attributes={},perk={},prof={},equip={}}
 
 local defaultProfLevelList = {
 	{name="StrengthSkill",lvl=1,exp=0},
@@ -15,8 +15,8 @@ local defaultProfLevelList = {
 --- Returns attributes, perks, buildLevel, proficiencies and usedPoints.
 ---@param playerDevelopmentData PlayerDevelopmentData
 ---@param profLevelList table
-function util.createNewSave(playerDevelopmentData,profLevelList)
-    local attributes,perks,buildLevel,profs = nil,nil,nil,nil
+function util.createNewSave(playerDevelopmentData,profLevelList,saveEquipment)
+    local attributes,perks,buildLevel,profs,equipment = nil,nil,nil,nil,nil
     -- Get Attributes and their levels
     attributes = util.attributes.getAttributes(playerDevelopmentData)
     -- Get Perks and their levels
@@ -28,7 +28,11 @@ function util.createNewSave(playerDevelopmentData,profLevelList)
     -- Get the profs
     profs = profLevelList
 
-    return attributes,perks,buildLevel,profs,usedPoints
+    if saveEquipment then
+        equipment = util.equip.getEquippedCyberware()
+    end
+
+    return attributes,perks,buildLevel,profs,usedPoints,equipment
 end
 
 
@@ -266,7 +270,9 @@ end
 function util.perk.getUsedPerkPoints(perks)
     local usedPerkPoints = 0
     for k,v in pairs(perks) do
-        usedPerkPoints = usedPerkPoints + v.level
+        if string.find(v.name, "Espionage") ~= nil then
+            usedPerkPoints = usedPerkPoints + v.level
+        end
     end
     return usedPerkPoints
 end
@@ -330,8 +336,8 @@ end
 -- ##########################################################################
 
 -- Returns all equipped Cyberware in an array consisting of tables with ItemID components
--- - tdb_name, rng_seed, slotIndex
-function util.getEquippedCyberware()
+-- - tdb_name, rng_seed, slotIndex, parts, maybe_type, unknown
+function util.equip.getEquippedCyberware()
     local items = {}
 
     -- This returns an array of SItemInfo
@@ -361,13 +367,13 @@ function util.getEquippedCyberware()
 end
 
 -- Call the ClearEquipment function (removes Cyberware, Weapons and Clothing (Clothing sets are untouched))
-function util.unequipEverything()
+function util.equip.unequipEverything()
     EquipmentSystem.GetData(GetPlayer()):ClearCyberwareWeaponsAndClothes()
 end
 
 -- Equip all the cyberware from a list of items. List of items in the style of:
 -- - [{tdb_name, rng_seed, slotIndex}, {tdb_name, rng_seed, slotIndex}, ...]
-function util.equipCyberwareFromItemList(cyberware_items)
+function util.equip.equipCyberwareFromItemList(cyberware_items)
     local items, parts = {}, {}
     for k,v in pairs(cyberware_items) do
         local s_item_info = SItemInfo.new()
