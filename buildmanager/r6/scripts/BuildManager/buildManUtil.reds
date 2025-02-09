@@ -10,7 +10,7 @@ public final const func GetProficiencyExperience(type: gamedataProficiencyType) 
 }
 
 @addMethod(EquipmentSystemPlayerData)
-private final func GetAllCyberwareItems() -> [SItemInfo] {
+private final func GetAllEquippedItems() -> [SItemInfo] {
   let areasToSave: array<gamedataEquipmentArea>;
   let items: array<SItemInfo>;
   let itemInfo: SItemInfo;
@@ -44,7 +44,7 @@ private final func GetAllCyberwareItems() -> [SItemInfo] {
 
 // Currently removes all Quickhacks! (or other cyberware parts, should only be cyberdecks tho)
 @addMethod(EquipmentSystemPlayerData)
-private final func EquipAllCyberware(items: array<SItemInfo>) -> Void {
+private final func EquipAllItemsFromList(items: array<SItemInfo>) -> Void {
   let itemToEquip: ItemID;
   let j: Int32;
   let slotIndex: Int32;
@@ -65,5 +65,59 @@ private final func GetOriginalItemIDIfItemIsSideEquipped(itemID: ItemID) -> Item
     return this.GetOriginalItemIDFromSideUpgrade(itemID);
   } else {
     return itemID;
+  };
+}
+
+public struct CyberwarePartBuildManager{
+  public let partID: ItemID;
+  public let slot: TweakDBID;
+}
+
+@addMethod(EquipmentSystemPlayerData)
+private final func GetPartsFromItem(cyberwareItemID: ItemID) -> array<CyberwarePartBuildManager> {
+  let i: Int32;
+  let partData: InnerItemData;
+  let staticData: wref<Item_Record>;
+  let usedSlots: array<TweakDBID>;
+  let curCyberwarePart: CyberwarePartBuildManager;
+  let cyberwareParts: array<CyberwarePartBuildManager>;
+  let cyberwareData: wref<gameItemData>;
+  let transactionSystem: ref<TransactionSystem> = GameInstance.GetTransactionSystem(this.m_owner.GetGame());
+  transactionSystem.GetUsedSlotsOnItem(this.m_owner, cyberwareItemID, usedSlots);
+  cyberwareData = RPGManager.GetItemData(this.m_owner.GetGame(), this.m_owner, cyberwareItemID);
+  i = 0;
+  while i < ArraySize(usedSlots) {
+    if usedSlots[i] == t"AttachmentSlots.StatsShardSlot" || usedSlots[i] == t"AttachmentSlots.GenericItemRoot" || usedSlots[i] == t"" {
+    } else {
+      cyberwareData.GetItemPart(partData, usedSlots[i]);
+      staticData = InnerItemData.GetStaticData(partData);
+      if IsDefined(staticData) && staticData.TagsContains(n"DummyPart") {
+      } else {
+        curCyberwarePart.partID = partData.GetItemID();
+        curCyberwarePart.slot = usedSlots[i];
+        ArrayPush(cyberwareParts, curCyberwarePart);
+      };
+    };
+    i += 1;
+  };
+  return cyberwareParts;
+}
+
+@addMethod(EquipmentSystemPlayerData)
+private final func ClearCyberwareWeaponsAndClothes() -> Void {
+  let equipArea: SEquipArea;
+  let j: Int32;
+  let i: Int32 = 0;
+  let equipmentAreas: array<SEquipArea>;
+  while i < ArraySize(this.m_equipment.equipAreas) {
+    equipArea = this.m_equipment.equipAreas[i];
+    if NotEquals(equipArea.areaType, gamedataEquipmentArea.PersonalLink) && NotEquals(equipArea.areaType, gamedataEquipmentArea.Splinter) && NotEquals(equipArea.areaType, gamedataEquipmentArea.BaseFists) && NotEquals(equipArea.areaType, gamedataEquipmentArea.VDefaultHandgun) && NotEquals(equipArea.areaType, gamedataEquipmentArea.SilverhandArm) && NotEquals(equipArea.areaType, gamedataEquipmentArea.PlayerTattoo) {
+      j = 0;
+      while j < ArraySize(equipArea.equipSlots) {
+        this.UnequipItem(i, j);
+        j += 1;
+      };
+    };
+    i += 1;
   };
 }
