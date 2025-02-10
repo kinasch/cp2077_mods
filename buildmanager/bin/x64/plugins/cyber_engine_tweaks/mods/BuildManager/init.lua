@@ -44,20 +44,11 @@ end)
 
 -- Load the settings upon starting the game
 registerForEvent("onInit", function()
-	-- gameLoaded should only be true, if the game is loaded and not paused.
-	-- TODO: 
-	--[[ 	Maybe allow doing this while in the menus like inventory and such.
-			OR bind this menu to a hotkey ?
-			OR create a new button in the character screen and open the menu upon pressing it ]]
+	-- gameLoaded should only be true, if the game is loaded.
+	-- Should work while paused (big should)
 	gameLoaded = not Game.GetSystemRequestsHandler():IsPreGame()
 	GameSession.OnStart(function()
         gameLoaded = true
-    end)
-	GameSession.OnResume(function()
-        gameLoaded = true
-    end)
-	GameSession.OnPause(function()
-        gameLoaded = false
     end)
     GameSession.OnEnd(function()
         gameLoaded = false
