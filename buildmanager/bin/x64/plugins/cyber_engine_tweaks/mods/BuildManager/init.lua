@@ -21,8 +21,6 @@ local options = {
 	saveLimit=10,
 	saveCharacterLimit=64,
 	letProfs=true,
-	-- TODO: Remove testCW
-	testCW={},
 	loadEquipment=false
 }
 
@@ -555,17 +553,6 @@ registerForEvent("onDraw",function ()
 		ImGui.Separator()
 		ImGui.TextWrapped("Load Equipment on Save/Build Load?")
 		options.loadEquipment = ImGui.Checkbox("Load?", options.loadEquipment)
-
-		ImGui.Separator()
-		if ImGui.Button("DEBUG: Save CW to options",200,25) then
-			options.testCW = util.getEquippedCyberware()
-		end
-		if ImGui.Button("DEBUG: Unequip CW",200,25) then
-			util.unequipEverything()
-		end
-		if ImGui.Button("DEBUG: Equip CW from options",200,25) then
-			util.equipCyberwareFromItemList(options.testCW)
-		end
 
 		ImGui.EndTabItem()
 	end

@@ -271,8 +271,7 @@ function util.perk.buyPerks(playerDevelopmentData, perks)
     for l,p in ipairs(perks) do
         for i = 1,p.level,1 do
             playerDevelopmentData:UnlockNewPerk(gamedataNewPerkType[p.name])
-            local success = playerDevelopmentData:BuyNewPerk(gamedataNewPerkType[p.name],false)
-            print(p.name, success, playerDevelopmentData:GetCurrentPerkPoints())
+            playerDevelopmentData:BuyNewPerk(gamedataNewPerkType[p.name],false)
         end
     end
 end
