@@ -21,6 +21,6 @@ Although mentioned in every readme or mod page, thanks again to:
 
 * The people behind [Cyber Engine Tweaks](https://github.com/yamashi/CyberEngineTweaks) and [redscript](https://github.com/jac3km4/redscript).
 
-* [psiberx](https://www.nexusmods.com/users/108159138) for his [cet-kit](https://github.com/psiberx/cp2077-cet-kit) (especially GameSession.lua and Cron.lua).
+* [psiberx](https://www.nexusmods.com/users/108159138) for his [cet-kit](https://github.com/psiberx/cp2077-cet-kit) (especially GameSession.lua).
 
 * The people behind the [decompiled code](https://codeberg.org/adamsmasher/cyberpunk).
