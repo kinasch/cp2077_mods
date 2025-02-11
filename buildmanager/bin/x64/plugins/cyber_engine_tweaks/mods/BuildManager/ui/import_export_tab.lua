@@ -23,7 +23,8 @@ function import_export_tab.create(util, playerDevelopmentData)
 		if ImGui.BeginPopupModal("Import Save Popup (Import Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
 			ImGui.Text("Overwrite your current build with the import?")
 			if ImGui.Button("Yes",ImGui.CalcTextSize("Overwrite your current build with the import"),25) then
-				util.setBuildFromURL(playerDevelopmentData,importURL, false)
+				local newSave = util.import_export.setBuildFromURL(playerDevelopmentData,importURL, false)
+				util.setBuild(playerDevelopmentData, newSave, false)
 				ImGui.CloseCurrentPopup()
 			end
 			if ImGui.Button("No",ImGui.CalcTextSize("Overwrite your current build with the import"),25) then
@@ -53,7 +54,12 @@ function import_export_tab.create(util, playerDevelopmentData)
 		ImGui.Separator()
 		ImGui.Spacing()
 		if ImGui.Button("Current Build To Url",(0.95*ImGui.GetWindowWidth()),30) then
-			exportURL = tostring(util.getUrlForCurrentBuild(playerDevelopmentData))
+			exportURL = tostring(
+				util.import_export.getUrlForCurrentBuild(
+					playerDevelopmentData,
+					util.createNewSave(playerDevelopmentData, util.prof.getDefaultProfLevelList())
+				)
+			)
 		end
 		-- Set Output width to a value, such that the small button is still visible fully.
 		ImGui.SetNextItemWidth(0.95*ImGui.GetWindowWidth()-ImGui.CalcTextSize("----------------"))

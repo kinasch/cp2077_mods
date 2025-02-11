@@ -4,7 +4,8 @@ local include_equipment = false
 
 --- Creates the reset tab for the UI
 --- @param playerDevelopmentData PlayerDevelopmentData
-function reset_tab.create(playerDevelopmentData)
+--- @param util Util
+function reset_tab.create(playerDevelopmentData, util)
     if ImGui.BeginTabItem("Reset") then
 		ImGui.TextWrapped("Reset attributes, perks, skills and, optionally, equipment.")
 		-- Do not allow resetting while the confirmation popup is open.
@@ -29,8 +30,8 @@ function reset_tab.create(playerDevelopmentData)
 			-- Center the buttons.
 			ImGui.Indent(popupx/2-25)
 			if ImGui.Button("Yes",50,25) then
-				util.tabulaRasa(playerDevelopmentData)
 				if include_equipment then util.equip.unequipEverything() end
+				util.tabulaRasa(playerDevelopmentData)
 				include_equipment = false
 				ImGui.CloseCurrentPopup()
 			end

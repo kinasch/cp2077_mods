@@ -91,7 +91,7 @@ registerForEvent("onDraw",function ()
 
 	-- #####################################################################################################
 	-- Reset Tab
-	reset_tab.create(playerDevelopmentData)
+	reset_tab.create(playerDevelopmentData, util)
 
 	-- #####################################################################################################
 	-- Import/Export Tab
