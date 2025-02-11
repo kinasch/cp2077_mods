@@ -6,6 +6,12 @@ function load_tab.reset_locals()
     deleteNameText, infoSave = "", {}
 end
 
+--- Creates the load tab for the UI
+--- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
+--- @param saveSettings SaveSettings
+--- @param util Util
+--- @param playerDevelopmentData PlayerDevelopmentData
+--- @param playerLevel number
 function load_tab.create(options, saveSettings, util, playerDevelopmentData, playerLevel)
     if ImGui.BeginTabItem("Load") then
 		-- List all saves

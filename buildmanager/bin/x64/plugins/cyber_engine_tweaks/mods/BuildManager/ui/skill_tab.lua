@@ -13,6 +13,10 @@ function skill_tab.on_overlay_open(util, playerDevelopmentData)
     profLevelList = util.prof.getProficiencies(playerDevelopmentData,profLevelList)
 end
 
+--- Creates the skills tab for the UI
+--- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
+--- @param util Util
+--- @param playerDevelopmentData PlayerDevelopmentData
 function skill_tab.create(options, util, playerDevelopmentData)
     if ImGui.BeginTabItem("Skills") then
 		if profOpened then

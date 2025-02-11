@@ -9,6 +9,7 @@ local import_export_tab = require("ui/import_export_tab")
 local options_tab = require("ui/options_tab")
 
 local openMenu,gameLoaded = false,false
+---@type PlayerDevelopmentData, number
 local playerDevelopmentData, playerLevel
 
 -- Variables for the options
@@ -26,8 +27,6 @@ registerForEvent("onOverlayOpen", function()
 	-- Get playerDevelopmentData and playerLevel everytime the overlay is opened.
 	playerDevelopmentData = PlayerDevelopmentSystem.GetData(Game.GetPlayer())
 	playerLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
-
-	
 end)
 registerForEvent("onOverlayClose", function()
 	openMenu = false

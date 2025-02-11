@@ -2,6 +2,9 @@ local import_export_tab = {}
 
 local importURL, exportURL = "",""
 
+--- Creates the import/export tab for the UI
+--- @param util Util
+--- @param playerDevelopmentData PlayerDevelopmentData
 function import_export_tab.create(util, playerDevelopmentData)
     if ImGui.BeginTabItem("Import/Export") then
 		ImGui.SetNextItemWidth(0.9*ImGui.GetWindowWidth()-ImGui.CalcTextSize("URL"))

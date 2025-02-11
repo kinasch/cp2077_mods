@@ -120,7 +120,7 @@ private final func ClearCyberwareWeaponsAndClothes() -> Void {
   let equipmentAreas: array<SEquipArea>;
   while i < ArraySize(this.m_equipment.equipAreas) {
     equipArea = this.m_equipment.equipAreas[i];
-    if NotEquals(equipArea.areaType, gamedataEquipmentArea.PersonalLink) && NotEquals(equipArea.areaType, gamedataEquipmentArea.Splinter) && NotEquals(equipArea.areaType, gamedataEquipmentArea.BaseFists) && NotEquals(equipArea.areaType, gamedataEquipmentArea.VDefaultHandgun) && NotEquals(equipArea.areaType, gamedataEquipmentArea.SilverhandArm) && NotEquals(equipArea.areaType, gamedataEquipmentArea.PlayerTattoo) {
+    if NotEquals(equipArea.areaType, gamedataEquipmentArea.RightArm) && NotEquals(equipArea.areaType, gamedataEquipmentArea.PersonalLink) && NotEquals(equipArea.areaType, gamedataEquipmentArea.BaseFists) && NotEquals(equipArea.areaType, gamedataEquipmentArea.VDefaultHandgun) && NotEquals(equipArea.areaType, gamedataEquipmentArea.SilverhandArm) && NotEquals(equipArea.areaType, gamedataEquipmentArea.PlayerTattoo) {
       j = 0;
       while j < ArraySize(equipArea.equipSlots) {
         this.UnequipItem(i, j);
@@ -129,4 +129,10 @@ private final func ClearCyberwareWeaponsAndClothes() -> Void {
     };
     i += 1;
   };
+}
+
+@addMethod(PlayerDevelopmentData)
+public final const func GetProficiencyExperience(type: gamedataProficiencyType) -> Int32 {
+  let pIndex: Int32 = this.GetProficiencyIndexByType(type);
+  return this.m_proficiencies[pIndex].currentExp;
 }

@@ -1,4 +1,5 @@
 -- Default values are taken from the respective TweakDB defaults
+---@class SaveSettings
 saveSettings = { settings = {},options = {saveLimit=10,saveCharacterLimit=64} }
 
 function saveSettings.saveData(name,attributes,perks,currLevel,proficiencies,usedPoints,equipment)

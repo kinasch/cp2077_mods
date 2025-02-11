@@ -1,3 +1,4 @@
+---@class Util
 util = {attributes={},perk={},prof={},equip={}}
 
 local defaultProfLevelList = {

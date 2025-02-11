@@ -6,6 +6,11 @@ function save_tab.reset_locals()
     saveNameText, deleteNameText, infoSave = "", "", {}
 end
 
+--- Creates the save tab for the UI
+--- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
+--- @param saveSettings SaveSettings
+--- @param util Util
+--- @param playerDevelopmentData PlayerDevelopmentData
 function save_tab.create(options, saveSettings, util, playerDevelopmentData)
     if ImGui.BeginTabItem("Save") then
 		-- Limit the InputText Size such that the Label can be seen.

@@ -1,5 +1,7 @@
 local options_tab = {}
 
+--- Creates the options tab for the UI
+--- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
 function options_tab.create(options)
     if ImGui.BeginTabItem("Options") then
 		ImGui.TextWrapped("Maximum amount of saves:")
