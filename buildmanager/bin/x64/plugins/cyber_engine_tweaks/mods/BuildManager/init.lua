@@ -72,9 +72,9 @@ registerForEvent("onDraw",function ()
 	if not openMenu or not gameLoaded then return end
 	
 	-- Create new window for the build manager (randomly chosen values by me)
-	ImGui.SetNextWindowPos(100, 700, ImGuiCond.FirstUseEver)
+	ImGui.SetNextWindowPos(500, 500, ImGuiCond.FirstUseEver)
 	ImGui.SetNextWindowSize(420, 500,ImGuiCond.Appearing)
-	ImGui.Begin("BuildManager")
+	ImGui.Begin(translation.build_manager)
 
 	-- Create a tab bar to access the different tabs
 	ImGui.BeginTabBar('Simple Build Manager', ImGuiTabBarFlags.FittingPolicyResizeDown)

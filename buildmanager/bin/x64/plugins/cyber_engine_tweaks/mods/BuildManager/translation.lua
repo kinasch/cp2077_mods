@@ -1,5 +1,7 @@
 ---@class BuildManagerTranslation
 local translation = {
+    -- Mod title (Title of the window in the CET overlay)
+    build_manager =                             "Build Manager",
     -- Generic Yes or No for popups (Like "Do you want to delete the save" or sum)
     yes =                                       "Yes",
     no =                                        "No",
