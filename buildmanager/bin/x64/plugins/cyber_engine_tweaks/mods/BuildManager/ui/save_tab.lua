@@ -44,6 +44,9 @@ function save_tab.create(options, saveSettings, util, playerDevelopmentData, tra
 				deleteNameText = k
 				ImGui.OpenPopup(translation.save.overwrite_save_popup_title)
 			end
+			if ImGui.IsItemHovered() then
+				ImGui.SetTooltip(k)
+			end
 
 			-------------------------------
 			-- Overwrite Save Popup (Save Tab)
@@ -75,9 +78,10 @@ function save_tab.create(options, saveSettings, util, playerDevelopmentData, tra
 			-------------------------------
 			-- Info Popup (Save Tab)
 			if ImGui.BeginPopupModal(translation.build_info.build_info_title.." \""..k.."\"", true, ImGuiWindowFlags.AlwaysAutoResize) then
-
-				ImGui.Text(translation.build_info.build_level..infoSave.buildLevel)
+				ImGui.Text(translation.build_info.build_info_title.." \""..k.."\":  ")
 				ImGui.Separator()
+				ImGui.Text(translation.build_info.build_level..infoSave.buildLevel)
+				ImGui.Spacing()
 
 				if ImGui.BeginTable("attributes",2) then
 					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthStretch, 150)
@@ -92,7 +96,7 @@ function save_tab.create(options, saveSettings, util, playerDevelopmentData, tra
 					-- Spacing Row
 					ImGui.TableNextRow()
 					ImGui.TableNextColumn()
-					ImGui.Text("--------------------------")
+					ImGui.Text("")
 					ImGui.TableNextColumn()
 					ImGui.Text("")
 					

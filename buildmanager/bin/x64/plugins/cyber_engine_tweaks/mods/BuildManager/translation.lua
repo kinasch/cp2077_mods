@@ -100,7 +100,7 @@ local translation = {
         import_popup_title =                    "Import Save Popup",
         import_popup_confirmation =             "Overwrite your current build with the import?",
         export_button =                         "Current Build To Url",
-        export_warning =                        "Might not work correctly if you used 80 or more perk points and/or more than 66 attribute points."
+        export_warning =                        "Might not work correctly if you used 80 or more perk points and/or more than 66 attribute points. Used: "
     },
     -- Every text from the Options tab
     options = {

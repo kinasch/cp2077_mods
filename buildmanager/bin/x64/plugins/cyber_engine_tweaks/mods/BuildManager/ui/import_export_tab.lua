@@ -2,6 +2,8 @@ local import_export_tab = {}
 
 local importURL, exportURL = "",""
 
+local used_points_save = {attributePoints=0, perkPoints=0}
+
 --- Creates the import/export tab for the UI
 --- @param util Util
 --- @param playerDevelopmentData PlayerDevelopmentData
@@ -54,10 +56,12 @@ function import_export_tab.create(util, playerDevelopmentData, translation)
 		ImGui.Separator()
 		ImGui.Spacing()
 		if ImGui.Button(translation.import_export.export_button,ImGui.GetContentRegionAvail(),30) then
+			local _attrs,_perks,_,_,_us,_ = util.createNewSave(playerDevelopmentData, util.prof.getDefaultProfLevelList())
+			used_points_save = _us
 			exportURL = tostring(
 				util.import_export.getUrlForCurrentBuild(
 					playerDevelopmentData,
-					util.createNewSave(playerDevelopmentData, util.prof.getDefaultProfLevelList())
+					_attrs,_perks
 				)
 			)
 		end
@@ -76,9 +80,19 @@ function import_export_tab.create(util, playerDevelopmentData, translation)
 		ImGui.PushID("clearexport")
 		if ImGui.SmallButton(IconGlyphs.DeleteOutline) then
 			exportURL = ""
+			used_points_save = {attributePoints=0, perkPoints=0}
 		end
 		ImGui.PopID()
-		ImGui.TextWrapped(translation.import_export.export_warning)
+		ImGui.Spacing()
+		if used_points_save.attributePoints > 66 or used_points_save.perkPoints >= 80 then
+			ImGui.TextWrapped(
+				IconGlyphs.Alert..
+				translation.import_export.export_warning..
+				used_points_save.perkPoints..
+				","..
+				used_points_save.attributePoints
+			)
+		end
 
 		ImGui.EndTabItem()
 	end

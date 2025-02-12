@@ -16,8 +16,8 @@ local playerDevelopmentData, playerLevel
 
 -- Variables for the options
 local options = {
-	saveLimit=10,
-	saveCharacterLimit=64,
+	saveLimit=5,
+	saveCharacterLimit=48,
 	letProfs=true,
 	loadEquipment=false
 }
@@ -72,8 +72,8 @@ registerForEvent("onDraw",function ()
 	if not openMenu or not gameLoaded then return end
 	
 	-- Create new window for the build manager (randomly chosen values by me)
-	ImGui.SetNextWindowPos(500, 500, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSize(420, 500,ImGuiCond.Appearing)
+	ImGui.SetNextWindowPos(500, 500, ImGuiCond.Once)
+	ImGui.SetNextWindowSize(420, 500,ImGuiCond.Once)
 	ImGui.Begin(translation.build_manager)
 
 	-- Create a tab bar to access the different tabs

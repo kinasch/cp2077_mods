@@ -35,6 +35,9 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 			if ImGui.Button(k,((ImGui.GetContentRegionAvail()-ImGui.CalcTextSize(IconGlyphs.DeleteOutline..IconGlyphs.InformationOutline)-32)),30) then
 				ImGui.OpenPopup(translation.load.load_popup.load_popup_title.." \""..k.."\"")
 			end
+			if ImGui.IsItemHovered() then
+				ImGui.SetTooltip(k)
+			end
             if not save_loadable then
                 ImGui.EndDisabled()
             end
@@ -65,9 +68,10 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 			-------------------------------
 			-- Info Popup (Load Tab)
 			if ImGui.BeginPopupModal(translation.build_info.build_info_title.." \""..k.."\"", true, ImGuiWindowFlags.AlwaysAutoResize) then
-
-				ImGui.Text(translation.build_info.build_level..infoSave.buildLevel)
+				ImGui.Text(translation.build_info.build_info_title.." \""..k.."\":  ")
 				ImGui.Separator()
+				ImGui.Text(translation.build_info.build_level..infoSave.buildLevel)
+				ImGui.Spacing()
 
 				if ImGui.BeginTable("attributes",2) then
 					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthStretch, 150)
@@ -82,7 +86,7 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 					-- Spacing Row
 					ImGui.TableNextRow()
 					ImGui.TableNextColumn()
-					ImGui.Text("--------------------------")
+					ImGui.Text("")
 					ImGui.TableNextColumn()
 					ImGui.Text("")
 					
