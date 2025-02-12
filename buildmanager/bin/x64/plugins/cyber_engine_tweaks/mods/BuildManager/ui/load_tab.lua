@@ -12,18 +12,28 @@ end
 --- @param util Util
 --- @param playerDevelopmentData PlayerDevelopmentData
 --- @param playerLevel number
-function load_tab.create(options, saveSettings, util, playerDevelopmentData, playerLevel)
-    if ImGui.BeginTabItem("Load") then
+--- @param translation BuildManagerTranslation
+function load_tab.create(options, saveSettings, util, playerDevelopmentData, playerLevel, translation)
+    if ImGui.BeginTabItem(translation.load.load_tab_title) then
+
+		ImGui.PushID("options.loadEquipment_checkbox")
+		options.loadEquipment = ImGui.Checkbox("", options.loadEquipment)
+		ImGui.PopID()
+		ImGui.SameLine()
+		ImGui.TextWrapped(translation.load.load_including_equipment_text)
+		ImGui.Spacing()
+		ImGui.Separator()
+
 		-- List all saves
-		ImGui.Text("Click on a save to load it:")
+		ImGui.Text(translation.load.choose_save_to_load)
 		ImGui.BeginGroup()
 		for k,attr in pairs(saveSettings.settings) do
             local save_loadable = playerLevel >= attr.buildLevel
             if not save_loadable then
                 ImGui.BeginDisabled()
             end
-			if ImGui.Button(k,(0.5*ImGui.GetWindowWidth()),30) then
-				ImGui.OpenPopup("Load Save \""..k.."\"")
+			if ImGui.Button(k,((ImGui.GetContentRegionAvail()-ImGui.CalcTextSize(IconGlyphs.DeleteOutline..IconGlyphs.InformationOutline)-32)),30) then
+				ImGui.OpenPopup(translation.load.load_popup.load_popup_title.." \""..k.."\"")
 			end
             if not save_loadable then
                 ImGui.EndDisabled()
@@ -31,13 +41,13 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 
 			-------------------------------
 			-- Load Save Popup
-			if ImGui.BeginPopupModal("Load Save \""..k.."\"", true, ImGuiWindowFlags.AlwaysAutoResize) then
-				ImGui.Text("Load selected save and overwrite current build?")
-				if ImGui.Button("Yes",ImGui.CalcTextSize("Load selected save and overwrite current build"),25) then
+			if ImGui.BeginPopupModal(translation.load.load_popup.load_popup_title.." \""..k.."\"", true, ImGuiWindowFlags.AlwaysAutoResize) then
+				ImGui.Text(translation.load.load_popup.load_popup_confirmation)
+				if ImGui.Button(translation.yes,ImGui.GetContentRegionAvail(),25) then
 					util.setBuild(playerDevelopmentData, saveSettings.settings[k], options.loadEquipment)
 					ImGui.CloseCurrentPopup()
 				end
-				if ImGui.Button("No",ImGui.CalcTextSize("Load selected save and overwrite current build"),25) then
+				if ImGui.Button(translation.no,ImGui.GetContentRegionAvail(),25) then
 					ImGui.CloseCurrentPopup()
 				end
 				ImGui.EndPopup()
@@ -46,21 +56,21 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 			-------------------------------
 
 			ImGui.SameLine()
-			ImGui.PushID("info"..k)
+			ImGui.PushID("info_load"..k)
 			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
 				infoSave = attr
-				ImGui.OpenPopup("Info for \""..k.."\" (Load Tab)")
+				ImGui.OpenPopup(translation.build_info.build_info_title.." \""..k.."\"")
 			end
 
 			-------------------------------
 			-- Info Popup (Load Tab)
-			if ImGui.BeginPopupModal("Info for \""..k.."\" (Load Tab)", ImGuiWindowFlags.AlwaysAutoResize) then
+			if ImGui.BeginPopupModal(translation.build_info.build_info_title.." \""..k.."\"", true, ImGuiWindowFlags.AlwaysAutoResize) then
 
-				ImGui.Text("Build Level: "..infoSave.buildLevel)
+				ImGui.Text(translation.build_info.build_level..infoSave.buildLevel)
 				ImGui.Separator()
 
 				if ImGui.BeginTable("attributes",2) then
-					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
+					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthStretch, 150)
 					ImGui.TableSetupColumn("Column2", ImGuiTableColumnFlags.None)
 					for ik,v in pairs(infoSave.attributes) do
 						ImGui.TableNextRow()
@@ -79,12 +89,12 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 					-- Used Points Rows
 					ImGui.TableNextRow()
 					ImGui.TableNextColumn()
-					ImGui.Text("Used Attribute Points:")
+					ImGui.Text(translation.build_info.used_attribute_points)
 					ImGui.TableNextColumn()
 					ImGui.Text(""..infoSave.usedPoints.attributePoints)
 					ImGui.TableNextRow()
 					ImGui.TableNextColumn()
-					ImGui.Text("Used Perk Points:")
+					ImGui.Text(translation.build_info.used_perk_points)
 					ImGui.TableNextColumn()
 					ImGui.Text(""..infoSave.usedPoints.perkPoints)
 
@@ -93,23 +103,18 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 				ImGui.Separator()
 
 				if ImGui.BeginTable("profs",2) then
-					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthFixed, 150)
+					ImGui.TableSetupColumn("Column1", ImGuiTableColumnFlags.WidthStretch, 150)
 					ImGui.TableSetupColumn("Column2", ImGuiTableColumnFlags.None)
 					for ik,v in pairs(infoSave.profs) do
 						ImGui.TableNextRow()
 						ImGui.TableNextColumn()
 						ImGui.Text(GetLocalizedText(TweakDB:GetRecord("Proficiencies."..v.name):Loc_name_key()))
 						ImGui.TableNextColumn()
-						ImGui.Text(v.lvl.. " ("..v.exp.."XP)")
+						ImGui.Text(""..v.lvl)
 					end
 					ImGui.EndTable()
 				end
-				ImGui.Spacing()
 
-				if ImGui.Button("Close",250,30) then
-					infoSave = {}
-					ImGui.CloseCurrentPopup()
-				end
 				ImGui.EndPopup()
 			end
 			-- Info Popup (Load Tab)
@@ -118,28 +123,29 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 			ImGui.PopID()
 
 			ImGui.SameLine()
-			ImGui.PushID("del"..k)
+			ImGui.PushID("del_load"..k)
 			if ImGui.SmallButton(IconGlyphs.DeleteOutline) then
 				deleteNameText = k
-				ImGui.OpenPopup("Delete Save (Load Tab)")
+				ImGui.OpenPopup(translation.deletion_popup.deletion_popup_title)
 			end
 
 			-------------------------------
-			-- Delete Save Popup (Load Tab)
-			if ImGui.BeginPopupModal("Delete Save (Load Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
-				ImGui.Text("Are you sure you want to delete this save?\n"..deleteNameText)
-				if ImGui.Button("Yes",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
+			-- Delete Save Popup (Save Tab)
+			if ImGui.BeginPopupModal(translation.deletion_popup.deletion_popup_title, true, ImGuiWindowFlags.AlwaysAutoResize) then
+				ImGui.Text(translation.deletion_popup.confirmation_question)
+				ImGui.Text(deleteNameText)
+				if ImGui.Button(translation.yes,ImGui.GetContentRegionAvail(),25) then
 					saveSettings.deleteSave(deleteNameText)
 					deleteNameText = ""
 					ImGui.CloseCurrentPopup()
 				end
-				if ImGui.Button("No",ImGui.CalcTextSize(string.rep("A", options.saveCharacterLimit)),25) then
+				if ImGui.Button(translation.no,ImGui.GetContentRegionAvail(),25) then
 					deleteNameText = ""
 					ImGui.CloseCurrentPopup()
 				end
 				ImGui.EndPopup()
 			end
-			-- Delete Save Popup (Load Tab)
+			-- Delete Save Popup (Save Tab)
 			-------------------------------
 
 			ImGui.PopID()

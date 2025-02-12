@@ -8,6 +8,8 @@ local skill_tab = require("ui/skill_tab")
 local import_export_tab = require("ui/import_export_tab")
 local options_tab = require("ui/options_tab")
 
+local translation = require("translation")
+
 local openMenu,gameLoaded = false,false
 ---@type PlayerDevelopmentData, number
 local playerDevelopmentData, playerLevel
@@ -71,35 +73,35 @@ registerForEvent("onDraw",function ()
 	
 	-- Create new window for the build manager (randomly chosen values by me)
 	ImGui.SetNextWindowPos(100, 700, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSize(400, 500,ImGuiCond.Appearing)
+	ImGui.SetNextWindowSize(420, 500,ImGuiCond.Appearing)
 	ImGui.Begin("BuildManager")
 
 	-- Create a tab bar to access the different tabs
-	ImGui.BeginTabBar('Simple Build Manager')
+	ImGui.BeginTabBar('Simple Build Manager', ImGuiTabBarFlags.FittingPolicyResizeDown)
 
 	-- #####################################################################################################
 	-- Save Tab
-	save_tab.create(options, saveSettings, util, playerDevelopmentData)
+	save_tab.create(options, saveSettings, util, playerDevelopmentData, translation)
 
 	-- #####################################################################################################
 	-- Load Tab
-	load_tab.create(options, saveSettings, util, playerDevelopmentData, playerLevel)
+	load_tab.create(options, saveSettings, util, playerDevelopmentData, playerLevel, translation)
 
 	-- #####################################################################################################
 	-- Proficiencies / Skills
-	skill_tab.create(options, util, playerDevelopmentData)
+	skill_tab.create(options, util, playerDevelopmentData, translation)
 
 	-- #####################################################################################################
 	-- Reset Tab
-	reset_tab.create(playerDevelopmentData, util)
+	reset_tab.create(playerDevelopmentData, util, translation)
 
 	-- #####################################################################################################
 	-- Import/Export Tab
-	import_export_tab.create(util, playerDevelopmentData)
+	import_export_tab.create(util, playerDevelopmentData, translation)
 
 	-- #####################################################################################################
 	-- Options Tab
-	options_tab.create(options)
+	options_tab.create(options, translation)
 
 	ImGui.EndTabBar()
 	ImGui.End()

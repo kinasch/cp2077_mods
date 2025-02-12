@@ -17,21 +17,26 @@ end
 --- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
 --- @param util Util
 --- @param playerDevelopmentData PlayerDevelopmentData
-function skill_tab.create(options, util, playerDevelopmentData)
-    if ImGui.BeginTabItem("Skills") then
+--- @param translation BuildManagerTranslation
+function skill_tab.create(options, util, playerDevelopmentData, translation)
+    if ImGui.BeginTabItem(translation.skills.skills_tab_title) then
 		if profOpened then
 			profLevelList = util.prof.getProficiencies(playerDevelopmentData,profLevelList)
 			profOpened = false
 		end
 
+		ImGui.PushID("options.letProfs_checkbox")
+		options.letProfs = ImGui.Checkbox("", options.letProfs)
+		ImGui.PopID()
+		ImGui.SameLine()
+		ImGui.TextWrapped(translation.skills.allow_manual_modification)
+		ImGui.Spacing()
+		ImGui.Separator()
+
 		if not options.letProfs then
-			ImGui.TextWrapped("Enable manually modifying the Skills in the options.")
+			ImGui.TextWrapped(translation.skills.warning_disallowed_modification)
 		else
-			ImGui.TextWrapped("Adjust Proficiencies and set them using the button below:")
-			ImGui.SameLine()
-			if ImGui.SmallButton(IconGlyphs.Reload) then
-				profLevelList = util.prof.getProficiencies(playerDevelopmentData,profLevelList)
-			end
+			ImGui.TextWrapped(translation.skills.skills_explanation)
 
 			ImGui.BeginGroup()
 			for k,v in pairs(profLevelList) do
@@ -40,8 +45,12 @@ function skill_tab.create(options, util, playerDevelopmentData)
 			end
 			ImGui.EndGroup()
 
-			if ImGui.Button("Set Skills",(0.95*ImGui.GetWindowWidth()),30) then
+			if ImGui.Button(translation.skills.set_skills,(ImGui.GetContentRegionAvail()*0.9),30) then
 				util.prof.setProficiencies(playerDevelopmentData,profLevelList)
+			end
+			ImGui.SameLine()
+			if ImGui.SmallButton(IconGlyphs.Reload) then
+				profLevelList = util.prof.getProficiencies(playerDevelopmentData,profLevelList)
 			end
 		end
 

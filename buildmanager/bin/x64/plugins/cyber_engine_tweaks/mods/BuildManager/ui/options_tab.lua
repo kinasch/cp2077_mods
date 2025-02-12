@@ -2,19 +2,21 @@ local options_tab = {}
 
 --- Creates the options tab for the UI
 --- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
-function options_tab.create(options)
-    if ImGui.BeginTabItem("Options") then
-		ImGui.TextWrapped("Maximum amount of saves:")
-		options.saveLimit = ImGui.SliderInt("sl", options.saveLimit, 5, 20, "%d")
+--- @param translation BuildManagerTranslation
+function options_tab.create(options, translation)
+    if ImGui.BeginTabItem(translation.options.options_tab_title) then
+		ImGui.TextWrapped(translation.options.max_amount_of_saves_text)
+		ImGui.PushID("options.saveLimit_slider")
+		options.saveLimit = ImGui.SliderInt("", options.saveLimit, 5, 20, "%d")
+		ImGui.PopID()
+
+		ImGui.Spacing()
 		ImGui.Separator()
-		ImGui.TextWrapped("Save Name Character Limit:")
-		options.saveCharacterLimit = ImGui.SliderInt("scl", options.saveCharacterLimit, 16, 256, "%d")
-		ImGui.Separator()
-		ImGui.TextWrapped("Allow manual modification of the skills?")
-		options.letProfs = ImGui.Checkbox("Allow?", options.letProfs)
-		ImGui.Separator()
-		ImGui.TextWrapped("Load Equipment on Load/Build Load?")
-		options.loadEquipment = ImGui.Checkbox("Load?", options.loadEquipment)
+
+		ImGui.TextWrapped(translation.options.save_name_character_limit)
+		ImGui.PushID("options.saveCharacterLimit_slider")
+		options.saveCharacterLimit = ImGui.SliderInt("", options.saveCharacterLimit, 16, 256, "%d")
+		ImGui.PopID()
 
 		ImGui.EndTabItem()
 	end

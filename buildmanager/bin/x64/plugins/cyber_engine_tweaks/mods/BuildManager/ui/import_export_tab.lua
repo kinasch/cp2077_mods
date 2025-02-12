@@ -5,29 +5,30 @@ local importURL, exportURL = "",""
 --- Creates the import/export tab for the UI
 --- @param util Util
 --- @param playerDevelopmentData PlayerDevelopmentData
-function import_export_tab.create(util, playerDevelopmentData)
-    if ImGui.BeginTabItem("Import/Export") then
-		ImGui.SetNextItemWidth(0.9*ImGui.GetWindowWidth()-ImGui.CalcTextSize("URL"))
+--- @param translation BuildManagerTranslation
+function import_export_tab.create(util, playerDevelopmentData, translation)
+    if ImGui.BeginTabItem(translation.import_export.import_export_tab_title) then
+		ImGui.SetNextItemWidth(0.9*ImGui.GetContentRegionAvail()-ImGui.CalcTextSize(translation.import_export.url_input))
 		-- Create a new inputText to let the user name the save.
-		importURL = ImGui.InputText("URL", importURL, 300)
-		if ImGui.Button("Import and Load",(0.95*ImGui.GetWindowWidth()),30) then
+		importURL = ImGui.InputText(translation.import_export.url_input, importURL, 300)
+		if ImGui.Button(translation.import_export.import_button,ImGui.GetContentRegionAvail(),30) then
 			if importURL ~= nil and importURL ~= "" then
-				ImGui.OpenPopup("Import Save Popup (Import Tab)")
+				ImGui.OpenPopup(translation.import_export.import_popup_title)
 			else
-				ImGui.OpenPopup("No URL entered")
+				ImGui.OpenPopup(translation.import_export.no_url_input_popup)
 			end
 		end
 
 		-------------------------------
 		-- Import Save Popup (Import Tab)
-		if ImGui.BeginPopupModal("Import Save Popup (Import Tab)", true, ImGuiWindowFlags.AlwaysAutoResize) then
-			ImGui.Text("Overwrite your current build with the import?")
-			if ImGui.Button("Yes",ImGui.CalcTextSize("Overwrite your current build with the import"),25) then
+		if ImGui.BeginPopupModal(translation.import_export.import_popup_title, true, ImGuiWindowFlags.AlwaysAutoResize) then
+			ImGui.Text(translation.import_export.import_popup_confirmation)
+			if ImGui.Button(translation.yes,ImGui.GetContentRegionAvail(),25) then
 				local newSave = util.import_export.setBuildFromURL(playerDevelopmentData,importURL, false)
 				util.setBuild(playerDevelopmentData, newSave, false)
 				ImGui.CloseCurrentPopup()
 			end
-			if ImGui.Button("No",ImGui.CalcTextSize("Overwrite your current build with the import"),25) then
+			if ImGui.Button(translation.no,ImGui.GetContentRegionAvail(),25) then
 				importURL = ""
 				ImGui.CloseCurrentPopup()
 			end
@@ -38,9 +39,8 @@ function import_export_tab.create(util, playerDevelopmentData)
 
 		-----------------
 		-- No URL entered
-		if ImGui.BeginPopupModal("No URL entered", true, ImGuiWindowFlags.AlwaysAutoResize) then
-			ImGui.Text("No URL entered.")
-			if ImGui.Button("Understood",ImGui.CalcTextSize("No URL entered"),25) then
+		if ImGui.BeginPopupModal(translation.import_export.no_url_input_popup, true, ImGuiWindowFlags.AlwaysAutoResize) then
+			if ImGui.Button(IconGlyphs.Check,ImGui.GetContentRegionAvail(),25) then
 				ImGui.CloseCurrentPopup()
 			end
 			ImGui.EndPopup()
@@ -53,7 +53,7 @@ function import_export_tab.create(util, playerDevelopmentData)
 		ImGui.Spacing()
 		ImGui.Separator()
 		ImGui.Spacing()
-		if ImGui.Button("Current Build To Url",(0.95*ImGui.GetWindowWidth()),30) then
+		if ImGui.Button(translation.import_export.export_button,ImGui.GetContentRegionAvail(),30) then
 			exportURL = tostring(
 				util.import_export.getUrlForCurrentBuild(
 					playerDevelopmentData,
@@ -62,7 +62,7 @@ function import_export_tab.create(util, playerDevelopmentData)
 			)
 		end
 		-- Set Output width to a value, such that the small button is still visible fully.
-		ImGui.SetNextItemWidth(0.95*ImGui.GetWindowWidth()-ImGui.CalcTextSize("----------------"))
+		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail()-ImGui.CalcTextSize("----------------"))
 		ImGui.PushID("exportoutput")
 		ImGui.InputText("", exportURL, 300, ImGuiInputTextFlags.ReadOnly)
 		ImGui.PopID()
@@ -78,7 +78,7 @@ function import_export_tab.create(util, playerDevelopmentData)
 			exportURL = ""
 		end
 		ImGui.PopID()
-		ImGui.TextWrapped("Might not work correctly if you used 80 or more perk points and/or more than 66 attribute points.")
+		ImGui.TextWrapped(translation.import_export.export_warning)
 
 		ImGui.EndTabItem()
 	end
