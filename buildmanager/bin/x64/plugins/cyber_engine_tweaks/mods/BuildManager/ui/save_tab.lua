@@ -55,26 +55,6 @@ function save_tab.create(options, saveSettings, util, playerDevelopmentData, tra
 				ImGui.SetTooltip(k)
 			end
 
-			-------------------------------
-			-- Overwrite Save Popup (Save Tab)
-			if ImGui.BeginPopupModal(translation.save.overwrite_save_popup_title, true, ImGuiWindowFlags.AlwaysAutoResize) then
-				ImGui.Text(translation.save.overwrite_save_popup_confirmation)
-				ImGui.Text(deleteNameText)
-				if ImGui.Button(translation.yes,ImGui.GetContentRegionAvail(),25) then
-					savePLL = util.prof.getProficiencies(playerDevelopmentData)
-					saveSettings.saveData(deleteNameText,util.createNewSave(playerDevelopmentData,savePLL))
-					deleteNameText = ""
-					ImGui.CloseCurrentPopup()
-				end
-				if ImGui.Button(translation.no,ImGui.GetContentRegionAvail(),25) then
-					deleteNameText = ""
-					ImGui.CloseCurrentPopup()
-				end
-				ImGui.EndPopup()
-			end
-			-- Overwrite Save Popup (Save Tab)
-			-------------------------------
-
 			ImGui.SameLine()
 			ImGui.PushID("info_save"..k)
 			if ImGui.SmallButton(IconGlyphs.InformationOutline) then
@@ -186,6 +166,26 @@ function save_tab.create(options, saveSettings, util, playerDevelopmentData, tra
 		end
 		-- Save Limit reached / No name entered Popup
 		---------------------------------------------
+		
+		-------------------------------
+		-- Overwrite Save Popup (Save Tab)
+		if ImGui.BeginPopupModal(translation.save.overwrite_save_popup_title, true, ImGuiWindowFlags.AlwaysAutoResize) then
+			ImGui.Text(translation.save.overwrite_save_popup_confirmation)
+			ImGui.Text(deleteNameText)
+			if ImGui.Button(translation.yes,ImGui.GetContentRegionAvail(),25) then
+				savePLL = util.prof.getProficiencies(playerDevelopmentData)
+				saveSettings.saveData(deleteNameText,util.createNewSave(playerDevelopmentData,savePLL))
+				deleteNameText = ""
+				ImGui.CloseCurrentPopup()
+			end
+			if ImGui.Button(translation.no,ImGui.GetContentRegionAvail(),25) then
+				deleteNameText = ""
+				ImGui.CloseCurrentPopup()
+			end
+			ImGui.EndPopup()
+		end
+		-- Overwrite Save Popup (Save Tab)
+		-------------------------------
 
 		ImGui.EndTabItem()
 	end
