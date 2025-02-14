@@ -16,7 +16,7 @@ function saveSettings.saveData(name,attributes,perks,currLevel,proficiencies,use
 
     -- WARNING
     -- File operations are very resource hungry!
-    --spdlog.info("Saving,sS.saveData: "..tostring(saveSettings.tryToSaveSettings()))
+    saveSettings.tryToSaveSettings()
 end
 
 function saveSettings.saveOptions(options)

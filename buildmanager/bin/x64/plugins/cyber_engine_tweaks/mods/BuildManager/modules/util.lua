@@ -24,7 +24,7 @@ function util.createNewSave(playerDevelopmentData,profLevelList)
     perks = util.perk.getPerks(playerDevelopmentData)
     usedPoints = {attributePoints=util.attributes.getUsedAttributePoints(attributes),perkPoints=util.perk.getUsedPerkPoints(perks)}
     -- Get current Player Level to only show builds you can afford.
-    buildLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), 'PowerLevel')
+    buildLevel = Game.GetStatsSystem():GetStatValue(GetPlayer():GetEntityID(), 'PowerLevel')
 
     -- Get the profs
     profs = profLevelList

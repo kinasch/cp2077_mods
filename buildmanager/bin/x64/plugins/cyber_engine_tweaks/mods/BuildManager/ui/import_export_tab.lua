@@ -41,8 +41,9 @@ function import_export_tab.create(util, playerDevelopmentData, translation)
 
 		-----------------
 		-- No URL entered
-		if ImGui.BeginPopupModal(translation.import_export.no_url_input_popup, true, ImGuiWindowFlags.AlwaysAutoResize) then
-			if ImGui.Button(IconGlyphs.Check,ImGui.GetContentRegionAvail(),25) then
+		ImGui.SetNextWindowSize(350,70)
+		if ImGui.BeginPopupModal(translation.import_export.no_url_input_popup, true, ImGuiWindowFlags.NoResize) then
+			if ImGui.Button(IconGlyphs.Check,ImGui.GetContentRegionAvail()) then
 				ImGui.CloseCurrentPopup()
 			end
 			ImGui.EndPopup()
