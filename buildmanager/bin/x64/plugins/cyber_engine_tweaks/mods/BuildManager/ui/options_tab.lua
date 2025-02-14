@@ -7,8 +7,11 @@ function options_tab.create(options, translation)
     if ImGui.BeginTabItem(translation.options.options_tab_title) then
 		ImGui.TextWrapped(translation.options.max_amount_of_saves_text)
 		ImGui.PushID("options.saveLimit_slider")
-		options.saveLimit = ImGui.SliderInt("", options.saveLimit, 5, 20, "%d")
+		options.saveLimit = ImGui.SliderInt("", options.saveLimit, 5, 50, "%d")
 		ImGui.PopID()
+		if options.saveLimit > 20 then
+			ImGui.TextWrapped(translation.options.saves_amount_warning)
+		end
 
 		ImGui.Spacing()
 		ImGui.Separator()

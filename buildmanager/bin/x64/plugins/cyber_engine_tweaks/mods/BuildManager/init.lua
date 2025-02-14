@@ -16,8 +16,8 @@ local playerDevelopmentData, playerLevel
 
 -- Variables for the options
 local options = {
-	saveLimit=5,
-	saveCharacterLimit=48,
+	saveLimit=10,
+	saveCharacterLimit=64,
 	letProfs=true,
 	loadEquipment=false
 }
@@ -27,8 +27,8 @@ registerForEvent("onOverlayOpen", function()
 	if not gameLoaded then return end
 
 	-- Get playerDevelopmentData and playerLevel everytime the overlay is opened.
-	playerDevelopmentData = PlayerDevelopmentSystem.GetData(Game.GetPlayer())
-	playerLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
+	playerDevelopmentData = PlayerDevelopmentSystem.GetData(GetPlayer())
+	playerLevel = Game.GetStatsSystem():GetStatValue(GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
 end)
 registerForEvent("onOverlayClose", function()
 	openMenu = false
@@ -38,6 +38,7 @@ registerForEvent("onOverlayClose", function()
 	playerDevelopmentData = nil
 	playerLevel = 0
 
+	-- Move this to "onShutdown" maybe
 	saveSettings.saveOptions(options)
 	save_tab.reset_locals()
 	load_tab.reset_locals()
@@ -56,8 +57,8 @@ registerForEvent("onInit", function()
     end)
 
 	if gameLoaded then
-		playerDevelopmentData = PlayerDevelopmentSystem.GetData(Game.GetPlayer())
-		playerLevel = Game.GetStatsSystem():GetStatValue(Game.GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
+		playerDevelopmentData = PlayerDevelopmentSystem.GetData(GetPlayer())
+		playerLevel = Game.GetStatsSystem():GetStatValue(GetPlayer():GetEntityID(), gamedataStatType["PowerLevel"])
 	end
 
 	-- Load saves and options

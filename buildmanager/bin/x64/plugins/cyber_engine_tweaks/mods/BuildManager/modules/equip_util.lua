@@ -6,11 +6,11 @@ function equip_util.getEquippedCyberware()
     local items = {}
 
     -- This returns an array of SItemInfo
-    local equippedCyberware = EquipmentSystem.GetData(Game.GetPlayer()):GetAllEquippedItems()
+    local equippedCyberware = EquipmentSystem.GetData(GetPlayer()):GetAllEquippedItems()
     for k,v in pairs(equippedCyberware) do
         if v.itemID.id.hash ~= 0 then
             local parts = nil
-            local cyberwareParts = EquipmentSystem.GetData(Game.GetPlayer()):GetPartsFromItem(v.itemID)
+            local cyberwareParts = EquipmentSystem.GetData(GetPlayer()):GetPartsFromItem(v.itemID)
             if #cyberwareParts > 0 then
                 parts = {}
                 for partK,partV in pairs(cyberwareParts) do
@@ -63,13 +63,13 @@ function equip_util.equipCyberwareFromItemList(cyberware_items)
         end
     end
     -- Maybe temporarily boost the cyberware limit?
-    --Game.GetStatsSystem():AddModifier(Game.GetPlayer():GetEntityID(), RPGManager.CreateStatModifier(gamedataStatType.Humanity, gameStatModifierType.Additive, 100))
-    EquipmentSystem.GetData(Game.GetPlayer()):EquipAllItemsFromList(items)
-    --Game.GetStatsSystem():AddModifier(Game.GetPlayer():GetEntityID(), RPGManager.CreateStatModifier(gamedataStatType.Humanity, gameStatModifierType.Additive, -100))
+    --Game.GetStatsSystem():AddModifier(GetPlayer():GetEntityID(), RPGManager.CreateStatModifier(gamedataStatType.Humanity, gameStatModifierType.Additive, 100))
+    EquipmentSystem.GetData(GetPlayer()):EquipAllItemsFromList(items)
+    --Game.GetStatsSystem():AddModifier(GetPlayer():GetEntityID(), RPGManager.CreateStatModifier(gamedataStatType.Humanity, gameStatModifierType.Additive, -100))
 
     -- Equip Cyberware Parts (Quickhacks, Mods, etc.)
     for k,v in pairs(parts) do
-        Game.GetTransactionSystem():AddPart(Game.GetPlayer(), v.item, v.part, v.slot)
+        GetTransactionSystem():AddPart(GetPlayer(), v.item, v.part, v.slot)
     end
 end
 

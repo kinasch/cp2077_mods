@@ -19,15 +19,22 @@ function save_tab.create(options, saveSettings, util, playerDevelopmentData, tra
 		ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail()-ImGui.CalcTextSize(IconGlyphs.PlusThick.."--------"))
 		-- Create a new inputText to let the user name the save.
 		ImGui.PushID("newSaveName_input")
-		saveNameText = ImGui.InputText("", saveNameText, options.saveCharacterLimit)
+		local inputTextEnter = false
+		saveNameText, inputTextEnter = ImGui.InputText("", saveNameText, options.saveCharacterLimit, ImGuiInputTextFlags.EnterReturnsTrue)
 		ImGui.PopID()
 		ImGui.SameLine()
 		-- Create a new save, when the name is neither null nor empty and the maximum amount of allowed saves is not reached.
-		if ImGui.Button(IconGlyphs.PlusThick,ImGui.CalcTextSize(IconGlyphs.PlusThick.."-----"), ImGui.GetFontSize()*1.333) then
+		if ImGui.Button(IconGlyphs.PlusThick,ImGui.CalcTextSize(IconGlyphs.PlusThick.."-----"), ImGui.GetFontSize()*1.333) or inputTextEnter then
+		inputTextEnter = false
 			if saveNameText ~= nil and saveNameText ~= "" and util.tableLength(saveSettings.settings) < options.saveLimit then
-				savePLL = util.prof.getProficiencies(playerDevelopmentData)
-				saveSettings.saveData(saveNameText,util.createNewSave(playerDevelopmentData,savePLL))
-				saveNameText = ""
+				if saveSettings.settings[saveNameText] ~= nil then
+					deleteNameText = saveNameText
+					ImGui.OpenPopup(translation.save.overwrite_save_popup_title)
+				else
+					savePLL = util.prof.getProficiencies(playerDevelopmentData)
+					saveSettings.saveData(saveNameText,util.createNewSave(playerDevelopmentData,savePLL))
+					saveNameText = ""
+				end
 			else
 				ImGui.OpenPopup(translation.save.save_limit_or_no_name)
 			end
@@ -170,8 +177,9 @@ function save_tab.create(options, saveSettings, util, playerDevelopmentData, tra
 
 		---------------------------------------------
 		-- Save Limit reached / No name entered Popup
-		if ImGui.BeginPopupModal(translation.save.save_limit_or_no_name, true, ImGuiWindowFlags.AlwaysAutoResize) then
-			if ImGui.Button(IconGlyphs.Check,ImGui.GetContentRegionAvail(),25) then
+		ImGui.SetNextWindowSize(350,70)
+		if ImGui.BeginPopupModal(translation.save.save_limit_or_no_name, true, ImGuiWindowFlags.NoResize) then
+			if ImGui.Button(IconGlyphs.Check,ImGui.GetContentRegionAvail()) then
 				ImGui.CloseCurrentPopup()
 			end
 			ImGui.EndPopup()
