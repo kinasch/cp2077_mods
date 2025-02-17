@@ -1,7 +1,7 @@
 local options_tab = {}
 
 --- Creates the options tab for the UI
---- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
+--- @param options BMOptions
 --- @param translation BuildManagerTranslation
 function options_tab.create(options, translation)
     if ImGui.BeginTabItem(translation.options.options_tab_title) then

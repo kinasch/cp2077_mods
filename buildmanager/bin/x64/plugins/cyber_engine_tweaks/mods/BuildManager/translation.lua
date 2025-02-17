@@ -30,6 +30,8 @@ local translation = {
         load_tab_title =                        "Load",
         -- Checkbox if loading saves should clear equipment and put on the one from the save.
         load_including_equipment_text =         "Load Equipment on Load?",
+        -- Checkbox if loading saves should include the skills from the save.
+        load_including_skills_text =            "Include Skills on Load?",
         choose_save_to_load =                   "Click on a save to load it:",
         -- Text for the loading popup (Confirmation if save should be loaded/applied)
         load_popup = {
@@ -84,7 +86,9 @@ local translation = {
             -- Additional question to confirm
             confirmation_question =             "Proceed?",
             -- Checkbox inside the confirmation window, asking if equipment should be unequipped
-            include_equipment =                 "Also unequip Equipment?"
+            include_equipment =                 "Also unequip Equipment?",
+            -- Checkbox inside the confirmation window, asking if skills should be reset as well
+            include_skills =                    "Also reset skills?"
         }
 
     },

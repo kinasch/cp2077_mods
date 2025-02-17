@@ -44,26 +44,31 @@ end
 ---@param playerDevelopmentData PlayerDevelopmentData
 ---@param save {attributes: table, perks: table, buildLevel: number, profs: table, usedPoints: number, equipment: table}
 ---@param loadEquipment bool
-function util.setBuild(playerDevelopmentData, save, loadEquipment)
+---@param loadSkills bool
+function util.setBuild(playerDevelopmentData, save, loadEquipment, loadSkills)
     if loadEquipment then
         -- Calling this seperatly from tabulaRasa, to include the loadEquipment check. Might be subject to change...
         util.equip.unequipEverything()
     end
     -- save = {attributes:{},perks:{}}
-    util.tabulaRasa(playerDevelopmentData)
+    util.tabulaRasa(playerDevelopmentData, loadSkills)
 
     -- Very hacky and weird fixing attempt
     -- Give the player the max amount of perk points theoretically possible.
     -- Needed because the attributes and proficiencies aren't being bought/levelled fast enough internally.
-    tempPP = 80
-    util.givePerkPoints(playerDevelopmentData, tempPP)
+    local tempPP = 80
+    if loadSkills then
+        util.givePerkPoints(playerDevelopmentData, tempPP)
+    end
 
     util.attributes.buyAttributes(playerDevelopmentData, save.attributes)
 
     util.perk.buyPerks(playerDevelopmentData, save.perks)
 
-    util.prof.setProficiencies(playerDevelopmentData, save.profs)
-    util.givePerkPoints(playerDevelopmentData, -tempPP)
+    if loadSkills then
+        util.prof.setProficiencies(playerDevelopmentData, save.profs)
+        util.givePerkPoints(playerDevelopmentData, -tempPP)
+    end
 
     if loadEquipment then
         util.equip.equipCyberwareFromItemList(save.equipment)
@@ -76,10 +81,13 @@ end
 
 --- Reset every part of the development data. (Perks, Attributes and Proficiencies / Skills)
 ---@param playerDevelopmentData PlayerDevelopmentData
-function util.tabulaRasa(playerDevelopmentData)
+---@param loadSkills bool
+function util.tabulaRasa(playerDevelopmentData, loadSkills)
     playerDevelopmentData:ResetNewPerks()
 	playerDevelopmentData:ResetAttributes()
-    util.prof.setProficiencies(playerDevelopmentData, util.prof.getDefaultProfLevelList())
+    if loadSkills then
+        util.prof.setProficiencies(playerDevelopmentData, util.prof.getDefaultProfLevelList())
+    end
 end
 
 --- Returns the length of a given table.

@@ -14,7 +14,7 @@ function skill_tab.on_overlay_open(util, playerDevelopmentData)
 end
 
 --- Creates the skills tab for the UI
---- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
+--- @param options BMOptions
 --- @param util Util
 --- @param playerDevelopmentData PlayerDevelopmentData
 --- @param translation BuildManagerTranslation

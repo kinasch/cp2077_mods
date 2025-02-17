@@ -1,6 +1,7 @@
 reset_tab = {}
 
 local include_equipment = false
+local include_skills = false
 
 --- Creates the reset tab for the UI
 --- @param playerDevelopmentData PlayerDevelopmentData
@@ -30,11 +31,12 @@ function reset_tab.create(playerDevelopmentData, util, translation)
 			-- Needed to center the buttons.
 			local popupx = ImGui.GetContentRegionAvail()
 			include_equipment = ImGui.Checkbox(translation.reset.reset_popup.include_equipment, include_equipment)
+			include_skills = ImGui.Checkbox(translation.reset.reset_popup.include_skills, include_skills)
 			-- Center the buttons.
 			ImGui.Indent(popupx/2-30)
 			if ImGui.Button(translation.yes,60,25) then
 				if include_equipment then util.equip.unequipEverything() end
-				util.tabulaRasa(playerDevelopmentData)
+				util.tabulaRasa(playerDevelopmentData, include_skills)
 				include_equipment = false
 				ImGui.CloseCurrentPopup()
 			end

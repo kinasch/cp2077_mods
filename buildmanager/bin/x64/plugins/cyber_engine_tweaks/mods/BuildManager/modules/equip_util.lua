@@ -69,7 +69,7 @@ function equip_util.equipCyberwareFromItemList(cyberware_items)
 
     -- Equip Cyberware Parts (Quickhacks, Mods, etc.)
     for k,v in pairs(parts) do
-        GetTransactionSystem():AddPart(GetPlayer(), v.item, v.part, v.slot)
+        Game.GetTransactionSystem():AddPart(GetPlayer(), v.item, v.part, v.slot)
     end
 end
 

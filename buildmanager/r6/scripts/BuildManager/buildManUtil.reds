@@ -130,9 +130,3 @@ private final func ClearCyberwareWeaponsAndClothes() -> Void {
     i += 1;
   };
 }
-
-@addMethod(PlayerDevelopmentData)
-public final const func GetProficiencyExperience(type: gamedataProficiencyType) -> Int32 {
-  let pIndex: Int32 = this.GetProficiencyIndexByType(type);
-  return this.m_proficiencies[pIndex].currentExp;
-}

@@ -26,8 +26,8 @@ function import_export_tab.create(util, playerDevelopmentData, translation)
 		if ImGui.BeginPopupModal(translation.import_export.import_popup_title, true, ImGuiWindowFlags.AlwaysAutoResize) then
 			ImGui.Text(translation.import_export.import_popup_confirmation)
 			if ImGui.Button(translation.yes,ImGui.GetContentRegionAvail(),25) then
-				local newSave = util.import_export.setBuildFromURL(playerDevelopmentData,importURL, false)
-				util.setBuild(playerDevelopmentData, newSave, false)
+				local newSave = util.import_export.setBuildFromURL(playerDevelopmentData,importURL,util)
+				util.setBuild(playerDevelopmentData, newSave, false, true)
 				ImGui.CloseCurrentPopup()
 			end
 			if ImGui.Button(translation.no,ImGui.GetContentRegionAvail(),25) then

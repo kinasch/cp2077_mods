@@ -15,11 +15,13 @@ local openMenu,gameLoaded = false,false
 local playerDevelopmentData, playerLevel
 
 -- Variables for the options
+---@class BMOptions
 local options = {
 	saveLimit=10,
 	saveCharacterLimit=64,
 	letProfs=true,
-	loadEquipment=false
+	loadEquipment=false,
+	loadSkills=true
 }
 
 registerForEvent("onOverlayOpen", function()
