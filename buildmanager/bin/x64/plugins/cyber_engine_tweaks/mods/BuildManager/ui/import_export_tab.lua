@@ -8,8 +8,7 @@ local used_points_save = {attributePoints=0, perkPoints=0}
 --- @param util Util
 --- @param playerDevelopmentData PlayerDevelopmentData
 --- @param translation BuildManagerTranslation
---- @param options BMOptions
-function import_export_tab.create(util, playerDevelopmentData, translation, options)
+function import_export_tab.create(util, playerDevelopmentData, translation)
     if ImGui.BeginTabItem(translation.import_export.import_export_tab_title) then
 		ImGui.SetNextItemWidth(0.9*ImGui.GetContentRegionAvail()-ImGui.CalcTextSize(translation.import_export.url_input))
 		-- Create a new inputText to let the user name the save.

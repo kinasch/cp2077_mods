@@ -22,6 +22,11 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 		ImGui.SameLine()
 		ImGui.TextWrapped(translation.load.load_including_equipment_text)
 		ImGui.Spacing()
+		ImGui.PushID("options.loadSkills_checkbox")
+		options.loadSkills = ImGui.Checkbox("", options.loadSkills)
+		ImGui.PopID()
+		ImGui.SameLine()
+		ImGui.TextWrapped(translation.load.load_including_skills_text)
 		ImGui.Spacing()
 		ImGui.Separator()
 

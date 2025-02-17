@@ -21,15 +21,6 @@ function options_tab.create(options, translation)
 		options.saveCharacterLimit = ImGui.SliderInt("", options.saveCharacterLimit, 16, 256, "%d")
 		ImGui.PopID()
 
-		ImGui.Spacing()
-		ImGui.Separator()
-
-		ImGui.PushID("options.loadSkills_checkbox")
-		options.loadSkills = ImGui.Checkbox("", options.loadSkills)
-		ImGui.PopID()
-		ImGui.SameLine()
-		ImGui.TextWrapped(translation.options.load_including_skills_text)
-
 		ImGui.EndTabItem()
 	end
 end

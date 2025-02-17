@@ -96,11 +96,11 @@ registerForEvent("onDraw",function ()
 
 	-- #####################################################################################################
 	-- Reset Tab
-	reset_tab.create(playerDevelopmentData, util, translation, options)
+	reset_tab.create(playerDevelopmentData, util, translation)
 
 	-- #####################################################################################################
 	-- Import/Export Tab
-	import_export_tab.create(util, playerDevelopmentData, translation, options)
+	import_export_tab.create(util, playerDevelopmentData, translation)
 
 	-- #####################################################################################################
 	-- Options Tab

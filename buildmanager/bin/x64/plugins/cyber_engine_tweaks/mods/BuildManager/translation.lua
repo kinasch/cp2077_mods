@@ -30,6 +30,8 @@ local translation = {
         load_tab_title =                        "Load",
         -- Checkbox if loading saves should clear equipment and put on the one from the save.
         load_including_equipment_text =         "Load Equipment on Load?",
+        -- Checkbox if loading saves should include the skills from the save.
+        load_including_skills_text =            "Include Skills on Load?",
         choose_save_to_load =                   "Click on a save to load it:",
         -- Text for the loading popup (Confirmation if save should be loaded/applied)
         load_popup = {
@@ -84,7 +86,9 @@ local translation = {
             -- Additional question to confirm
             confirmation_question =             "Proceed?",
             -- Checkbox inside the confirmation window, asking if equipment should be unequipped
-            include_equipment =                 "Also unequip Equipment?"
+            include_equipment =                 "Also unequip Equipment?",
+            -- Checkbox inside the confirmation window, asking if skills should be reset as well
+            include_skills =                    "Also reset skills?"
         }
 
     },
@@ -111,9 +115,7 @@ local translation = {
         -- Label for the slider that sets the character limit for save names
         save_name_character_limit =             "Save Name Character Limit:",
         -- Warns the user when the maximum amount of allowed saves is set higher than 20.
-        saves_amount_warning =                  "A high amount of saves might decrease performance!",
-        -- Checkbox if loading saves should include the skills from the save.
-        load_including_skills_text =            "Include Skills on Load?",
+        saves_amount_warning =                  "A high amount of saves might decrease performance!"
     }
 }
 
