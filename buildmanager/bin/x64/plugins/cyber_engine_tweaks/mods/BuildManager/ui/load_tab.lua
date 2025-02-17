@@ -7,7 +7,7 @@ function load_tab.reset_locals()
 end
 
 --- Creates the load tab for the UI
---- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
+--- @param options BMOptions
 --- @param saveSettings SaveSettings
 --- @param util Util
 --- @param playerDevelopmentData PlayerDevelopmentData
@@ -21,6 +21,7 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 		ImGui.PopID()
 		ImGui.SameLine()
 		ImGui.TextWrapped(translation.load.load_including_equipment_text)
+		ImGui.Spacing()
 		ImGui.Spacing()
 		ImGui.Separator()
 
@@ -47,7 +48,7 @@ function load_tab.create(options, saveSettings, util, playerDevelopmentData, pla
 			if ImGui.BeginPopupModal(translation.load.load_popup.load_popup_title.." \""..k.."\"", true, ImGuiWindowFlags.AlwaysAutoResize) then
 				ImGui.Text(translation.load.load_popup.load_popup_confirmation)
 				if ImGui.Button(translation.yes,ImGui.GetContentRegionAvail(),25) then
-					util.setBuild(playerDevelopmentData, saveSettings.settings[k], options.loadEquipment)
+					util.setBuild(playerDevelopmentData, saveSettings.settings[k], options.loadEquipment, options.loadSkills)
 					ImGui.CloseCurrentPopup()
 				end
 				if ImGui.Button(translation.no,ImGui.GetContentRegionAvail(),25) then

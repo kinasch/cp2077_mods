@@ -1,7 +1,7 @@
 local options_tab = {}
 
 --- Creates the options tab for the UI
---- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
+--- @param options BMOptions
 --- @param translation BuildManagerTranslation
 function options_tab.create(options, translation)
     if ImGui.BeginTabItem(translation.options.options_tab_title) then
@@ -20,6 +20,15 @@ function options_tab.create(options, translation)
 		ImGui.PushID("options.saveCharacterLimit_slider")
 		options.saveCharacterLimit = ImGui.SliderInt("", options.saveCharacterLimit, 16, 256, "%d")
 		ImGui.PopID()
+
+		ImGui.Spacing()
+		ImGui.Separator()
+
+		ImGui.PushID("options.loadSkills_checkbox")
+		options.loadSkills = ImGui.Checkbox("", options.loadSkills)
+		ImGui.PopID()
+		ImGui.SameLine()
+		ImGui.TextWrapped(translation.options.load_including_skills_text)
 
 		ImGui.EndTabItem()
 	end

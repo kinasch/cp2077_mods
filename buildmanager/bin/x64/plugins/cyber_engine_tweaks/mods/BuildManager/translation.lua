@@ -111,7 +111,9 @@ local translation = {
         -- Label for the slider that sets the character limit for save names
         save_name_character_limit =             "Save Name Character Limit:",
         -- Warns the user when the maximum amount of allowed saves is set higher than 20.
-        saves_amount_warning =                  "A high amount of saves might decrease performance!"
+        saves_amount_warning =                  "A high amount of saves might decrease performance!",
+        -- Checkbox if loading saves should include the skills from the save.
+        load_including_skills_text =            "Include Skills on Load?",
     }
 }
 

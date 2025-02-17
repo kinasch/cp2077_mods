@@ -6,7 +6,8 @@ local include_equipment = false
 --- @param playerDevelopmentData PlayerDevelopmentData
 --- @param util Util
 --- @param translation BuildManagerTranslation
-function reset_tab.create(playerDevelopmentData, util, translation)
+--- @param options BMOptions
+function reset_tab.create(playerDevelopmentData, util, translation, options)
     if ImGui.BeginTabItem(translation.reset.reset_tab_title) then
 		ImGui.TextWrapped(translation.reset.reset_explanation)
 		ImGui.Spacing()
@@ -34,7 +35,7 @@ function reset_tab.create(playerDevelopmentData, util, translation)
 			ImGui.Indent(popupx/2-30)
 			if ImGui.Button(translation.yes,60,25) then
 				if include_equipment then util.equip.unequipEverything() end
-				util.tabulaRasa(playerDevelopmentData)
+				util.tabulaRasa(playerDevelopmentData, options.loadSkills)
 				include_equipment = false
 				ImGui.CloseCurrentPopup()
 			end

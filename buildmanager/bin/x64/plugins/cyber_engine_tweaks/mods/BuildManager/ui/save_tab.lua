@@ -7,7 +7,7 @@ function save_tab.reset_locals()
 end
 
 --- Creates the save tab for the UI
---- @param options { saveLimit: number, saveCharacterLimit: number, letProfs: bool, loadEquipment: bool }
+--- @param options BMOptions
 --- @param saveSettings SaveSettings
 --- @param util Util
 --- @param playerDevelopmentData PlayerDevelopmentData
