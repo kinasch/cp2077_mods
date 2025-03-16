@@ -62,10 +62,10 @@ function equip_util.equipCyberwareFromItemList(cyberware_items)
             end
         end
     end
-    -- Maybe temporarily boost the cyberware limit?
-    --Game.GetStatsSystem():AddModifier(GetPlayer():GetEntityID(), RPGManager.CreateStatModifier(gamedataStatType.Humanity, gameStatModifierType.Additive, 100))
+    -- Temporarily boost the cyberware limit (thanks to Akwarrior777 on NexusMods)
+    Game.GetStatsSystem():AddModifier(GetPlayer():GetEntityID(), RPGManager.CreateStatModifier(gamedataStatType.Humanity, gameStatModifierType.Additive, 200))
     EquipmentSystem.GetData(GetPlayer()):EquipAllItemsFromList(items)
-    --Game.GetStatsSystem():AddModifier(GetPlayer():GetEntityID(), RPGManager.CreateStatModifier(gamedataStatType.Humanity, gameStatModifierType.Additive, -100))
+    Game.GetStatsSystem():AddModifier(GetPlayer():GetEntityID(), RPGManager.CreateStatModifier(gamedataStatType.Humanity, gameStatModifierType.Additive, -200))
 
     -- Equip Cyberware Parts (Quickhacks, Mods, etc.)
     for k,v in pairs(parts) do
