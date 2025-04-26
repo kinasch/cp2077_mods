@@ -10,7 +10,7 @@ registerForEvent("onInit", function()
 
 	-- Raise max value of every attribute.
 	for key, value in pairs(old_value) do
-		TweakDB:SetFlat("BaseStats."..key..".max",99)
+		TweakDB:SetFlat("BaseStats."..key..".max",PlayerDevelopmentSystem.GetAttributesUncappedCap())
 	end
 
 	-- Set up the stat modifiers for attribute levels beyond 20.
@@ -65,14 +65,14 @@ registerForEvent("onInit", function()
 	end)
 
 	-- Get attribute levels after loading in to avoid cheesing the mod by reloading all mods and stacking modifiers.
-	-- This is getting called like 200 times, but whatever...
-	ObserveAfter("PlayerDevelopmentData", "OnRestored",function(this, gameInstance)
+	-- This is hopefully only getting called once.
+	ObserveAfter("PlayerDevelopmentSystem", "OnRestored",function(this, saveVersion, gameVersion)
 		for key, value in pairs(old_value) do
 			cur_level = PlayerDevelopmentSystem.GetData(GetPlayer()):GetAttributeValue(gamedataStatType[key])
 			if cur_level > 20 then
 				Game.GetStatsSystem():AddModifier(
 					GetPlayer():GetEntityID(),
-					stat_modifier[key](Max(0,cur_level-old_value[key]-20))
+					stat_modifier[key](Max(0,cur_level-20))
 				)
 			end
 
