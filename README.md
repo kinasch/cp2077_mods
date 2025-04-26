@@ -12,6 +12,7 @@ Read the respective README.md of every mod for more information.
 * [**Ultimate Spreader**](https://github.com/kinasch/cp2077_mods/tree/main/ultimate_spreading) - Adds settings to toggle how much and far certain Ultimate QuickHacks spread.
 * [**Build Manager**](https://github.com/kinasch/cp2077_mods/tree/main/buildmanager) - Manage different builds for different play-styles.
 * [**Open Shard and Codex Menus Collapsed**](https://github.com/kinasch/cp2077_mods/tree/main/shardcodexcollapsed) - Automatically collapsed every tab upon opening the database or shard menus
+* [**Attributes Uncapped**](https://github.com/kinasch/cp2077_mods/tree/main/attributes_uncapped) - Raise the attribute cap to 10,000.
 
 ## Thanks to
 

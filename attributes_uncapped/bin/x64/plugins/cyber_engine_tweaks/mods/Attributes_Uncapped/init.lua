@@ -1,6 +1,6 @@
 -- Init
 registerForEvent("onInit", function()
-	old_value = {
+	local old_value = {
 		Reflexes=0,
 		Intelligence=0,
 		TechnicalAbility=0,
@@ -14,7 +14,7 @@ registerForEvent("onInit", function()
 	end
 
 	-- Set up the stat modifiers for attribute levels beyond 20.
-	stat_modifier = {
+	local stat_modifier = {
 		Reflexes=function(amount)
 			return RPGManager.CreateStatModifier(gamedataStatType.CritChance, gameStatModifierType.Additive, amount * 0.5)
 		end,
@@ -78,7 +78,7 @@ registerForEvent("onInit", function()
 	-- This is hopefully only getting called once.
 	ObserveAfter("PlayerDevelopmentSystem", "OnRestored",function(this, saveVersion, gameVersion)
 		for key, value in pairs(old_value) do
-			cur_level = PlayerDevelopmentSystem.GetData(GetPlayer()):GetAttributeValue(gamedataStatType[key])
+			local cur_level = PlayerDevelopmentSystem.GetData(GetPlayer()):GetAttributeValue(gamedataStatType[key])
 			if cur_level > 20 then
 				Game.GetStatsSystem():AddModifier(
 					GetPlayer():GetEntityID(),
