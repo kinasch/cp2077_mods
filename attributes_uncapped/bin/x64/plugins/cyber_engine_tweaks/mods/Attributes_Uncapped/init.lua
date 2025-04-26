@@ -50,17 +50,27 @@ registerForEvent("onInit", function()
 		type = type.value
 		-- Check for resetting or other, more unusual, attribute modifications
 		if amount < old_value[type] then
-			Game.GetStatsSystem():AddModifier(
-				GetPlayer():GetEntityID(),
-				stat_modifier[type]( - old_value[type] + Max(amount,20) )
-			)
+			local worked, error = pcall(function ()
+				Game.GetStatsSystem():AddModifier(
+					GetPlayer():GetEntityID(),
+					stat_modifier[type]( - old_value[type] + Max(amount,20) )
+				)
+			end)
+			if not worked then
+				spdlog.warning("Might be a nil error from startup:\n"..tostring(error))
+			end
 		-- Levels 1 through 20, the game handles the attribute passives itself, beyond that it doesn't, no matter the max.
 		-- Tbf, this whole mod would be useless if that was not the case.
 		elseif amount > 20 then
-			Game.GetStatsSystem():AddModifier(
-				GetPlayer():GetEntityID(),
-				stat_modifier[type](amount-old_value[type])
-			)
+			local worked, error = pcall(function ()
+				Game.GetStatsSystem():AddModifier(
+					GetPlayer():GetEntityID(),
+					stat_modifier[type](Max(0,amount-20)-Max(0,old_value[type]-20))
+				)
+			end)
+			if not worked then
+				spdlog.warning("Might be a nil error from startup:\n"..tostring(error))
+			end
 		end
 	end)
 
