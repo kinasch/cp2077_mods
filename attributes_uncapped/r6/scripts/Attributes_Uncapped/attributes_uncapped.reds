@@ -1,6 +1,6 @@
 @addMethod(PlayerDevelopmentSystem)
 public static func GetAttributesUncappedCap() -> Int32 {
-	return 10000;
+	return 1000;
 }
 
 @replaceMethod(PlayerDevelopmentDataManager)

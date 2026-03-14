@@ -10,9 +10,11 @@ registerForEvent("onInit", function()
 		Cool=0
 	}
 
+	-- If errors come up at this point, the mod will not work normally anyway.
+	local mod_cap = pcall(PlayerDevelopmentSystem.GetAttributesUncappedCap) and PlayerDevelopmentSystem.GetAttributesUncappedCap() or 1000
 	-- Raise max value of every attribute.
 	for key, value in pairs(old_value) do
-		TweakDB:SetFlat("BaseStats."..key..".max",PlayerDevelopmentSystem.GetAttributesUncappedCap())
+		TweakDB:SetFlat("BaseStats."..key..".max",mod_cap)
 	end
 
 	-- Set up the stat modifiers for attribute levels beyond 20.
