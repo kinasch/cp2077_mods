@@ -13,6 +13,7 @@ Read the respective README.md of every mod for more information.
 * [**Build Manager**](https://github.com/kinasch/cp2077_mods/tree/main/buildmanager) - Manage different builds for different play-styles.
 * [**Open Shard and Codex Menus Collapsed**](https://github.com/kinasch/cp2077_mods/tree/main/shardcodexcollapsed) - Automatically collapsed every tab upon opening the database or shard menus
 * [**Attributes Uncapped**](https://github.com/kinasch/cp2077_mods/tree/main/attributes_uncapped) - Raise the attribute cap to 10,000.
+* [**Crit Conversion**](https://github.com/kinasch/cp2077_mods/tree/main/crit_conversion) - Convert surplus Crit Chance (anything above 100%) into Crit Damage.
 
 ## Thanks to
 
