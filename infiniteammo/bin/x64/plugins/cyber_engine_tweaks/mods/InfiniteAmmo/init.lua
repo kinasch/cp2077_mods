@@ -22,11 +22,9 @@ registerForEvent("onInit", function()
 		local weapon = this:GetWeaponObject(scriptInterface)
 		local player = Game.GetPlayer()
 		local activeWeapon = player:GetActiveWeapon()
-		if activeWeapon:GetItemID() == weapon:GetItemID() and infAmmoToggled == true then
-			if weapon:GetMagazineCapacity() == 1 then
-				weapon:StartReload(0)
-				weapon:StopReload(gameweaponReloadStatus.Standard)
-			end
+		if activeWeapon:GetItemID() == weapon:GetItemID() and infAmmoToggled == true and weapon:GetMagazineCapacity() == 1 then
+			weapon:StartReload(0)
+			weapon:StopReload(gameweaponReloadStatus.Standard)
 		end
 	end)
 end)
