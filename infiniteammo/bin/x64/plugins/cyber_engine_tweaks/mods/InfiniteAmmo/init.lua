@@ -4,17 +4,30 @@ local notifTimer = 0
 registerForEvent("onInit", function()
 	local refundEvent = SetAmmoCountEvent.new()
 	
-	ObserveBefore('WeaponObject', 'SendAmmoUpdateEvent;GameObjectWeaponObject', function(gameObject, weapon)
+	---@param this ShootEvents
+	Observe("ShootEvents", "OnEnter", function(this, stateContext, scriptInterface)
+		local weapon = this:GetWeaponObject(scriptInterface)
 		local player = Game.GetPlayer()
 		local activeWeapon = player:GetActiveWeapon()
 		if activeWeapon:GetItemID() == weapon:GetItemID() and infAmmoToggled == true then
 
 			refundEvent.ammoTypeID = WeaponObject.GetAmmoType(weapon)
 			refundEvent.count = WeaponObject.GetMagazineCapacity(weapon)
-		
+
 			weapon:QueueEvent(refundEvent)
 		end
-		
+	end)
+
+	ObserveBefore("ShootEvents", "OnExit", function(this, stateContext, scriptInterface)
+		local weapon = this:GetWeaponObject(scriptInterface)
+		local player = Game.GetPlayer()
+		local activeWeapon = player:GetActiveWeapon()
+		if activeWeapon:GetItemID() == weapon:GetItemID() and infAmmoToggled == true then
+			if weapon:GetMagazineCapacity() == 1 then
+				weapon:StartReload(0)
+				weapon:StopReload(gameweaponReloadStatus.Standard)
+			end
+		end
 	end)
 end)
 
