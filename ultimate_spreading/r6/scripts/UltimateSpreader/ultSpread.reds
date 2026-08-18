@@ -1,3 +1,6 @@
+// Empty logging message, because I always forget it
+//LogChannel(n"DEBUG", s"[Ultimate Spreader] Text \(variable).");
+
 // Added field to identify modded spread clones and skip RAM costs
 @addField(BaseScriptableAction)
 public let m_UltimateSpreaderCloneFlag: Bool;
@@ -40,8 +43,8 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         return;
     }
 
-    let requesterID: EntityID = this.GetRequesterID();
-    let target = GameInstance.FindEntityByID(gameInstance, requesterID) as NPCPuppet;
+    let requesterID: EntityID = puppetAction.GetRequesterID();
+    let target = gameplayRoleComponent.GetOwner() as NPCPuppet; //GameInstance.FindEntityByID(gameInstance, requesterID) as NPCPuppet;
     let owner = puppetAction.GetExecutor() as PlayerPuppet; 
     
     if !IsDefined(target) || !IsDefined(owner) { return; }
@@ -49,9 +52,9 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
     // Using hardcoded values for testing.
     // TODO: Change
     let spreadRadius: Float = 30.0; 
-    let maxTargets: Int32 = 4;
+    let maxTargets: Int32 = 3;
 
-    // Target acquisition by scanning around the player and then filtering by checking distance to target (spreadRange)
+    // Target acquisition by scanning around the player and then filtering by checking distance to target (spreadRadius)
     // High resource cost, was never an issue during testing though
     // Using the GetNPCsAroundObject function on the target did not work here for me
     let playerSearchRadius: Float = 250.0; 
@@ -70,6 +73,30 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         }
         j += 1;
     }
+
+    let targetsFromTarget: array<ref<NPCPuppet>>;
+    let squadMemberInterface = target.GetSquadMemberComponent();
+    let squadMembers: array<wref<Entity>>;
+    if IsDefined(squadMemberInterface) {
+        AISquadHelper.GetSquadmates(target, squadMembers, false);
+
+        let k = 0;
+        while k < ArraySize(squadMembers) {
+            // Directly downcast the wref reference to NPCPuppet
+            let member = squadMembers[k] as NPCPuppet;
+            
+            if IsDefined(member) && member != target && member.IsActive() {
+                if Vector4.Distance(member.GetWorldPosition(), targetPos) <= spreadRadius {
+                    ArrayPush(targetsFromTarget, member);
+                }
+            }
+            k += 1;
+        }
+    }
+    //LogChannel(n"DEBUG", s"[Ultimate Spreader] \(ArraySize(targetsFromTarget)) targets from target squad with \(ArraySize(squadMembers)) members.");
+
+    validTargets = targetsFromTarget;
+
     
     // Get upload time to spread after time finishes.
     let primaryUploadTime: Float = puppetAction.GetActivationTime(); 
