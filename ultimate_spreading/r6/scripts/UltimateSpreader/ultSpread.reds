@@ -106,7 +106,6 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
             break;
     }
 
-    let requesterID: EntityID = puppetAction.GetRequesterID();
     let target = gameplayRoleComponent.GetOwner() as NPCPuppet; //GameInstance.FindEntityByID(gameInstance, requesterID) as NPCPuppet;
     let owner = puppetAction.GetExecutor() as PlayerPuppet; 
     
