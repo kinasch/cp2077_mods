@@ -1,10 +1,69 @@
+module UltimateSpreader
+
+// Disable this mod when OP Cyberdecks exists, to avoid interfering in its spreading logic.
+// https://www.nexusmods.com/cyberpunk2077/mods/10317
+
+
+@if(!ModuleExists("OpCyberdeckMod") && ModuleExists("ModSettingsModule"))
+public class SpreaderSettings extends ScriptableSystem {
+
+    // --- Spread Distance ---
+    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
+    @runtimeProperty("ModSettings.category", "Quickhack Spreading")
+    @runtimeProperty("ModSettings.displayName", "Spread Distance")
+    @runtimeProperty("ModSettings.description", "Maximum radius in meters the quickhack can jump.")
+    @runtimeProperty("ModSettings.step", "1.0")
+    @runtimeProperty("ModSettings.min", "5.0")
+    @runtimeProperty("ModSettings.max", "100.0")
+    public let spreadRadius: Float = 30.0;
+
+    // --- Spread Count ---
+    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
+    @runtimeProperty("ModSettings.category", "Quickhack Spreading")
+    @runtimeProperty("ModSettings.displayName", "Spread Count")
+    @runtimeProperty("ModSettings.description", "Maximum number of enemies the hack will jump to.")
+    @runtimeProperty("ModSettings.step", "1")
+    @runtimeProperty("ModSettings.min", "1")
+    @runtimeProperty("ModSettings.max", "15")
+    public let maxTargets: Int32 = 4;
+
+    // A helper function to easily grab this class from anywhere in your code
+    public static func Get(gi: GameInstance) -> ref<SpreaderSettings> {
+        return GameInstance.GetScriptableSystemsContainer(gi).Get(n"UltimateSpreader.SpreaderSettings") as SpreaderSettings;
+    }
+
+    // Register listeners so the values instantly update when you hit "Apply" in the menu
+    private func OnAttach() -> Void {
+        ModSettings.RegisterListenerToClass(this);
+    }
+    
+    private func OnDetach() -> Void {
+        ModSettings.UnregisterListenerToClass(this);
+    }
+}
+
+// New event, needed to execute a delayed event
+@if(!ModuleExists("OpCyberdeckMod"))
+public class UltimateSpreaderEvent extends Event {
+    public let owner: wref<PlayerPuppet>;
+    public let actionID: TweakDBID;
+}
+
+@if(!ModuleExists("OpCyberdeckMod"))
+public struct SpreadTargetCandidate {
+    public let puppet: ref<NPCPuppet>;
+    public let distanceSquared: Float;
+}
+
 // Empty logging message, because I always forget it
 //LogChannel(n"DEBUG", s"[Ultimate Spreader] Text \(variable).");
 
 // Added field to identify modded spread clones and skip RAM costs
+@if(!ModuleExists("OpCyberdeckMod"))
 @addField(BaseScriptableAction)
 public let m_UltimateSpreaderCloneFlag: Bool;
 
+@if(!ModuleExists("OpCyberdeckMod"))
 @wrapMethod(BaseScriptableAction)
 public func CanPayCost(opt instigator: ref<GameObject>, opt skipCostCheck: Bool) -> Bool {
     if this.m_UltimateSpreaderCloneFlag {
@@ -13,6 +72,7 @@ public func CanPayCost(opt instigator: ref<GameObject>, opt skipCostCheck: Bool)
     return wrappedMethod(instigator, skipCostCheck);
 }
 
+@if(!ModuleExists("OpCyberdeckMod"))
 @wrapMethod(BaseScriptableAction)
 public func PayCost(opt checkForOverclockedState: Bool) -> Bool {
     if this.m_UltimateSpreaderCloneFlag {
@@ -21,12 +81,7 @@ public func PayCost(opt checkForOverclockedState: Bool) -> Bool {
     return wrappedMethod(checkForOverclockedState);
 }
 
-// New event, needed to execute a delayed event
-public class UltimateSpreaderEvent extends Event {
-    public let ownerID: EntityID;
-    public let actionID: TweakDBID;
-}
-
+@if(!ModuleExists("OpCyberdeckMod") && !ModuleExists("ModSettingsModule"))
 @wrapMethod(BaseScriptableAction)
 protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComponent: ref<GameplayRoleComponent>) -> Void {
     
@@ -35,12 +90,20 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
 
     // Downcast
     let puppetAction = this as PuppetAction;
-
-    // TODO: Check for quickhacks that should not spread, e.g. Ping (does not need to spread)
     
     // Isolate quickhacks and check for spread disabling flags
     if !IsDefined(puppetAction) || puppetAction.m_disableSpread || puppetAction.m_UltimateSpreaderCloneFlag || !puppetAction.IsQuickHack() { 
         return;
+    }
+
+    // Check for quickhacks, that should not spread (so far only Ping and Whistle, might include Contagion or Blackwall here, to not mess with their respective spread logic)
+    let actionName: CName = puppetAction.actionName;
+    switch actionName {
+        case n"Ping":
+        case n"Whistle":
+            return;
+        default:
+            break;
     }
 
     let requesterID: EntityID = puppetAction.GetRequesterID();
@@ -49,19 +112,19 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
     
     if !IsDefined(target) || !IsDefined(owner) { return; }
 
-    // Using hardcoded values for testing.
-    // TODO: Change
+    let actionId: TweakDBID = puppetAction.GetObjectActionRecord().GetID();
+
+    // Using hardcoded values for testing and no mod settings fallback.
     let spreadRadius: Float = 30.0; 
     let maxTargets: Int32 = 3;
 
     // Target acquisition by scanning around the player and then filtering by checking distance to target (spreadRadius)
     // High resource cost, was never an issue during testing though
     // Using the GetNPCsAroundObject function on the target did not work here for me
+    /* let validTargets: array<ref<NPCPuppet>>;
+    let targetPos = target.GetWorldPosition();
     let playerSearchRadius: Float = 250.0; 
     let allNearbyNPCs = owner.GetNPCsAroundObject(playerSearchRadius);
-    let targetPos = target.GetWorldPosition();
-    let actionId: TweakDBID = puppetAction.GetObjectActionRecord().GetID();
-    let validTargets: array<ref<NPCPuppet>>;
     
     let j = 0;
     while j < ArraySize(allNearbyNPCs) {
@@ -72,9 +135,9 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
             }
         }
         j += 1;
-    }
+    } */
 
-    let targetsFromTarget: array<ref<NPCPuppet>>;
+    /* let targetsFromTarget: array<ref<NPCPuppet>>;
     let squadMemberInterface = target.GetSquadMemberComponent();
     let squadMembers: array<wref<Entity>>;
     if IsDefined(squadMemberInterface) {
@@ -92,10 +155,57 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
             }
             k += 1;
         }
+    } */
+
+    let validTargets: array<SpreadTargetCandidate>;
+    let targetPos = target.GetWorldPosition();
+    let spreadRadiusSq = spreadRadius * spreadRadius;
+
+    let squadMemberInterface = target.GetSquadMemberComponent();
+    let squadMembers: array<wref<Entity>>;
+    if IsDefined(squadMemberInterface) {
+        AISquadHelper.GetSquadmates(target, squadMembers, false);
+    }
+
+    let k = 0;
+    let memberCount = ArraySize(squadMembers);
+
+    while k < memberCount {
+        let member = squadMembers[k] as NPCPuppet;
+        
+        if IsDefined(member) && member != target && member.IsActive() {
+            let squaredDistMemberToTarget = Vector4.DistanceSquared(member.GetWorldPosition(), targetPos);
+            
+            if squaredDistMemberToTarget <= spreadRadiusSq {
+                let currentSize = ArraySize(validTargets);
+                
+                if currentSize < maxTargets || squaredDistMemberToTarget < validTargets[currentSize - 1].distanceSquared {
+                    
+                    let newCandidate: SpreadTargetCandidate;
+                    newCandidate.puppet = member;
+                    newCandidate.distanceSquared = squaredDistMemberToTarget;
+                    
+                    // Compare with existing entries' distance
+                    let currentMemberInsertIndex = 0;
+                    while currentMemberInsertIndex < currentSize && validTargets[currentMemberInsertIndex].distanceSquared <= squaredDistMemberToTarget {
+                        currentMemberInsertIndex += 1;
+                    }
+                    
+                    ArrayInsert(validTargets, currentMemberInsertIndex, newCandidate);
+
+                    if ArraySize(validTargets) > maxTargets {
+                        // Prevent spread to more than the max targets
+                        // May occur, when last checked target is closer than target on last index, thus being inserted and pushing the size beyond the maxTarget threshold
+                        ArrayPop(validTargets);
+                    }
+                }
+            }
+        }
+        k += 1;
     }
     //LogChannel(n"DEBUG", s"[Ultimate Spreader] \(ArraySize(targetsFromTarget)) targets from target squad with \(ArraySize(squadMembers)) members.");
 
-    validTargets = targetsFromTarget;
+    //validTargets = targetsFromTarget;
 
     
     // Get upload time to spread after time finishes.
@@ -107,13 +217,13 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
     while i < ArraySize(validTargets) {
         if spreadCount >= maxTargets { break; }
         
-        let newTarget = validTargets[i];
+        let newTarget = validTargets[i].puppet;
 
         // Using another variable to improve readibility and include possible changes (like stagered spreading or additional jumps)
-        let sequenceDelay: Float = primaryUploadTime;
+        let sequenceDelay: Float = primaryUploadTime + (primaryUploadTime * Cast<Float>(spreadCount));
 
         let spreadEvt = new UltimateSpreaderEvent();
-        spreadEvt.ownerID = owner.GetEntityID();
+        spreadEvt.owner = owner;
         spreadEvt.actionID = actionId;
 
         // Dispatch event to pipeline - maybe create a variable for the delay system and not use the getter every time...
@@ -126,21 +236,138 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
     }
 }
 
+@if(!ModuleExists("OpCyberdeckMod") && ModuleExists("ModSettingsModule"))
+@wrapMethod(BaseScriptableAction)
+protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComponent: ref<GameplayRoleComponent>) -> Void {
+    
+    // Execute the base hack first
+    wrappedMethod(gameInstance, gameplayRoleComponent);
+
+    // Downcast
+    let puppetAction = this as PuppetAction;
+    
+    // Isolate quickhacks and check for spread disabling flags
+    if !IsDefined(puppetAction) || puppetAction.m_disableSpread || puppetAction.m_UltimateSpreaderCloneFlag || !puppetAction.IsQuickHack() { 
+        return;
+    }
+
+    // Check for quickhacks, that should not spread (so far only Ping and Whistle, might include Contagion or Blackwall here, to not mess with their respective spread logic)
+    let actionName: CName = puppetAction.actionName;
+    switch actionName {
+        case n"Ping":
+        case n"Whistle":
+            return;
+        default:
+            break;
+    }
+
+    let requesterID: EntityID = puppetAction.GetRequesterID();
+    let target = gameplayRoleComponent.GetOwner() as NPCPuppet; //GameInstance.FindEntityByID(gameInstance, requesterID) as NPCPuppet;
+    let owner = puppetAction.GetExecutor() as PlayerPuppet; 
+    
+    if !IsDefined(target) || !IsDefined(owner) { return; }
+
+    let actionId: TweakDBID = puppetAction.GetObjectActionRecord().GetID();
+
+    // Take spread settings from mod settings page
+    let settings = SpreaderSettings.Get(gameInstance);
+    let spreadRadius: Float = settings.spreadRadius; 
+    let maxTargets: Int32 = settings.maxTargets;
+
+    let validTargets: array<SpreadTargetCandidate>;
+    let targetPos = target.GetWorldPosition();
+    let spreadRadiusSq = spreadRadius * spreadRadius;
+
+    let squadMemberInterface = target.GetSquadMemberComponent();
+    let squadMembers: array<wref<Entity>>;
+    if IsDefined(squadMemberInterface) {
+        AISquadHelper.GetSquadmates(target, squadMembers, false);
+    }
+
+    let k = 0;
+    let memberCount = ArraySize(squadMembers);
+
+    while k < memberCount {
+        let member = squadMembers[k] as NPCPuppet;
+        
+        if IsDefined(member) && member != target && member.IsActive() {
+            let squaredDistMemberToTarget = Vector4.DistanceSquared(member.GetWorldPosition(), targetPos);
+            
+            if squaredDistMemberToTarget <= spreadRadiusSq {
+                let currentSize = ArraySize(validTargets);
+                
+                if currentSize < maxTargets || squaredDistMemberToTarget < validTargets[currentSize - 1].distanceSquared {
+                    
+                    let newCandidate: SpreadTargetCandidate;
+                    newCandidate.puppet = member;
+                    newCandidate.distanceSquared = squaredDistMemberToTarget;
+                    
+                    // Compare with existing entries' distance
+                    let currentMemberInsertIndex = 0;
+                    while currentMemberInsertIndex < currentSize && validTargets[currentMemberInsertIndex].distanceSquared <= squaredDistMemberToTarget {
+                        currentMemberInsertIndex += 1;
+                    }
+                    
+                    ArrayInsert(validTargets, currentMemberInsertIndex, newCandidate);
+
+                    if ArraySize(validTargets) > maxTargets {
+                        // Prevent spread to more than the max targets
+                        // May occur, when last checked target is closer than target on last index, thus being inserted and pushing the size beyond the maxTarget threshold
+                        ArrayPop(validTargets);
+                    }
+                }
+            }
+        }
+        k += 1;
+    }
+    //LogChannel(n"DEBUG", s"[Ultimate Spreader] \(ArraySize(targetsFromTarget)) targets from target squad with \(ArraySize(squadMembers)) members.");
+
+    //validTargets = targetsFromTarget;
+
+    
+    // Get upload time to spread after time finishes.
+    let primaryUploadTime: Float = puppetAction.GetActivationTime(); 
+    
+    let i = 0;
+    let spreadCount = 0;
+
+    while i < ArraySize(validTargets) {
+        if spreadCount >= maxTargets { break; }
+        
+        let newTarget = validTargets[i].puppet;
+
+        // Using another variable to improve readibility and include possible changes (like stagered spreading or additional jumps)
+        let sequenceDelay: Float = primaryUploadTime + (primaryUploadTime * Cast<Float>(spreadCount));
+
+        let spreadEvt = new UltimateSpreaderEvent();
+        spreadEvt.owner = owner;
+        spreadEvt.actionID = actionId;
+
+        // Dispatch event to pipeline - maybe create a variable for the delay system and not use the getter every time...
+        GameInstance.GetDelaySystem(newTarget.GetGame()).DelayEvent(newTarget, spreadEvt, sequenceDelay);
+        
+        // Not really checking for any success here, could just use on of either spreadCount or i
+        // Left in, in case a success check is added back
+        spreadCount += 1;
+        i += 1;
+    }
+}
+
+@if(!ModuleExists("OpCyberdeckMod"))
 @addMethod(ScriptedPuppet)
 protected cb func OnUltimateSpreaderEvent(evt: ref<UltimateSpreaderEvent>) -> Bool {
     // Abort if the enemy died while waiting for their turn in the chain reaction. No idea how the base game handles this ...
     if !this.IsActive() { return false; }
 
-    // TODO: add owner as GameObject to the Event
-    let owner = GameInstance.FindEntityByID(this.GetGame(), evt.ownerID) as GameObject;
-    if !IsDefined(owner) { return false; }
+    //let owner = evt.owner;
+    //if !IsDefined(owner) { return false; }
 
     let gameplayRoleComponent = this.GetGameplayRoleComponent();
     
     // Construct the clone hack
     let spreadAction = new PuppetAction();
     spreadAction.RegisterAsRequester(this.GetEntityID());
-    spreadAction.SetExecutor(owner);
+    spreadAction.SetExecutor(evt.owner);
     spreadAction.SetObjectActionID(evt.actionID);
     spreadAction.SetUp(this.GetPuppetPS());
     
