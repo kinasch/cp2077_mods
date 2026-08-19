@@ -3,45 +3,6 @@ module UltimateSpreader
 // Disable this mod when OP Cyberdecks exists, to avoid interfering in its spreading logic.
 // https://www.nexusmods.com/cyberpunk2077/mods/10317
 
-
-@if(!ModuleExists("OpCyberdeckMod") && ModuleExists("ModSettingsModule"))
-public class SpreaderSettings extends ScriptableSystem {
-
-    // --- Spread Distance ---
-    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
-    @runtimeProperty("ModSettings.category", "Quickhack Spreading")
-    @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.description", "Maximum radius in meters the quickhack can jump.")
-    @runtimeProperty("ModSettings.step", "1.0")
-    @runtimeProperty("ModSettings.min", "5.0")
-    @runtimeProperty("ModSettings.max", "100.0")
-    public let spreadRadius: Float = 30.0;
-
-    // --- Spread Count ---
-    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
-    @runtimeProperty("ModSettings.category", "Quickhack Spreading")
-    @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.description", "Maximum number of enemies the hack will jump to.")
-    @runtimeProperty("ModSettings.step", "1")
-    @runtimeProperty("ModSettings.min", "1")
-    @runtimeProperty("ModSettings.max", "15")
-    public let maxTargets: Int32 = 4;
-
-    // A helper function to easily grab this class from anywhere in your code
-    public static func Get(gi: GameInstance) -> ref<SpreaderSettings> {
-        return GameInstance.GetScriptableSystemsContainer(gi).Get(n"UltimateSpreader.SpreaderSettings") as SpreaderSettings;
-    }
-
-    // Register listeners so the values instantly update when you hit "Apply" in the menu
-    private func OnAttach() -> Void {
-        ModSettings.RegisterListenerToClass(this);
-    }
-    
-    private func OnDetach() -> Void {
-        ModSettings.UnregisterListenerToClass(this);
-    }
-}
-
 // New event, needed to execute a delayed event
 @if(!ModuleExists("OpCyberdeckMod"))
 public class UltimateSpreaderEvent extends Event {
@@ -270,8 +231,8 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
 
     // Take spread settings from mod settings page
     let settings = SpreaderSettings.Get(gameInstance);
-    let spreadRadius: Float = settings.spreadRadius; 
-    let maxTargets: Int32 = settings.maxTargets;
+    let spreadRadius: Float = settings.globalSpreadRadius; 
+    let maxTargets: Int32 = settings.globalMaxTargets;
 
     let validTargets: array<SpreadTargetCandidate>;
     let targetPos = target.GetWorldPosition();
