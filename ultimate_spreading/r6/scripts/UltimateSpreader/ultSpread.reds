@@ -166,6 +166,9 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         AISquadHelper.GetSquadmates(target, squadMembers, false);
     }
 
+    // Using the squadmate logic here, as it works best inside this function.
+    // Could use NPCsAroundObject func here, does not work for the target tho.
+    // Also, using this in something like SpreadInitEffector might be a major infraction of noborudesu's OP Cyberdeck code (see top).
     let k = 0;
     let memberCount = ArraySize(squadMembers);
 
@@ -221,13 +224,12 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         }
     }
     
-    let i = 0;
     let spreadCount = 0;
 
-    while i < ArraySize(validTargets) {
+    while spreadCount < ArraySize(validTargets) {
         if spreadCount >= maxTargets { break; }
         
-        let newTarget = validTargets[i].puppet;
+        let newTarget = validTargets[spreadCount].puppet;
 
         // Using another variable to improve readibility and include possible changes (like stagered spreading or additional jumps)
         let sequenceDelay: Float = primaryUploadTime + (primaryUploadTime * Cast<Float>(spreadCount));
@@ -243,7 +245,6 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         // Not really checking for any success here, could just use on of either spreadCount or i
         // Left in, in case a success check is added back
         spreadCount += 1;
-        i += 1;
     }
 }
 
