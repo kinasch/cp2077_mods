@@ -2,17 +2,26 @@ module UltimateSpreader
 
 @if(!ModuleExists("OpCyberdeckMod") && ModuleExists("ModSettingsModule"))
 public class SpreaderSettings extends ScriptableSystem {
-    // ========================================================================
-    // Individual Settings Switch
-    // ========================================================================
     
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.displayName", "Use Individual Settings")
-    @runtimeProperty("ModSettings.description", "ON: Use individual quickhack sliders below.\nOFF: Use the Global Spread sliders for everything.")
+    @runtimeProperty("ModSettings.description", "Display and use settings for every hack individually.")
     public let useIndividualSettings: Bool = false;
 
+    /* @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
+    @runtimeProperty("ModSettings.displayName", "Use Player Stats Spread Count")
+    @runtimeProperty("ModSettings.description", "Uses the spread count from the player stats (only for global values)")
+    public let usePlayerStatsSpreadCountValue: Bool = false;
+
+    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
+    @runtimeProperty("ModSettings.displayName", "Use Player Stats Spread Radius")
+    @runtimeProperty("ModSettings.description", "Uses the spread distance from the player stats (only for global values)")
+    public let usePlayerStatsSpreadRadiusValue: Bool = false; */
+
+    // Add config for things like "only with cyberdeck stat"
+
     // ========================================================================
-    // GLOBAL SETTINGS
+    // Global spread settings
     // ========================================================================
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
@@ -21,9 +30,9 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Global Spread Distance")
     @runtimeProperty("ModSettings.description", "Default radius if Individual Settings are OFF.")
     @runtimeProperty("ModSettings.step", "1.0")
-    @runtimeProperty("ModSettings.min", "5.0")
+    @runtimeProperty("ModSettings.min", "1.0")
     @runtimeProperty("ModSettings.max", "100.0")
-    public let globalSpreadRadius: Float = 30.0;
+    public let globalSpreadRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Global Settings")
@@ -31,20 +40,20 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Global Spread Count")
     @runtimeProperty("ModSettings.description", "Default max targets if Individual Settings are OFF.")
     @runtimeProperty("ModSettings.step", "1")
-    @runtimeProperty("ModSettings.min", "1")
+    @runtimeProperty("ModSettings.min", "0")
     @runtimeProperty("ModSettings.max", "15")
-    public let globalMaxTargets: Int32 = 4;
+    public let globalMaxTargets: Int32 = 0;
 
 
     // ========================================================================
-    // COMBAT QUICKHACKS 
+    // Combat Quickhacks
     // ========================================================================
 
     // Visual Header for Combat Quickhacks
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "--- COMBAT QUICKHACKS ---")
     @runtimeProperty("ModSettings.category.order", "2")
-    @runtimeProperty("ModSettings.displayName", "Quickhacks in this group:")
+    @runtimeProperty("ModSettings.displayName", "")
     private let headerCombat: Bool = false;
 
     // Short Circuit (Technical Name: Overload)
@@ -52,7 +61,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Short Circuit")
     @runtimeProperty("ModSettings.category.order", "3")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let shortCircuitRadius: Float = 30.0;
 
@@ -60,16 +69,16 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Short Circuit")
     @runtimeProperty("ModSettings.category.order", "3")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let shortCircuitCount: Int32 = 4;
+    public let shortCircuitCount: Int32 = 0;
 
     // Overheat (Technical Name: Overheat)
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Overheat")
     @runtimeProperty("ModSettings.category.order", "4")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let overheatRadius: Float = 30.0;
 
@@ -77,16 +86,16 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Overheat")
     @runtimeProperty("ModSettings.category.order", "4")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let overheatCount: Int32 = 4;
+    public let overheatCount: Int32 = 0;
 
     // Contagion (Technical Name: Contagion)
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Contagion")
     @runtimeProperty("ModSettings.category.order", "5")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let contagionRadius: Float = 30.0;
 
@@ -94,16 +103,16 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Contagion")
     @runtimeProperty("ModSettings.category.order", "5")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let contagionCount: Int32 = 4;
+    public let contagionCount: Int32 = 0;
 
     // Synapse Burnout (Technical Name: BrainMelt)
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Synapse Burnout")
     @runtimeProperty("ModSettings.category.order", "6")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let synapseBurnoutRadius: Float = 30.0;
 
@@ -111,20 +120,20 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Synapse Burnout")
     @runtimeProperty("ModSettings.category.order", "6")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let synapseBurnoutCount: Int32 = 4;
+    public let synapseBurnoutCount: Int32 = 0;
 
 
     // ========================================================================
-    // CONTROL QUICKHACKS
+    // Control Quickhacks
     // ========================================================================
 
     // Visual Header for Control Quickhacks
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "--- CONTROL QUICKHACKS ---")
     @runtimeProperty("ModSettings.category.order", "7")
-    @runtimeProperty("ModSettings.displayName", "Quickhacks in this group:")
+    @runtimeProperty("ModSettings.displayName", "")
     public let headerControl: Bool = false;
 
     // Reboot Optics (Technical Name: Blind)
@@ -132,7 +141,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Reboot Optics")
     @runtimeProperty("ModSettings.category.order", "8")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let rebootOpticsRadius: Float = 30.0;
 
@@ -140,16 +149,16 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Reboot Optics")
     @runtimeProperty("ModSettings.category.order", "8")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let rebootOpticsCount: Int32 = 4;
+    public let rebootOpticsCount: Int32 = 0;
 
-    // Weapon Glitch (Technical Name: Malfunction)
+    // Weapon Glitch (Technical Name: WeaponMalfunction)
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Weapon Glitch")
     @runtimeProperty("ModSettings.category.order", "9")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let weaponGlitchRadius: Float = 30.0;
 
@@ -157,16 +166,16 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Weapon Glitch")
     @runtimeProperty("ModSettings.category.order", "9")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let weaponGlitchCount: Int32 = 4;
+    public let weaponGlitchCount: Int32 = 0;
 
-    // Cripple Movement (Technical Name: DisableCyberware)
+    // Cripple Movement (Technical Name: LocomotionMalfunction)
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Cripple Movement")
     @runtimeProperty("ModSettings.category.order", "10")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let crippleMovementRadius: Float = 30.0;
 
@@ -174,20 +183,37 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Cripple Movement")
     @runtimeProperty("ModSettings.category.order", "10")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let crippleMovementCount: Int32 = 4;
+    public let crippleMovementCount: Int32 = 0;
+
+    // Cyberware Malfunction (Technical Name: CyberwareMalfunction)
+    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
+    @runtimeProperty("ModSettings.category", "Cyberware Malfunction")
+    @runtimeProperty("ModSettings.category.order", "10")
+    @runtimeProperty("ModSettings.displayName", "Spread Distance")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
+    public let cyberwareMalfunctionRadius: Float = 30.0;
+
+    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
+    @runtimeProperty("ModSettings.category", "Cyberware Malfunction")
+    @runtimeProperty("ModSettings.category.order", "10")
+    @runtimeProperty("ModSettings.displayName", "Spread Count")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
+    public let cyberwareMalfunctionCount: Int32 = 0;
 
 
     // ========================================================================
-    // COVERT QUICKHACKS
+    // Covert Quickhacks
     // ========================================================================
 
     // Visual Header for Covert Quickhacks
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "--- COVERT QUICKHACKS ---")
     @runtimeProperty("ModSettings.category.order", "11")
-    @runtimeProperty("ModSettings.displayName", "Quickhacks in this group:")
+    @runtimeProperty("ModSettings.displayName", "")
     public let headerCovert: Bool = false;
 
     // Memory Wipe (Technical Name: MemoryWipe)
@@ -195,7 +221,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Memory Wipe")
     @runtimeProperty("ModSettings.category.order", "12")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let memoryWipeRadius: Float = 30.0;
 
@@ -203,37 +229,20 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Memory Wipe")
     @runtimeProperty("ModSettings.category.order", "12")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let memoryWipeCount: Int32 = 4;
-
-    // Sonic Shock (Technical Name: CommunicationCallIn)
-    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
-    @runtimeProperty("ModSettings.category", "Sonic Shock")
-    @runtimeProperty("ModSettings.category.order", "13")
-    @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
-    @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let sonicShockRadius: Float = 30.0;
-
-    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
-    @runtimeProperty("ModSettings.category", "Sonic Shock")
-    @runtimeProperty("ModSettings.category.order", "13")
-    @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
-    @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let sonicShockCount: Int32 = 4;
+    public let memoryWipeCount: Int32 = 0;
 
 
     // ========================================================================
-    // ULTIMATE QUICKHACKS
+    // Ultimate Quickhacks
     // ========================================================================
 
     // Visual Header for Ultimate Quickhacks
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "--- ULTIMATE QUICKHACKS ---")
     @runtimeProperty("ModSettings.category.order", "14")
-    @runtimeProperty("ModSettings.displayName", "Quickhacks in this group:")
+    @runtimeProperty("ModSettings.displayName", "")
     public let headerUltimate: Bool = false;
 
     // Suicide (Technical Name: Suicide)
@@ -241,7 +250,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Suicide")
     @runtimeProperty("ModSettings.category.order", "15")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let suicideRadius: Float = 30.0;
 
@@ -249,16 +258,16 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Suicide")
     @runtimeProperty("ModSettings.category.order", "15")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let suicideCount: Int32 = 4;
+    public let suicideCount: Int32 = 0;
 
-    // Cyberpsychosis (Technical Name: Cyberpsychosis)
+    // Cyberpsychosis (Technical Name: Madness)
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Cyberpsychosis")
     @runtimeProperty("ModSettings.category.order", "16")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let cyberpsychosisRadius: Float = 30.0;
 
@@ -266,16 +275,16 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Cyberpsychosis")
     @runtimeProperty("ModSettings.category.order", "16")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let cyberpsychosisCount: Int32 = 4;
+    public let cyberpsychosisCount: Int32 = 0;
 
-    // Detonate Grenade (Technical Name: DetonateGrenade)
+    // Detonate Grenade (Technical Name: Grenade)
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Detonate Grenade")
     @runtimeProperty("ModSettings.category.order", "17")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let detonateGrenadeRadius: Float = 30.0;
 
@@ -283,16 +292,16 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Detonate Grenade")
     @runtimeProperty("ModSettings.category.order", "17")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let detonateGrenadeCount: Int32 = 4;
+    public let detonateGrenadeCount: Int32 = 0;
 
     // System Collapse (Technical Name: SystemCollapse)
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "System Collapse")
     @runtimeProperty("ModSettings.category.order", "18")
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
-    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "5.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let systemCollapseRadius: Float = 30.0;
 
@@ -300,14 +309,11 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "System Collapse")
     @runtimeProperty("ModSettings.category.order", "18")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "1") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let systemCollapseCount: Int32 = 4;
+    public let systemCollapseCount: Int32 = 0;
 
-    // ========================================================================
-    // HELPER & REGISTRATION
-    // ========================================================================
-
+    // Registration and helper functions
     public static func Get(gi: GameInstance) -> ref<SpreaderSettings> {
         return GameInstance.GetScriptableSystemsContainer(gi).Get(n"UltimateSpreader.SpreaderSettings") as SpreaderSettings;
     }
@@ -321,8 +327,10 @@ public class SpreaderSettings extends ScriptableSystem {
             config.SetVisible(!this.useIndividualSettings);
         }
 
+        // Hide the bools in the quickhack category mod settings categories
         let quickhackCategoryConfig = ModSettings.GetVars(n"Ultimate Spreader", n"--- COMBAT QUICKHACKS ---");
         quickhackCategoryConfig[0].SetVisible(false);
+        // Use SetEnabled(false) to forbid editing
         quickhackCategoryConfig = ModSettings.GetVars(n"Ultimate Spreader", n"--- CONTROL QUICKHACKS ---");
         quickhackCategoryConfig[0].SetVisible(false);
         quickhackCategoryConfig = ModSettings.GetVars(n"Ultimate Spreader", n"--- COVERT QUICKHACKS ---");
@@ -331,6 +339,8 @@ public class SpreaderSettings extends ScriptableSystem {
         quickhackCategoryConfig[0].SetVisible(false);
     }
 
+    // Check for the individual settings button to hide global settings
+    // Might create a bit of a lag when lots of Mod Settings mods are hooked on this - no idea
     public cb func OnModSettingsChange() {
         let configs = ModSettings.GetVars(n"Ultimate Spreader", n"Global Settings");
         for config in configs {
