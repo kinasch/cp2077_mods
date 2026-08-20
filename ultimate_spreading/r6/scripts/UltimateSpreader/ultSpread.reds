@@ -82,6 +82,8 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
     let spreadRadius: Float = settings.globalSpreadRadius;
     let maxTargets: Int32 = settings.globalMaxTargets;
 
+    let useStaggeredSpread = settings.useStaggeredSpread;
+
     if settings.useIndividualSettings {
         let actionName: CName = puppetAction.actionName;
         
@@ -241,9 +243,11 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         
         let newTarget = validTargets[spreadCount%targetsArraySize].puppet;
 
-        // Using another variable to improve readibility and include possible changes (like stagered spreading or additional jumps)
-        // TODO: Implement toggle for this
-        let sequenceDelay: Float = primaryUploadTime;// + (primaryUploadTime * Cast<Float>(spreadCount));
+        let sequenceDelay: Float = primaryUploadTime;
+        // Stagger/Queue spread hacks one after another, when set in settings.
+        if useStaggeredSpread {
+            sequenceDelay = primaryUploadTime + (primaryUploadTime * Cast<Float>(spreadCount));
+        }
         LogChannel(n"DEBUG", s"[Ultimate Spreader] Current Sequence Delay \(sequenceDelay)s for spread \(spreadCount), with maxTargets at \(maxTargets)");
 
         let spreadEvt = new UltimateSpreaderEvent();
