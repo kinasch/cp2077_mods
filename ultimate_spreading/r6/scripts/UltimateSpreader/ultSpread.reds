@@ -205,7 +205,16 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         }
         k += 1;
     }
-    //LogChannel(n"DEBUG", s"[Ultimate Spreader] \(ArraySize(targetsFromTarget)) targets from target squad with \(ArraySize(squadMembers)) members.");
+
+    if ArraySize(validTargets) + 1 <= maxTargets {
+        // If there is still room, add the original target at the end
+        let originalTargetCandidate: SpreadTargetCandidate;
+        originalTargetCandidate.puppet = target;
+        originalTargetCandidate.distanceSquared = 0.0;
+        ArrayPush(validTargets, originalTargetCandidate);
+    }
+
+    LogChannel(n"DEBUG", s"[Ultimate Spreader] \(ArraySize(validTargets)) targets from target squad with \(ArraySize(squadMembers)) members.");
 
     //validTargets = targetsFromTarget;
 
@@ -225,15 +234,17 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
     }
     
     let spreadCount = 0;
+    let targetsArraySize = ArraySize(validTargets);
 
-    while spreadCount < ArraySize(validTargets) {
-        if spreadCount >= maxTargets { break; }
+    while spreadCount < maxTargets { //ArraySize(validTargets) {
+        //if spreadCount >= maxTargets { break; }
         
-        let newTarget = validTargets[spreadCount].puppet;
+        let newTarget = validTargets[spreadCount%targetsArraySize].puppet;
 
         // Using another variable to improve readibility and include possible changes (like stagered spreading or additional jumps)
-        let sequenceDelay: Float = primaryUploadTime + (primaryUploadTime * Cast<Float>(spreadCount));
-        LogChannel(n"DEBUG", s"[Ultimate Spreader] Current Sequence Delay \(sequenceDelay)s for spread \(spreadCount).");
+        // TODO: Implement toggle for this
+        let sequenceDelay: Float = primaryUploadTime;// + (primaryUploadTime * Cast<Float>(spreadCount));
+        LogChannel(n"DEBUG", s"[Ultimate Spreader] Current Sequence Delay \(sequenceDelay)s for spread \(spreadCount), with maxTargets at \(maxTargets)");
 
         let spreadEvt = new UltimateSpreaderEvent();
         spreadEvt.owner = owner;
