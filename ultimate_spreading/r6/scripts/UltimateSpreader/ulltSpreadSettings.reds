@@ -12,8 +12,8 @@ public class SpreaderSettings extends ScriptableSystem {
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.displayName", "Use Staggered Spread")
-    @runtimeProperty("ModSettings.description", "Next spread starts uploading after prior spread finished (hack spreads one by one).")
-    public let useStaggeredSpread: Bool = false;
+    @runtimeProperty("ModSettings.description", "Next upload starts after prior finished (hack spreads one by one, vanilla-like).")
+    public let useStaggeredSpread: Bool = true;
 
     // Add config for things like "only with cyberdeck stat"
 
