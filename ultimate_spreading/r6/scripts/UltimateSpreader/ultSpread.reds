@@ -63,11 +63,11 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         case n"Ping":
         case n"Whistle":
         case n"CommsCallIn":
-        // TODO: Also filter vehicle quickhacks, just in case
             return;
         default:
             break;
     }
+    //LogChannel(n"DEBUG",s"Hack: \(actionName)");
 
     let target = gameplayRoleComponent.GetOwner() as NPCPuppet; //GameInstance.FindEntityByID(gameInstance, requesterID) as NPCPuppet;
     let owner = puppetAction.GetExecutor() as PlayerPuppet; 
@@ -147,6 +147,11 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
                 spreadRadius = settings.systemCollapseRadius;
                 maxTargets = settings.systemCollapseCount;
                 break;
+            
+            // Black Wall
+            case n"BlackWall":
+                spreadRadius = settings.blackWallRadius;
+                maxTargets = settings.blackWallCount;
 
             // Default to global for things like custom quickhacks
             default:
@@ -216,10 +221,7 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         ArrayPush(validTargets, originalTargetCandidate);
     }
 
-    LogChannel(n"DEBUG", s"[Ultimate Spreader] \(ArraySize(validTargets)) targets from target squad with \(ArraySize(squadMembers)) members.");
-
-    //validTargets = targetsFromTarget;
-
+    //LogChannel(n"DEBUG", s"[Ultimate Spreader] \(ArraySize(validTargets)) targets from target squad with \(ArraySize(squadMembers)) members.");
     
     // Get upload time to spread after time finishes.
     let primaryUploadTime: Float = puppetAction.GetActivationTime();
@@ -248,7 +250,7 @@ protected func ProcessRPGAction(gameInstance: GameInstance, opt gameplayRoleComp
         if useStaggeredSpread {
             sequenceDelay = primaryUploadTime + (primaryUploadTime * Cast<Float>(spreadCount));
         }
-        LogChannel(n"DEBUG", s"[Ultimate Spreader] Current Sequence Delay \(sequenceDelay)s for spread \(spreadCount), with maxTargets at \(maxTargets)");
+        //LogChannel(n"DEBUG", s"[Ultimate Spreader] Current Sequence Delay \(sequenceDelay)s for spread \(spreadCount), with maxTargets at \(maxTargets)");
 
         let spreadEvt = new UltimateSpreaderEvent();
         spreadEvt.owner = owner;

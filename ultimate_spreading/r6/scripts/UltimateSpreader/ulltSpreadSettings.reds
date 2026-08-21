@@ -60,7 +60,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let shortCircuitRadius: Float = 30.0;
+    public let shortCircuitRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-EMPOverloadProgram")
@@ -77,7 +77,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let overheatRadius: Float = 30.0;
+    public let overheatRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-OverheatProgram")
@@ -94,7 +94,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let contagionRadius: Float = 30.0;
+    public let contagionRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-ContagionProgram")
@@ -111,7 +111,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let synapseBurnoutRadius: Float = 30.0;
+    public let synapseBurnoutRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-BrainMeltProgram")
@@ -140,7 +140,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let rebootOpticsRadius: Float = 30.0;
+    public let rebootOpticsRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-RPG-Items-Names-BlindProgram")
@@ -157,7 +157,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let weaponGlitchRadius: Float = 30.0;
+    public let weaponGlitchRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-JamWeaponProgram")
@@ -174,7 +174,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let crippleMovementRadius: Float = 30.0;
+    public let crippleMovementRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-LocomotionMalfunctionProgram")
@@ -191,7 +191,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let cyberwareMalfunctionRadius: Float = 30.0;
+    public let cyberwareMalfunctionRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-CyberwareMalfunction")
@@ -220,7 +220,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let memoryWipeRadius: Float = 30.0;
+    public let memoryWipeRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-MemoryWipeProgram")
@@ -249,7 +249,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let suicideRadius: Float = 30.0;
+    public let suicideRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-RPG-Items-Names-SuicideProgram")
@@ -266,7 +266,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let cyberpsychosisRadius: Float = 30.0;
+    public let cyberpsychosisRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-MadnessProgram")
@@ -283,7 +283,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let detonateGrenadeRadius: Float = 30.0;
+    public let detonateGrenadeRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-RPG-Items-Names-GrenadeExplodeProgram")
@@ -300,7 +300,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.displayName", "Spread Distance")
     @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
-    public let systemCollapseRadius: Float = 30.0;
+    public let systemCollapseRadius: Float = 8.0;
 
     @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-SystemCollapseProgram")
@@ -309,6 +309,24 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let systemCollapseCount: Int32 = 0;
+
+    // Blackwall Gateway (Technical Name: BlackWall)
+    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
+    @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-BlackWallProgram")
+    @runtimeProperty("ModSettings.category.order", "18")
+    @runtimeProperty("ModSettings.displayName", "Spread Distance")
+    @runtimeProperty("ModSettings.step", "1.0") @runtimeProperty("ModSettings.min", "1.0") @runtimeProperty("ModSettings.max", "100.0")
+    @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
+    public let blackWallRadius: Float = 8.0;
+
+    @runtimeProperty("ModSettings.mod", "Ultimate Spreader")
+    @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-BlackWallProgram")
+    @runtimeProperty("ModSettings.category.order", "18")
+    @runtimeProperty("ModSettings.displayName", "Spread Count")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
+    public let blackWallCount: Int32 = 0;
+    
 
     // Registration and helper functions
     public static func Get(gi: GameInstance) -> ref<SpreaderSettings> {
