@@ -122,7 +122,8 @@ registerForEvent("onDraw", function ()
     if openMenu ~= true then return end
 
     ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
-    ImGui.SetNextWindowSize(400, 400, ImGuiCond.Appearing)
+    -- Haha 420 get it, blaze it haha ... :/
+    ImGui.SetNextWindowSize(420, 420, ImGuiCond.Appearing)
     ImGui.Begin("Ultimate Spreader")
 
     local clicked = ImGui.Button("Reset to default", (0.5 * ImGui.GetWindowWidth()), 30)
@@ -134,7 +135,12 @@ registerForEvent("onDraw", function ()
     ImGui.Separator()
     ImGui.Spacing()
 
-    ImGui.PushItemWidth(0.65 * ImGui.GetWindowWidth())
+    ImGui.TextWrapped("A value of \"-1\" takes the player stat (should be 8 for range and 1 for count by default).")
+
+    ImGui.Separator()
+    ImGui.Spacing()
+
+    ImGui.PushItemWidth(0.6 * ImGui.GetWindowWidth())
 
     for _, categoryKey in ipairs(categoryOrder) do
         local locCategoryName = GetLocalizedText(categoryKey) or categoryKey
@@ -151,25 +157,24 @@ registerForEvent("onDraw", function ()
                     local curLocalName = GetLocalizedText(staticData.locSecondaryKey) or value.name
                     ImGui.Text(curLocalName .. " Spread")
 
-                    -- 1. Count Slider
                     ImGui.PushID(curLocalName .. "Count")
-                    value.count.saved = ImGui.SliderInt("Count", value.count.saved, -1, 25, "%d")
+                    value.count.saved = ImGui.SliderInt("Count", value.count.saved, -1, 15, "%d")
                     if ImGui.IsItemDeactivatedAfterEdit() then
                         updateIngameValue(key, "spreadCount", value.count.saved)
                     end
                     ImGui.PopID()
 
-                    -- 2. Bonus Jumps Slider
                     ImGui.PushID(curLocalName .. "BonusJumps")
-                    value.bonusJumps.saved = ImGui.SliderInt("Bonus Jumps", value.bonusJumps.saved, -1, 25, "%d")
+                    value.bonusJumps.saved = ImGui.SliderInt("Bonus Jumps", value.bonusJumps.saved, 0, 10, "%d")
                     if ImGui.IsItemDeactivatedAfterEdit() then
                         updateIngameValue(key, "bonusJumps",value.bonusJumps.saved)
                     end
                     ImGui.PopID()
 
-                    -- 3. Range Slider
+                    -- Range of -1 could be the spreadCount of the player stats
+                    -- Also, if the range is above 50 (or similar), the spread targets NPCs further/furthest away first - no idea, why
                     ImGui.PushID(curLocalName .. "Range")
-                    value.range.saved = ImGui.SliderInt("Range", value.range.saved, -1, 25, "%d")
+                    value.range.saved = ImGui.SliderInt("Range", value.range.saved, -1, 100, "%d")
                     if ImGui.IsItemDeactivatedAfterEdit() then
                         updateIngameValue(key, "spreadDistance", value.range.saved)
                     end

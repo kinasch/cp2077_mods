@@ -38,7 +38,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.description", "Default max targets if Individual Settings are OFF.")
     @runtimeProperty("ModSettings.step", "1")
     @runtimeProperty("ModSettings.min", "0")
-    @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.max", "25")
     public let globalMaxTargets: Int32 = 0;
 
 
@@ -66,7 +66,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-EMPOverloadProgram")
     @runtimeProperty("ModSettings.category.order", "3")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let shortCircuitCount: Int32 = 0;
 
@@ -83,7 +83,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-OverheatProgram")
     @runtimeProperty("ModSettings.category.order", "4")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let overheatCount: Int32 = 0;
 
@@ -100,7 +100,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-ContagionProgram")
     @runtimeProperty("ModSettings.category.order", "5")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let contagionCount: Int32 = 0;
 
@@ -117,7 +117,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-BrainMeltProgram")
     @runtimeProperty("ModSettings.category.order", "6")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let synapseBurnoutCount: Int32 = 0;
 
@@ -146,7 +146,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-RPG-Items-Names-BlindProgram")
     @runtimeProperty("ModSettings.category.order", "8")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let rebootOpticsCount: Int32 = 0;
 
@@ -163,7 +163,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-JamWeaponProgram")
     @runtimeProperty("ModSettings.category.order", "9")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let weaponGlitchCount: Int32 = 0;
 
@@ -180,7 +180,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-LocomotionMalfunctionProgram")
     @runtimeProperty("ModSettings.category.order", "10")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let crippleMovementCount: Int32 = 0;
 
@@ -197,7 +197,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-CyberwareMalfunction")
     @runtimeProperty("ModSettings.category.order", "10")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let cyberwareMalfunctionCount: Int32 = 0;
 
@@ -226,7 +226,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-MemoryWipeProgram")
     @runtimeProperty("ModSettings.category.order", "12")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let memoryWipeCount: Int32 = 0;
 
@@ -255,7 +255,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-RPG-Items-Names-SuicideProgram")
     @runtimeProperty("ModSettings.category.order", "15")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let suicideCount: Int32 = 0;
 
@@ -272,7 +272,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-MadnessProgram")
     @runtimeProperty("ModSettings.category.order", "16")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let cyberpsychosisCount: Int32 = 0;
 
@@ -289,7 +289,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-RPG-Items-Names-GrenadeExplodeProgram")
     @runtimeProperty("ModSettings.category.order", "17")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let detonateGrenadeCount: Int32 = 0;
 
@@ -306,7 +306,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-SystemCollapseProgram")
     @runtimeProperty("ModSettings.category.order", "18")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let systemCollapseCount: Int32 = 0;
 
@@ -323,7 +323,7 @@ public class SpreaderSettings extends ScriptableSystem {
     @runtimeProperty("ModSettings.category", "Gameplay-Parts-Programs-DisplayName-BlackWallProgram")
     @runtimeProperty("ModSettings.category.order", "18")
     @runtimeProperty("ModSettings.displayName", "Spread Count")
-    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "15")
+    @runtimeProperty("ModSettings.step", "1") @runtimeProperty("ModSettings.min", "0") @runtimeProperty("ModSettings.max", "25")
     @runtimeProperty("ModSettings.dependency", "useIndividualSettings")
     public let blackWallCount: Int32 = 0;
     
