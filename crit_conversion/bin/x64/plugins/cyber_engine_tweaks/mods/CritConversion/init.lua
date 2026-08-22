@@ -2,7 +2,7 @@ local ratio = 1
 
 registerForEvent("onTweak", function()
     -- Set the maximum crit chance to some arbritary high number, early!
-	TweakDB:SetFlat("BaseStats.CritChance.max", 5000)
+	TweakDB:SetFlat("BaseStats.CritChance.max", 999999)
 end)
 
 registerForEvent("onInit", function()
