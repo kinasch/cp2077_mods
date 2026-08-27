@@ -23,6 +23,8 @@ protected final func GetCritDamageModifier(statSystem: ref<StatsSystem>, attackD
 
   accumulatedCritDamageBeforeCritConversion = wrappedMethod(statSystem, attackData);
 
+  //LogChannel(n"DEBUG", s"GetCritFlagBeforeProcessCriticalHitFlag \(attackData.GetCritFlagBeforeProcessCriticalHitFlag())");
+
 	if IsDefined(attackData.GetInstigator()) {
     playerCritChance = statSystem.GetStatValue(Cast<StatsObjectID>(attackData.GetInstigator().GetEntityID()), gamedataStatType.CritChance) / 100.00;
   };
@@ -31,8 +33,12 @@ protected final func GetCritDamageModifier(statSystem: ref<StatsSystem>, attackD
     weaponCritChance = statSystem.GetStatValue(Cast<StatsObjectID>(attackData.GetWeapon().GetEntityID()), gamedataStatType.CritChance) / 100.00;
   };
 
-  // Include the additional crit chance (e.g. the guaranteed crit of the Sovereign) or just add if the crit flag was set before the "ProcessCriticalHit" method set it manually.
-  if attackData.GetAdditionalCritChance() < 1.0 && attackData.GetCritFlagBeforeProcessCriticalHitFlag() {
+  // Add 100% to the crit chance, when the crit was flagged before "ProcessCriticalHit"
+  // E.g. perfectly timed deflects (why? idk) or Cool_Master_Perk_4
+  if attackData.GetCritFlagBeforeProcessCriticalHitFlag() || (Equals(this.GetSubAttackSubType(attackData), gamedataAttackSubtype.DeflectAttack) && PlayerDevelopmentSystem.GetData(attackData.GetInstigator()).IsNewPerkBoughtAnyLevel(gamedataNewPerkType.Reflexes_Right_Perk_2_2)) {
+    // No idea, why the check after the || exists in the original method. 
+    // Reflexes_Right_Perk_2_2 is "Seeing Double", thus should have nothing to do with Critical Hits...
+    // Also, there is no check here, if the Instigator is even defined ?????
     accumulatedCritChance = playerCritChance + weaponCritChance + 1.0;
   } else {
     accumulatedCritChance = playerCritChance + weaponCritChance + attackData.GetAdditionalCritChance();
@@ -42,7 +48,7 @@ protected final func GetCritDamageModifier(statSystem: ref<StatsSystem>, attackD
     critConversionDamage = accumulatedCritChance - 1.0;
   }
 
-  //LogChannel(n"DEBUG", s"Crit Damage complete: \(accumulatedCritDamageBeforeCritConversion + (critConversionDamage * ratio)), Crit Chance \(playerCritChance), \(weaponCritChance); acc: \(accumulatedCritChance)");
+  //LogChannel(n"DEBUG", s"Crit Damage complete: \(accumulatedCritDamageBeforeCritConversion + (critConversionDamage * ratio)), Crit Chance \(playerCritChance), \(weaponCritChance), \(attackData.GetAdditionalCritChance()); acc: \(accumulatedCritChance)");
 	return (accumulatedCritDamageBeforeCritConversion + (critConversionDamage * ratio));
 }
 
