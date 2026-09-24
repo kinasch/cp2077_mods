@@ -1,7 +1,6 @@
 *.sqlite3
 *.log
 *.zip
-*.json
 */infwithoutbottomlessmag
 */with_nativeui
 .vscode
