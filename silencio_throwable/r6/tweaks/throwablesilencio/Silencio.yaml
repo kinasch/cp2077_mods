@@ -1,0 +1,148 @@
+### GameplayLogicPackage
+GLP.SilencioMTT_MeleeMod3: #Items.ThrowMod3_Base_inline4
+  animationWrapperOverrides: []
+  effectors:
+  - BaseStatusEffect.SilencioMTT_ApplySEEffector
+  items: []
+  stackable: False
+  statPools: []
+  stats: []
+  $type: gamedataGameplayLogicPackage_Record
+  
+GLP.SilencioMTT_BSE_Package: # BaseStatusEffect.ThrowMod3_ThrowPeneration_inline2
+  animationWrapperOverrides: []
+  effectors:
+    - BaseStatusEffect.SilencioMTT_ApplyGroupEffector
+  items: []
+  stackable: False
+  statPools: []
+  stats: []
+  $type: gamedataGameplayLogicPackage_Record
+
+
+### Prereqs and MultiPrereqs
+Prereqs.SilencioMTT_MultiPrereq_CrouchANDStealth: # Recreate MeleeMod3's prereq to avoid using inlines
+  aggregationType: AND
+  nestedPrereqs:
+    - Perks.IsPlayerOutOfCombatOrInStealthPSMState
+    - NewPerks.IsPlayerCrouchingOrCrouchSprintingPrereq
+  prereqClassName: gameMultiPrereq
+  $type: gamedataMultiPrereq_Record
+
+Prereqs.SilencioMTT_ThrowAttack:
+  isInState: True
+  prereqClassName: MeleeWeaponPSMPrereq
+  previousState: False
+  stateName: ThrowAttack
+  $type: gamedataIPrereq_Record
+
+
+### StatusEffect
+BaseStatusEffect.SilencioMTT_BSE: # BaseStatusEffect.ThrowMod3_ThrowPeneration
+  debugTags: []
+  duration: 
+    $type: gamedataStatModifierGroup_Record
+    drawBasedOnStatType: False
+    optimiseCombinedModifiers: False
+    relatedModifierGroups: []
+    saveBasedOnStatType: False
+    statModifiers:
+      - $type: gamedataConstantStatModifier_Record
+        modifierType: Additive
+        statType: BaseStats.MaxDuration
+        value: 2
+    statModsLimit: -1
+  dynamicDuration: False
+  gameplayTags: []
+  immunityStats: []
+  isAffectedByTimeDilationNPC: True
+  isAffectedByTimeDilationPlayer: True
+  maxStacks: 
+    $type: gamedataStatModifierGroup_Record
+    drawBasedOnStatType: False
+    optimiseCombinedModifiers: False
+    relatedModifierGroups: []
+    saveBasedOnStatType: False
+    statModifiers:
+      - $type: gamedataConstantStatModifier_Record
+        modifierType: Additive
+        statType: BaseStats.MaxStacks
+        value: 1
+    statModsLimit: -1
+  packages:
+    - GLP.SilencioMTT_BSE_Package
+  reapplyPackagesOnMaxStacks: False
+  removeAllStacksWhenDurationEnds: False
+  removeOnStoryTier: False
+  replicated: False
+  savable: True
+  SFX: []
+  statusEffectType: BaseStatusEffectTypes.Misc
+  stopActiveSfxOnDeactivate: True
+  $type: gamedataStatusEffect_Record
+  VFX: []
+
+
+### StatModifierGroup  
+BaseStatusEffect.SilencioMTT_ActualStatGroup:
+  drawBasedOnStatType: False
+  optimiseCombinedModifiers: False
+  relatedModifierGroups: []
+  saveBasedOnStatType: False
+  statModifiers:
+    - $type: gamedataCombinedStatModifier_Record
+      modifierType: Additive
+      opSymbol: '*'
+      refObject: Player
+      refStat: BaseStats.MeleeMod3_CritChance
+      statType: BaseStats.CritChance
+      value: 1
+    - $type: gamedataCombinedStatModifier_Record
+      modifierType: Additive
+      opSymbol: '*'
+      refObject: Player
+      refStat: BaseStats.MeleeMod3_CritDamage
+      statType: BaseStats.CritDamage
+      value: 1
+
+  statModsLimit: -1
+  $type: gamedataStatModifierGroup_Record
+
+
+### GLP StatusEffect
+BaseStatusEffect.SilencioMTT_ApplyGroupEffector: # BaseStatusEffect.ThrowMod3_ThrowPeneration_inline3
+  applicationTarget: Weapon
+  effectorClassName: ApplyStatGroupEffector
+  prereqRecord: Prereqs.SilencioMTT_MultiPrereq_CrouchANDStealth
+  reapplyOnWeaponChange: False
+  removeAfterActionCall: False
+  removeAfterPrereqCheck: False
+  removeWithEffector: True
+  statGroup: BaseStatusEffect.SilencioMTT_ActualStatGroup
+  statModifierGroups: []
+  $type: gamedataApplyStatGroupEffector_Record
+
+BaseStatusEffect.SilencioMTT_ApplySEEffector: #Items.ThrowMod3_Base_inline5
+  applicationTarget: Player
+  count: 1
+  effectorClassName: ApplyStatusEffectEffector
+  instigator: ''
+  inverted: False
+  prereqRecord: Prereqs.SilencioMTT_ThrowAttack
+  removeAfterActionCall: False
+  removeAfterPrereqCheck: False
+  removeWithEffector: False
+  statModifierGroups: []
+  statusEffect: BaseStatusEffect.SilencioMTT_BSE
+  $type: gamedataApplyStatusEffectEffector_Record
+  useCountWhenRemoving: False  
+
+ 
+### MeleeMod3 Customization (Silencio Mod)
+Items.MeleeMod3_Base:
+  OnAttach:
+    - !append-once GLP.SilencioMTT_MeleeMod3
+  itemType: ItemType.Prt_ThrowableMod # Is this necessary? idk
+  tags:
+    - !append-once ThrowMod
+#
